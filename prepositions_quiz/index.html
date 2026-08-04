@@ -265,8 +265,6 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   text-transform: uppercase;
 }
 .results-table-wrap {
-  max-height: 420px;
-  overflow-y: auto;
   border-radius: 1px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08), 3px 3px 0 var(--border);
 }
@@ -304,10 +302,17 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 .results-table tr:last-child td { border-bottom: none; }
 .rt-row-wrong  { background: #FEF2F2; }
 .rt-row-correct { background: #EAF6EF; }
+.verb-tip {
+  border-bottom: 1.5px dotted var(--muted);
+  cursor: help;
+  transition: border-color .15s;
+}
+.verb-tip:hover { border-color: var(--blue); }
 .rt-sentence {
   font-family: 'Palatino Linotype', Palatino, Georgia, serif;
   font-size: 0.91rem;
   color: var(--ink);
+  cursor: help;
 }
 .rt-ans-correct { color: var(--green); font-weight: bold; }
 .rt-ans-wrong   { color: var(--red);   font-weight: bold; }
@@ -322,6 +327,33 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   color: var(--muted);
   font-style: italic;
   margin-top: 2px;
+}
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.btn-toggle-correct {
+  font-size: 0.72rem;
+  font-family: -apple-system, sans-serif;
+  padding: 4px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn-toggle-correct:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.btn-toggle-correct.hiding {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-light);
 }
 .rt-cat {
   font-size: 0.75rem;
@@ -338,7 +370,10 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 <div class="card" id="app"></div>
 <div class="toast" id="toast"></div>
 <div class="results-section" id="results-section" style="display:none">
-  <h3>R&#233;sultats de la session</h3>
+  <div class="results-header">
+    <h3>R&#233;sultats de la session</h3>
+    <button class="btn-toggle-correct" id="btn-toggle-correct" onclick="toggleCorrect()">Masquer les bonnes r&#233;ponses</button>
+  </div>
   <div class="results-table-wrap">
     <table class="results-table">
       <colgroup><col><col><col></colgroup>
@@ -512,7 +547,7 @@ const DIST = {
   'en':       ['\u00e0', 'de', NONE, 'pour', 'contre'],
 };
 
-let questions, idx, score, answered, sessionResults;
+let questions, idx, score, answered, sessionResults, showCorrect = true;
 const app = document.getElementById('app');
 
 function shuffle(arr) {
@@ -554,7 +589,7 @@ function renderQ() {
       <span>Score <strong>${score}</strong></span>
     </div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="sentence-wrap"><div class="sentence">${fmtBlank(q.s)}</div></div>
+    <div class="sentence-wrap"><div class="sentence">${fmtBlank(addVerbTooltip(q.s, q.e))}</div></div>
     <div class="options">
       ${opts.map(o => `
         <button class="opt-btn" data-val="${o}">
@@ -598,7 +633,7 @@ function handleAnswer(btn) {
     else                          b.classList.add('wrong');
   });
 
-  app.querySelector('.sentence').innerHTML = fmtFilled(q.s, q.a);
+  app.querySelector('.sentence').innerHTML = fmtFilled(addVerbTooltip(q.s, q.e), q.a);
 
   const exp = document.getElementById('exp');
   exp.classList.add('show');
@@ -683,7 +718,7 @@ app.addEventListener('click', e => {
   if (id === 'btn-next')    { nextQ(); return; }
   if (id === 'btn-gemini')  { askGemini(); return; }
   if (id === 'btn-start' || id === 'btn-restart') {
-    questions = shuffle(VERBS); idx = 0; score = 0; answered = false; sessionResults = []; const rs = document.getElementById('results-section'); if (rs) rs.style.display='none'; const rb = document.getElementById('results-tbody'); if (rb) rb.innerHTML=''; renderQ();
+    questions = shuffle(VERBS); idx = 0; score = 0; answered = false; sessionResults = []; showCorrect = true; const rs = document.getElementById('results-section'); if (rs) rs.style.display='none'; const rb = document.getElementById('results-tbody'); if (rb) rb.innerHTML=''; renderQ();
   }
 });
 
@@ -695,6 +730,34 @@ document.addEventListener('keydown', e => {
     if (btn) handleAnswer(btn);
   }
 });
+
+function toggleCorrect() {
+  showCorrect = !showCorrect;
+  const btn = document.getElementById('btn-toggle-correct');
+  if (btn) {
+    btn.textContent = showCorrect ? 'Masquer les bonnes r\u00e9ponses' : 'Afficher les bonnes r\u00e9ponses';
+    btn.classList.toggle('hiding', !showCorrect);
+  }
+  renderResultsTable();
+}
+
+function addVerbTooltip(s, e) {
+  const tokens = s.split(/\s+/);
+  let vStart = 1; // verb is usually word[1] after the subject
+  const subj = tokens[0].toLowerCase();
+  if (subj === 'tout') vStart = 3;           // "Tout le monde rit"
+  else if (subj === 'la' || subj === 'cet') vStart = 2; // "La France manque", "Cet appareil sert"
+  if (vStart >= tokens.length) return s;
+  // If verb token is bare "se", include the next word too ("se décide", "se fâche"…)
+  let vEnd = vStart;
+  if (tokens[vStart] && tokens[vStart].toLowerCase() === 'se') vEnd = vStart + 1;
+  const before = tokens.slice(0, vStart).join(' ');
+  const verb   = tokens.slice(vStart, vEnd + 1).join(' ');
+  const after  = tokens.slice(vEnd + 1).join(' ');
+  const tip    = e.replace(/"/g, '&quot;');
+  return [before, `<span class="verb-tip" title="${tip}">${verb}</span>`, after]
+    .filter(x => x.length > 0).join(' ');
+}
 
 function extractCategory(rule) {
   const m = rule.match(/^([A-Z][^"\u2014]{4,60})\s*\u2014\s/);
@@ -709,9 +772,7 @@ function renderResultsTable() {
   const tbody = document.getElementById('results-tbody');
   if (!tbody) return;
   // wrong answers first, then correct; stable within each group
-  const wrong   = sessionResults.filter(r => !r.correct);
-  const correct = sessionResults.filter(r =>  r.correct);
-  const sorted  = [...wrong, ...correct];
+  const sorted = showCorrect ? sessionResults : sessionResults.filter(r => !r.correct);
   tbody.innerHTML = sorted.map(r => {
     const dispA = r.a === NONE ? '\u00d8' : r.a;
     const dispC = r.chosen === NONE ? '\u00d8' : r.chosen;
@@ -721,7 +782,7 @@ function renderResultsTable() {
       `<div class="rt-picked">&#10007;&nbsp;choisi&nbsp;: <strong>${dispC}</strong></div>`;
     const cat = extractCategory(r.r);
     return `<tr class="${r.correct ? 'rt-row-correct' : 'rt-row-wrong'}">
-      <td><span class="rt-sentence">${filled}</span>${wrongNote}</td>
+      <td><span class="rt-sentence" title="${r.e}">${filled}</span>${wrongNote}</td>
       <td><span class="rt-note">${r.n}</span><div class="rt-english">${r.e}</div></td>
       <td class="rt-cat">${cat}</td>
     </tr>`;
