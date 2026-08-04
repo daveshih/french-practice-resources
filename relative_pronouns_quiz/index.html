@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pronoms Relatifs — Quiz</title>
+<style>
+:root{--paper:#FDFCF5;--bg:#EAE5DA;--ink:#1C1C2E;--blue:#002E8C;--blue-light:#EEF3FF;--red:#B52A2A;--green:#1D6B45;--green-light:#EAF6EF;--muted:#8A8A9A;--border:#D0CBBA;--rule-line:#D0E2F5;--margin:rgba(178,42,42,0.18)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23000' fill-opacity='.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;flex-direction:column;align-items:center;padding:24px 16px 48px;color:var(--ink)}
+header{text-align:center;margin-bottom:22px}
+header h1{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.9rem;color:var(--blue);font-weight:normal;letter-spacing:-.01em}
+header p{color:var(--muted);font-size:.88rem;margin-top:5px}
+.card{background:var(--paper);border-radius:1px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.10),5px 5px 0 var(--border);padding:26px 30px 26px 58px;max-width:680px;width:100%;position:relative}
+.card::before{content:'';position:absolute;left:44px;top:0;bottom:0;width:1.5px;background:var(--margin)}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:.82rem;color:var(--muted)}
+.meta strong{color:var(--ink)}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),#5B8CFF);border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.sentence-wrap{background:repeating-linear-gradient(transparent,transparent 27px,var(--rule-line) 27px,var(--rule-line) 28px);padding:10px 12px 14px;margin:0 -4px 22px;border-radius:1px}
+.sentence{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.35rem;line-height:28px}
+.blank{display:inline-block;min-width:88px;border-bottom:2.5px solid var(--blue);margin:0 4px -2px;text-align:center;color:var(--blue);font-style:italic;vertical-align:bottom}
+.ans-filled{display:inline-block;color:var(--blue);font-weight:bold;font-style:italic;border-bottom:2.5px solid var(--blue);min-width:88px;text-align:center;margin:0 4px -2px;vertical-align:bottom;animation:inkIn .35s ease-out}
+@keyframes inkIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:20px}
+.opt-btn{padding:14px 8px 11px;border:1.5px solid var(--border);border-radius:2px;background:#fff;font-size:1.15rem;font-family:'Palatino Linotype',Palatino,Georgia,serif;cursor:pointer;transition:border-color .12s,background .12s,transform .12s,box-shadow .12s;color:var(--ink);text-align:center}
+.opt-btn:hover:not(:disabled){border-color:var(--blue);background:var(--blue-light);transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,46,140,.12)}
+.opt-btn:disabled{cursor:default}
+.opt-btn.correct{border-color:var(--green);background:var(--green-light);color:var(--green)}
+.opt-btn.wrong{border-color:#E8DCDC;background:#FBF5F5;color:#C8B8B8}
+.opt-btn.picked-wrong{border-color:var(--red);background:#FEF2F2;color:var(--red)}
+.explanation{display:none;border-left:3px solid var(--blue);padding:12px 14px;margin-bottom:16px;background:var(--blue-light);border-radius:0 2px 2px 0;animation:slideIn .25s ease-out}
+.explanation.show{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.exp-verdict{font-size:1rem;font-weight:600;margin-bottom:6px}
+.exp-verdict.ok{color:var(--green)}.exp-verdict.ko{color:var(--red)}
+.exp-note{font-size:.88rem;color:var(--muted);margin-bottom:2px}
+.exp-note b{color:var(--blue)}
+.exp-english{font-size:.82rem;color:var(--muted);font-style:italic;margin-bottom:8px}
+.exp-rule{font-size:.84rem;color:var(--ink);line-height:1.55;padding-top:8px;border-top:1px solid rgba(0,46,140,.15)}
+.exp-rule b{color:var(--blue)}
+.actions{display:none;justify-content:flex-end}
+.actions.show{display:flex}
+.btn-next{padding:10px 28px;background:var(--blue);color:#fff;border:none;border-radius:2px;font-size:.95rem;font-family:'Palatino Linotype',Palatino,Georgia,serif;cursor:pointer;letter-spacing:.02em;transition:background .15s;box-shadow:0 2px 8px rgba(0,46,140,.2)}
+.btn-next:hover{background:#003BB5}
+.btn-exit{background:none;border:1.5px solid var(--border);border-radius:50%;width:26px;height:26px;font-size:.65rem;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;padding:0;line-height:1}
+.btn-exit:hover{border-color:var(--red);color:var(--red)}
+.start-screen,.end-screen{text-align:center;padding:20px 0}
+.start-screen h2,.end-screen h2{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.6rem;font-weight:normal;color:var(--blue);margin-bottom:14px}
+.start-screen p{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:6px}
+.pronoun-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 22px}
+.pronoun-chip{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.05rem;padding:5px 16px;border:1.5px solid var(--border);border-radius:20px;background:#fff;color:var(--blue)}
+.btn-start,.btn-restart{margin-top:6px;padding:12px 40px;background:var(--blue);color:#fff;border:none;border-radius:2px;font-size:1rem;font-family:'Palatino Linotype',Palatino,Georgia,serif;cursor:pointer;box-shadow:0 2px 8px rgba(0,46,140,.2);transition:background .15s}
+.btn-start:hover,.btn-restart:hover{background:#003BB5}
+.final-score{font-size:3.5rem;font-family:'Palatino Linotype',Palatino,Georgia,serif;color:var(--blue);line-height:1;margin:20px 0 6px}
+.final-pct{font-size:1.1rem;color:var(--muted);margin-bottom:16px}
+.final-grade{font-size:1.2rem;margin-bottom:10px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(70px);background:#1C1C2E;color:#fff;padding:10px 22px;border-radius:24px;font-size:.85rem;transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:999;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.results-section{max-width:680px;width:100%;margin-top:22px}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.results-section h3{font-family:-apple-system,sans-serif;font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.07em;text-transform:uppercase}
+.btn-toggle-correct{font-size:.72rem;font-family:-apple-system,sans-serif;padding:4px 10px;border:1.5px solid var(--border);border-radius:20px;background:#fff;color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-toggle-correct:hover{border-color:var(--blue);color:var(--blue)}
+.btn-toggle-correct.hiding{border-color:var(--green);color:var(--green);background:var(--green-light)}
+.results-table-wrap{border-radius:1px;box-shadow:0 1px 3px rgba(0,0,0,.08),3px 3px 0 var(--border)}
+.results-table{width:100%;border-collapse:collapse;font-size:.81rem;table-layout:fixed}
+.results-table colgroup col:nth-child(1){width:42%}
+.results-table colgroup col:nth-child(2){width:38%}
+.results-table colgroup col:nth-child(3){width:20%}
+.results-table th{text-align:left;padding:7px 11px;background:var(--bg);color:var(--muted);font-weight:500;font-size:.71rem;letter-spacing:.05em;text-transform:uppercase;font-family:-apple-system,sans-serif;border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:1}
+.results-table td{padding:8px 11px;border-bottom:1px solid rgba(0,0,0,.05);vertical-align:top;line-height:1.45;word-break:break-word}
+.results-table tr:last-child td{border-bottom:none}
+.rt-row-wrong{background:#FEF2F2}.rt-row-correct{background:#EAF6EF}
+.rt-sentence{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:.91rem;color:var(--ink);cursor:help}
+.rt-ans-correct{color:var(--green);font-weight:bold}.rt-ans-wrong{color:var(--red);font-weight:bold}
+.rt-picked{font-size:.73rem;color:var(--red);margin-top:3px}
+.rt-note b{color:var(--blue)}
+.rt-english{font-size:.75rem;color:var(--muted);font-style:italic;margin-top:2px}
+.rt-cat{font-size:.85rem;color:var(--blue);font-family:'Palatino Linotype',Palatino,Georgia,serif;font-weight:bold}
+@media(max-width:520px){.card{padding:18px 16px 18px 42px}.card::before{left:30px}.sentence{font-size:1.1rem}.options{grid-template-columns:1fr 1fr}.opt-btn{font-size:1rem;padding:12px 6px 10px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>&#x1F1EB;&#x1F1F7; Pronoms Relatifs</h1>
+  <p>Quiz de 20 questions &middot; g&eacute;n&eacute;r&eacute; al&eacute;atoirement</p>
+</header>
+<div class="card" id="app"></div>
+<div class="toast" id="toast"></div>
+<div class="results-section" id="results-section" style="display:none">
+  <div class="results-header">
+    <h3>R&eacute;sultats de la session</h3>
+    <button class="btn-toggle-correct" id="btn-toggle-correct" onclick="toggleCorrect()">Masquer les bonnes r&eacute;ponses</button>
+  </div>
+  <div class="results-table-wrap">
+    <table class="results-table">
+      <colgroup><col><col><col></colgroup>
+      <thead><tr><th>Phrase correcte</th><th>Construction &middot; Traduction</th><th>Pronom</th></tr></thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+  </div>
+</div>
+<script>
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function an(o){ return o.a.endsWith("'") ? o.a+o.n : o.a+' '+o.n; }
+function anCap(o){ const s=an(o); return s[0].toUpperCase()+s.slice(1); }
+function rp(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+// ── QUI DATA ──────────────────────────────────────────────────────────────
+const QS_ANIM=[
+  {a:"le",  n:"professeur",  e:"teacher",    g:"sg"},
+  {a:"l'",  n:"étudiant",   e:"student",    g:"sg"},
+  {a:"la",  n:"directrice", e:"director",   g:"sg"},
+  {a:"l'",  n:"avocat",     e:"lawyer",     g:"sg"},
+  {a:"le",  n:"médecin",    e:"doctor",     g:"sg"},
+  {a:"l'",  n:"ingénieur",  e:"engineer",   g:"sg"},
+  {a:"le",  n:"journaliste",e:"journalist", g:"sg"},
+  {a:"la",  n:"chercheuse", e:"researcher", g:"sg"},
+  {a:"l'",  n:"employé",    e:"employee",   g:"sg"},
+  {a:"le",  n:"candidat",   e:"candidate",  g:"sg"},
+  {a:"la",  n:"voisine",    e:"neighbour",  g:"sg"},
+  {a:"l'",  n:"ami",        e:"friend",     g:"sg"},
+  {a:"le",  n:"chef",       e:"manager",    g:"sg"},
+  {a:"le",  n:"client",     e:"client",     g:"sg"},
+  {a:"la",  n:"secrétaire", e:"secretary",  g:"sg"},
+  {a:"le",  n:"stagiaire",  e:"intern",     g:"sg"},
+];
+const QS_INAN=[
+  {a:"l'",  n:"idée",       e:"idea",       g:"sg"},
+  {a:"le",  n:"projet",     e:"project",    g:"sg"},
+  {a:"la",  n:"règle",      e:"rule",       g:"sg"},
+  {a:"le",  n:"médicament", e:"medicine",   g:"sg"},
+  {a:"le",  n:"problème",   e:"problem",    g:"sg"},
+  {a:"la",  n:"solution",   e:"solution",   g:"sg"},
+  {a:"le",  n:"bus",        e:"bus",        g:"sg"},
+  {a:"le",  n:"train",      e:"train",      g:"sg"},
+];
+const QV_ANIM=[
+  {fr:"parle six langues",               en:"speaks six languages"},
+  {fr:"m'a aidé",                        en:"helped me"},
+  {fr:"organise les réunions",           en:"organises the meetings"},
+  {fr:"connaît bien la région",          en:"knows the region well"},
+  {fr:"a réussi l'examen",              en:"passed the exam"},
+  {fr:"travaille ici depuis dix ans",    en:"has worked here for ten years"},
+  {fr:"dirige l'équipe",               en:"leads the team"},
+  {fr:"enseigne le français",           en:"teaches French"},
+  {fr:"arrive toujours en retard",      en:"always arrives late"},
+  {fr:"tient toujours ses promesses",   en:"always keeps their promises"},
+  {fr:"vit en France depuis longtemps", en:"has lived in France for a long time"},
+  {fr:"a trouvé la solution",          en:"found the solution"},
+  {fr:"prend les décisions importantes",en:"makes the important decisions"},
+  {fr:"m'a tout expliqué",             en:"explained everything to me"},
+];
+const QV_INAN=[
+  {fr:"a tout changé",                  en:"changed everything"},
+  {fr:"s'applique ici",                en:"applies here"},
+  {fr:"fonctionne très bien",           en:"works very well"},
+  {fr:"arrive souvent",                en:"comes up often"},
+  {fr:"a résolu le problème",          en:"solved the problem"},
+  {fr:"grandit très vite",             en:"is growing very fast"},
+  {fr:"va au centre-ville",            en:"goes to the city centre"},
+  {fr:"circule toutes les dix minutes",en:"runs every ten minutes"},
+];
+// Frames for qui: fn(subj_obj) => [before_blank, after_blank]
+const QUI_FRAMES=[
+  o=>[`C'est ${an(o)} ___ `           ,'.'],
+  o=>[`Voilà ${an(o)} ___ `           ,'.'],
+  o=>[`${anCap(o)} ___ `              ,` est remarquable${o.g==='pl'?'s':''}.`],
+  o=>[`J'ai rencontré ${an(o)} ___ ` ,'.'],
+];
+
+// ── QUE DATA ──────────────────────────────────────────────────────────────
+const QN_OBJ=[
+  {a:"le", n:"livre",       e:"book",     g:"sg"},
+  {a:"le", n:"film",        e:"film",     g:"sg"},
+  {a:"la", n:"ville",       e:"city",     g:"sg"},
+  {a:"le", n:"projet",      e:"project",  g:"sg"},
+  {a:"la", n:"décision",    e:"decision", g:"sg"},
+  {a:"le", n:"document",    e:"document", g:"sg"},
+  {a:"l'",n:"idée",        e:"idea",     g:"sg"},
+  {a:"la", n:"réponse",     e:"answer",   g:"sg"},
+  {a:"le", n:"message",     e:"message",  g:"sg"},
+  {a:"la", n:"proposition", e:"proposal", g:"sg"},
+  {a:"le", n:"résultat",    e:"result",   g:"sg"},
+  {a:"l'",n:"offre",       e:"offer",    g:"sg"},
+  {a:"le", n:"tableau",     e:"painting", g:"sg"},
+  {a:"le", n:"rapport",     e:"report",   g:"sg"},
+  {a:"le", n:"contrat",     e:"contract", g:"sg"},
+  {a:"le", n:"plan",        e:"plan",     g:"sg"},
+  {a:"la", n:"stratégie",   e:"strategy", g:"sg"},
+  {a:"la", n:"photo",       e:"photo",    g:"sg"},
+];
+const QV_QUE=[
+  {fr:"tu m'as recommandé",          en:"you recommended to me"},
+  {fr:"j'attends depuis longtemps",  en:"I have been waiting for"},
+  {fr:"nous devons valider",         en:"we need to validate"},
+  {fr:"le jury a choisi",            en:"the jury chose"},
+  {fr:"vous devez signer",           en:"you need to sign"},
+  {fr:"elle a proposé",              en:"she proposed"},
+  {fr:"nous avons reçu",             en:"we received"},
+  {fr:"j'ai obtenu",                 en:"I got"},
+  {fr:"le directeur a approuvé",     en:"the director approved"},
+  {fr:"ils ont refusé",              en:"they rejected"},
+  {fr:"je préfère",                  en:"I prefer"},
+  {fr:"Marc a envoyé",               en:"Marc sent"},
+  {fr:"l'équipe a présenté",        en:"the team presented"},
+  {fr:"le comité a adopté",          en:"the committee adopted"},
+  {fr:"nous devons analyser",        en:"we need to analyse"},
+];
+const QUE_FRAMES=[
+  o=>[`C'est ${an(o)} ___ `        ,'.'],
+  o=>[`Voilà ${an(o)} ___ `        ,'.'],
+  o=>[`${anCap(o)} ___ `           ," m'a beaucoup intéressé."],
+  o=>[`J'ai enfin trouvé ${an(o)} ___ `  ,'.'],
+];
+
+// ── DONT DATA ─────────────────────────────────────────────────────────────
+const DN_NOUNS=[
+  {a:"le", n:"sujet",    e:"subject",  g:"sg"},
+  {a:"l'",n:"outil",    e:"tool",     g:"sg"},
+  {a:"le", n:"film",     e:"film",     g:"sg"},
+  {a:"la", n:"raison",   e:"reason",   g:"sg"},
+  {a:"le", n:"résultat", e:"result",   g:"sg"},
+  {a:"le", n:"projet",   e:"project",  g:"sg"},
+  {a:"le", n:"rôle",     e:"role",     g:"sg"},
+  {a:"le", n:"talent",   e:"talent",   g:"sg"},
+  {a:"le", n:"livre",    e:"book",     g:"sg"},
+  {a:"la", n:"décision", e:"decision", g:"sg"},
+  {a:"le", n:"problème", e:"problem",  g:"sg"},
+  {a:"l'",n:"auteur",   e:"author",   g:"sg"},
+  {a:"la", n:"ville",    e:"city",     g:"sg"},
+  {a:"le", n:"travail",  e:"work",     g:"sg"},
+];
+const DV_VERBS=[
+  {fr:"il parle souvent",         en:"he often talks about",        v:"parler de"},
+  {fr:"j'ai besoin",              en:"I need",                      v:"avoir besoin de"},
+  {fr:"tout le monde parle",      en:"everyone is talking about",   v:"parler de"},
+  {fr:"je suis fier",             en:"I am proud of",               v:"être fier de"},
+  {fr:"il est responsable",       en:"he is responsible for",       v:"être responsable de"},
+  {fr:"il rêve depuis longtemps", en:"he has long dreamed of",      v:"rêver de"},
+  {fr:"nous avons discuté",       en:"we discussed",                v:"discuter de"},
+  {fr:"je dépends",               en:"I depend on",                 v:"dépendre de"},
+  {fr:"nous avons besoin",        en:"we need",                     v:"avoir besoin de"},
+  {fr:"tu m'as parlé hier",       en:"you told me about yesterday", v:"parler de"},
+  {fr:"elle est très fière",      en:"she is very proud of",        v:"être fier de"},
+  {fr:"il ne peut pas se passer", en:"he cannot do without",        v:"se passer de"},
+  {fr:"ils ont discuté",          en:"they discussed",              v:"discuter de"},
+];
+const DONT_FRAMES=[
+  o=>[`C'est ${an(o)} ___ `       ,'.'],
+  o=>[`Voilà ${an(o)} ___ `       ,'.'],
+  o=>[`${anCap(o)} ___ `          ,' est très important.'],
+  o=>[`Je cherche ${an(o)} ___ `  ,'.'],
+];
+
+// ── OÙ DATA ───────────────────────────────────────────────────────────────
+const OU_PLACES=[
+  {a:"la", n:"ville",        e:"city",         g:"sg"},
+  {a:"le", n:"café",         e:"café",          g:"sg"},
+  {a:"le", n:"pays",         e:"country",      g:"sg"},
+  {a:"le", n:"quartier",     e:"neighbourhood",g:"sg"},
+  {a:"l'",n:"hôtel",        e:"hotel",        g:"sg"},
+  {a:"le", n:"bureau",       e:"office",       g:"sg"},
+  {a:"le", n:"parc",         e:"park",         g:"sg"},
+  {a:"la", n:"salle",        e:"room",         g:"sg"},
+  {a:"le", n:"restaurant",   e:"restaurant",   g:"sg"},
+  {a:"la", n:"bibliothèque", e:"library",      g:"sg"},
+  {a:"l'",n:"école",        e:"school",       g:"sg"},
+];
+const OU_TIMES=[
+  {a:"le", n:"jour",     e:"day",     g:"sg"},
+  {a:"l'",n:"année",    e:"year",    g:"sg"},
+  {a:"le", n:"moment",   e:"moment",  g:"sg"},
+  {a:"l'",n:"époque",   e:"era",     g:"sg"},
+  {a:"le", n:"soir",     e:"evening", g:"sg"},
+  {a:"le", n:"week-end", e:"weekend", g:"sg"},
+  {a:"la", n:"période",  e:"period",  g:"sg"},
+  {a:"l'",n:"instant",  e:"instant", g:"sg"},
+];
+const OV_PLACE=[
+  {fr:"je suis né",             en:"where I was born"},
+  {fr:"elle travaille",         en:"where she works"},
+  {fr:"il a grandi",            en:"where he grew up"},
+  {fr:"on se retrouve souvent", en:"where we often meet up"},
+  {fr:"les réunions ont lieu",  en:"where meetings take place"},
+  {fr:"j'ai passé mon enfance", en:"where I spent my childhood"},
+  {fr:"nous avons séjourné",    en:"where we stayed"},
+  {fr:"ils vivent",             en:"where they live"},
+  {fr:"les enfants jouent",     en:"where the children play"},
+  {fr:"je préfère travailler",  en:"where I prefer to work"},
+];
+const OV_TIME=[
+  {fr:"j'ai rencontré Marie",            en:"when I met Marie"},
+  {fr:"tout a changé",                   en:"when everything changed"},
+  {fr:"j'ai compris la vérité",          en:"when I understood the truth"},
+  {fr:"il est parti",                    en:"when he left"},
+  {fr:"j'ai pris ma décision",           en:"when I made my decision"},
+  {fr:"elle a obtenu son diplôme",        en:"when she got her degree"},
+  {fr:"nous avons fait cette découverte", en:"when we made this discovery"},
+];
+const OU_FRAMES_PLACE=[
+  o=>[`C'est ${an(o)} ___ `       ,'.'],
+  o=>[`Voilà ${an(o)} ___ `       ,'.'],
+  o=>[`${anCap(o)} ___ `          ,' me manque.'],
+  o=>[`Je pense souvent à ${an(o)} ___ `, '.'],
+];
+const OU_FRAMES_TIME=[
+  o=>[`C'est ${an(o)} ___ `       ,'.'],
+  o=>[`Voilà ${an(o)} ___ `       ,'.'],
+  o=>[`${anCap(o)} ___ `          ,' a tout changé pour moi.'],
+  o=>[`Je me souviens du ${o.n} ___ `, '.'],
+];
+
+// ── LEQUEL DATA ───────────────────────────────────────────────────────────
+const LQ_PAIRS=[
+  {prep:"sur",     n:{a:"la",  n:"table",      e:"table",     g:"sg"},ans:"laquelle"},
+  {prep:"sur",     n:{a:"le",  n:"bureau",     e:"desk",      g:"sg"},ans:"lequel"},
+  {prep:"sur",     n:{a:"la",  n:"chaise",     e:"chair",     g:"sg"},ans:"laquelle"},
+  {prep:"sur",     n:{a:"le",  n:"banc",       e:"bench",     g:"sg"},ans:"lequel"},
+  {prep:"avec",    n:{a:"le",  n:"stylo",      e:"pen",       g:"sg"},ans:"lequel"},
+  {prep:"avec",    n:{a:"la",  n:"carte",      e:"card",      g:"sg"},ans:"laquelle"},
+  {prep:"avec",    n:{a:"les", n:"collègues",  e:"colleagues",g:"pl"},ans:"lesquels"},
+  {prep:"pour",    n:{a:"la",  n:"société",    e:"company",   g:"sg"},ans:"laquelle"},
+  {prep:"pour",    n:{a:"les", n:"raisons",    e:"reasons",   g:"pl"},ans:"lesquelles"},
+  {prep:"dans",    n:{a:"les", n:"conditions", e:"conditions",g:"pl"},ans:"lesquelles"},
+  {prep:"dans",    n:{a:"le",  n:"contexte",   e:"context",   g:"sg"},ans:"lequel"},
+  {prep:"contre",  n:{a:"le",  n:"mur",        e:"wall",      g:"sg"},ans:"lequel"},
+  {prep:"contre",  n:{a:"la",  n:"porte",      e:"door",      g:"sg"},ans:"laquelle"},
+  {prep:"sous",    n:{a:"le",  n:"pont",       e:"bridge",    g:"sg"},ans:"lequel"},
+  {prep:"par",     n:{a:"la",  n:"fenêtre",    e:"window",    g:"sg"},ans:"laquelle"},
+  {prep:"par",     n:{a:"le",  n:"couloir",    e:"corridor",  g:"sg"},ans:"lequel"},
+  {prep:"grâce à", n:{a:"l'", n:"outil",      e:"tool",      g:"sg"},ans:"auquel"},
+  {prep:"grâce à", n:{a:"la", n:"méthode",    e:"method",    g:"sg"},ans:"laquelle"},
+  {prep:"grâce à", n:{a:"les",n:"efforts",    e:"efforts",   g:"pl"},ans:"lesquels"},
+  {prep:"vers",    n:{a:"le",  n:"sommet",     e:"summit",    g:"sg"},ans:"lequel"},
+];
+const LQ_VERBS=["j'écris","tu es assis","il s'est appuyé","nous travaillons","la lumière entre","elle a couru","on passe chaque matin","il travaille","nous nous sommes assis"];
+const LQ_FRAMES=[
+  (p,v)=>`C'est ${an(p.n)} ${p.prep} ___ ${v}.`,
+  (p,v)=>`Voilà ${an(p.n)} ${p.prep} ___ ${v}.`,
+  (p,v)=>`${anCap(p.n)} ${p.prep} ___ ${v} est là.`,
+];
+
+// ── RULES ─────────────────────────────────────────────────────────────────
+const R_QUI ='Use <b>qui</b> when the pronoun is the SUBJECT of the relative clause — it performs the action. Test: replace with il/elle → if the clause still makes sense, use qui. ↔ Use que when the pronoun is the direct object.';
+const R_QUE ='Use <b>que</b> when the pronoun is the DIRECT OBJECT of the relative clause. Test: replace with le/la — if it fits, use que. Becomes qu\' before a vowel. ↔ Use qui when the pronoun is the subject.';
+const R_OU_P='Use <b>où</b> for place — replaces "dans laquelle", "en laquelle", etc. Much more natural than the lequel equivalent. ↔ Use dont if the verb takes de; use que if the noun is a direct object.';
+const R_OU_T='Use <b>où</b> for time expressions — replaces "pendant lequel", "lors duquel", etc. Common patterns: le jour où, le moment où, l\'année où, l\'époque où.';
+const R_LQ  ='After most prepositions (sur, avec, pour, dans, par, contre, sous…) use a lequel form agreeing with the noun: m.sg → lequel, f.sg → laquelle, m.pl → lesquels, f.pl → lesquelles. ↔ Use dont when the preposition is simple de; use où for concrete places.';
+const R_LQ_G='Use <b>auquel</b>: "grâce à" ends in "à", which contracts with lequel (à + lequel → auquel; à + lesquels → auxquels). Note: à + laquelle does NOT contract. ↔ Use dont when the verb takes simple de.';
+
+// ── DIST ──────────────────────────────────────────────────────────────────
+const DIST={
+  'qui':        ['que','dont','où','lequel','laquelle'],
+  'que':        ['qui','dont','où','lequel','laquelle'],
+  'dont':       ['que','qui','où','lequel','laquelle'],
+  'où':         ['que','qui','dont','lequel','laquelle'],
+  'lequel':     ['qui','que','dont','laquelle','où'],
+  'laquelle':   ['qui','que','dont','lequel','où'],
+  'lesquels':   ['qui','que','dont','lesquelles','laquelle'],
+  'lesquelles': ['qui','que','dont','lesquels','laquelle'],
+  'auquel':     ['qui','que','dont','laquelle','lequel'],
+};
+
+// ── GENERATORS ────────────────────────────────────────────────────────────
+function genQui(){
+  const anim=Math.random()<0.7, s=rp(anim?QS_ANIM:QS_INAN), v=rp(anim?QV_ANIM:QV_INAN);
+  const f=rp(QUI_FRAMES)(s);
+  return {s:f[0]+v.fr+f[1], a:'qui', c:'qui',
+    n:'[nom] <b>qui</b> + verbe', e:`the ${s.e} who ${v.en}`, r:R_QUI};
+}
+function genQue(){
+  const o=rp(QN_OBJ), v=rp(QV_QUE), f=rp(QUE_FRAMES)(o);
+  return {s:f[0]+v.fr+f[1], a:'que', c:'que',
+    n:'[nom] <b>que</b> + sujet + verbe', e:`the ${o.e} that ${v.en}`, r:R_QUE};
+}
+function genDont(){
+  const n=rp(DN_NOUNS), v=rp(DV_VERBS), f=rp(DONT_FRAMES)(n);
+  return {s:f[0]+v.fr+f[1], a:'dont', c:'dont',
+    n:'[nom] <b>dont</b> + sujet + verbe', e:`the ${n.e} that ${v.en}`,
+    r:`Use <b>dont</b> because the verb takes "de" (${v.v} → dont). Common de-verbs: parler de, avoir besoin de, être fier de, rêver de, discuter de, dépendre de.`};
+}
+function genOu(){
+  const isP=Math.random()<0.6;
+  const n=rp(isP?OU_PLACES:OU_TIMES), v=rp(isP?OV_PLACE:OV_TIME);
+  const f=rp(isP?OU_FRAMES_PLACE:OU_FRAMES_TIME)(n);
+  return {s:f[0]+v.fr+f[1], a:'où', c:'où',
+    n:`[${isP?'lieu':'temps'}] <b>où</b> + sujet + verbe`,
+    e:`the ${n.e} ${v.en}`, r:isP?R_OU_P:R_OU_T};
+}
+function genLeq(){
+  const p=rp(LQ_PAIRS), v=rp(LQ_VERBS), isG=p.prep==='grâce à';
+  const fLabel=p.ans==='lequel'?'m.sg':p.ans==='laquelle'?'f.sg':p.ans==='lesquels'?'m.pl':'f.pl';
+  return {
+    s: rp(LQ_FRAMES)(p,v), a:p.ans, c:'lequel',
+    n:isG?`${p.prep} → <b>${p.ans}</b>`:`${p.prep} <b>${p.ans}</b> (${fLabel})`,
+    e:`the ${p.n.e} (${p.prep}) — ${v}`,
+    r:isG?R_LQ_G:R_LQ+` "${p.prep}" + "${p.n.n}" (${fLabel}) → ${p.ans}.`};
+}
+
+const GEN={'qui':genQui,'que':genQue,'dont':genDont,'où':genOu,'lequel':genLeq};
+const POOL_TARGETS=[['qui',18],['que',18],['dont',18],['où',14],['lequel',12]];
+
+function buildPool(){
+  const pool=[], seen=new Set();
+  for(const [type,count] of POOL_TARGETS){
+    let added=0, tries=0;
+    while(added<count && tries<count*12){
+      const q=GEN[type](); if(!seen.has(q.s)){seen.add(q.s);pool.push(q);added++;} tries++;
+    }
+  }
+  return pool;
+}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ── STATE & APP ───────────────────────────────────────────────────────────
+let questions, idx, score, answered, sessionResults, showCorrect=true;
+const app=document.getElementById('app');
+
+function init(){
+  questions=shuffle(buildPool()).slice(0,20);
+  idx=0;score=0;answered=false;sessionResults=[];showCorrect=true;showStart();
+}
+
+function showStart(){
+  app.innerHTML=`
+    <div class="start-screen">
+      <h2>Pronoms relatifs</h2>
+      <div class="pronoun-grid">
+        <span class="pronoun-chip">qui</span><span class="pronoun-chip">que</span>
+        <span class="pronoun-chip">dont</span><span class="pronoun-chip">où</span>
+        <span class="pronoun-chip">lequel</span><span class="pronoun-chip">laquelle</span>
+        <span class="pronoun-chip">lesquels</span><span class="pronoun-chip">lesquelles</span>
+      </div>
+      <p>Choisissez le bon pronom relatif pour compl&eacute;ter chaque phrase.</p>
+      <p style="margin-top:8px;font-size:.82rem">20 questions &middot; nouvelles combinaisons &agrave; chaque session</p>
+      <button class="btn-start" id="btn-start">Commencer &rarr;</button>
+    </div>`;
+}
+
+function renderQ(){
+  if(idx>=questions.length){showEnd();return;}
+  const q=questions[idx];
+  const opts=shuffle([q.a,...(DIST[q.a]||['qui','que','dont','où','lequel'])]);
+  const pct=(idx/questions.length)*100;
+  app.innerHTML=`
+    <div class="meta">
+      <span>${idx+1} <span style="color:var(--border)">/ ${questions.length}</span></span>
+      <span style="display:flex;align-items:center;gap:10px">Score <strong>${score}</strong>
+        <button class="btn-exit" id="btn-exit" title="Quitter">&#10005;</button>
+      </span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="sentence-wrap"><div class="sentence">${fmtBlank(q.s)}</div></div>
+    <div class="options">${opts.map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join('')}</div>
+    <div class="explanation" id="exp"></div>
+    <div class="actions" id="acts"><button class="btn-next" id="btn-next">Suivant &rarr;</button></div>`;
+}
+
+function fmtBlank(s){return s.replace('___','<span class="blank">___</span>');}
+function fmtFilled(s,a){return s.replace('___',`<span class="ans-filled">${a}</span>`);}
+
+function handleAnswer(btn){
+  if(answered)return; answered=true;
+  const q=questions[idx], chosen=btn.dataset.val, correct=chosen===q.a;
+  if(correct)score++;
+  sessionResults.push({s:q.s,a:q.a,c:q.c,n:q.n,e:q.e,correct,chosen});
+  renderResultsTable();
+  app.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.val===q.a)b.classList.add('correct');
+    else if(b===btn)b.classList.add('picked-wrong');
+    else b.classList.add('wrong');
+  });
+  app.querySelector('.sentence').innerHTML=fmtFilled(q.s,q.a);
+  const exp=document.getElementById('exp'); exp.classList.add('show');
+  exp.innerHTML=`
+    <div class="exp-verdict ${correct?'ok':'ko'}">
+      ${correct?'&#10003; Correct&#160;!':
+        `&#10007; La r&eacute;ponse correcte est <strong>${q.a}</strong>`}
+    </div>
+    <div class="exp-note">${q.n}</div>
+    <div class="exp-english">${q.e}</div>
+    <div class="exp-rule">${q.r}</div>`;
+  document.getElementById('acts').classList.add('show');
+}
+
+function nextQ(){idx++;answered=false;renderQ();}
+
+function showEnd(){
+  const pct=Math.round((score/questions.length)*100);
+  const grade=pct>=90?'&#127775; Excellent&#160;!':pct>=75?'&#128077; Tr&egrave;s bien&#160;!':
+    pct>=60?'&#128522; Bien — continuez&#160;!':pct>=45?'&#128218; Pas mal — r&eacute;visez&#160;!':
+    '&#128170; Ne vous d&eacute;couragez pas&#160;!';
+  app.innerHTML=`
+    <div class="end-screen">
+      <h2>Quiz termin&eacute;&#160;!</h2>
+      <div class="final-score">${score}<span style="font-size:1.5rem;color:var(--muted)"> / ${questions.length}</span></div>
+      <div class="final-pct">${pct}&#160;%</div>
+      <div class="final-grade">${grade}</div>
+      <button class="btn-restart" id="btn-restart">Recommencer &#8635;</button>
+    </div>`;
+}
+
+function exitToStart(){
+  sessionResults=[];showCorrect=true;idx=0;score=0;answered=false;
+  const rs=document.getElementById('results-section');if(rs)rs.style.display='none';
+  const rb=document.getElementById('results-tbody');if(rb)rb.innerHTML='';
+  const btc=document.getElementById('btn-toggle-correct');
+  if(btc){btc.textContent='Masquer les bonnes réponses';btc.classList.remove('hiding');}
+  showStart();
+}
+
+function toggleCorrect(){
+  showCorrect=!showCorrect;
+  const btn=document.getElementById('btn-toggle-correct');
+  if(btn){btn.textContent=showCorrect?'Masquer les bonnes réponses':'Afficher les bonnes réponses';btn.classList.toggle('hiding',!showCorrect);}
+  renderResultsTable();
+}
+
+function renderResultsTable(){
+  const sec=document.getElementById('results-section'); if(sec)sec.style.display='block';
+  const tbody=document.getElementById('results-tbody'); if(!tbody)return;
+  const rows=showCorrect?sessionResults:sessionResults.filter(r=>!r.correct);
+  tbody.innerHTML=rows.map(r=>{
+    const filled=r.s.replace('___',`<span class="${r.correct?'rt-ans-correct':'rt-ans-wrong'}">${r.a}</span>`);
+    const wrongNote=r.correct?'':
+      `<div class="rt-picked">&#10007;&nbsp;choisi&nbsp;: <strong>${r.chosen}</strong></div>`;
+    return `<tr class="${r.correct?'rt-row-correct':'rt-row-wrong'}">
+      <td><span class="rt-sentence" title="${r.e}">${filled}</span>${wrongNote}</td>
+      <td><span class="rt-note">${r.n}</span><div class="rt-english">${r.e}</div></td>
+      <td class="rt-cat">${r.a}</td></tr>`;
+  }).join('');
+}
+
+app.addEventListener('click',e=>{
+  const opt=e.target.closest('.opt-btn');
+  if(opt&&!answered){handleAnswer(opt);return;}
+  const id=(e.target.id||e.target.closest('button')?.id);
+  if(id==='btn-next'){nextQ();return;}
+  if(id==='btn-exit'){exitToStart();return;}
+  if(id==='btn-start'||id==='btn-restart'){
+    questions=shuffle(buildPool()).slice(0,20);
+    idx=0;score=0;answered=false;sessionResults=[];showCorrect=true;
+    const rs=document.getElementById('results-section');if(rs)rs.style.display='none';
+    const rb=document.getElementById('results-tbody');if(rb)rb.innerHTML='';
+    const btc=document.getElementById('btn-toggle-correct');
+    if(btc){btc.textContent='Masquer les bonnes réponses';btc.classList.remove('hiding');}
+    renderQ();
+  }
+});
+
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key==='ArrowRight')&&answered){nextQ();return;}
+  if(!answered&&['1','2','3','4','5','6'].includes(e.key)){
+    const btns=[...app.querySelectorAll('.opt-btn')];
+    const btn=btns[parseInt(e.key)-1];if(btn)handleAnswer(btn);
+  }
+});
+
+init();
+</script>
+</body>
+</html>

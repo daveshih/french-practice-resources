@@ -241,6 +241,13 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
+.btn-exit {
+  background:none;border:1.5px solid var(--border);border-radius:50%;
+  width:26px;height:26px;font-size:.65rem;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;padding:0;line-height:1;
+}
+.btn-exit:hover{border-color:var(--red);color:var(--red);}
 @media (max-width: 520px) {
   .card { padding: 18px 16px 18px 42px; }
   .card::before { left: 30px; }
@@ -560,7 +567,7 @@ function shuffle(arr) {
 }
 
 function init() {
-  questions = shuffle(VERBS);
+  questions = shuffle(VERBS).slice(0, 20);
   idx = 0; score = 0; answered = false; sessionResults = [];
   showStart();
 }
@@ -573,7 +580,7 @@ function showStart() {
          Choisissez la bonne pr&#233;position — ou <strong>${NONE}</strong> si aucune n'est n&#233;cessaire.</p>
       <p>6 options par question. Le bouton <strong>Gemini &#10024;</strong> copie une question
          dans votre presse-papier et ouvre Gemini.</p>
-      <p style="margin-top:10px;font-size:.82rem">${VERBS.length} constructions &middot; Espace FLE p.&#160;2</p>
+      <p style="margin-top:10px;font-size:.82rem">20 questions al&eacute;atoires &middot; 144 constructions disponibles</p>
       <button class="btn-start" id="btn-start">Commencer &#8594;</button>
     </div>`;
 }
@@ -586,7 +593,9 @@ function renderQ() {
   app.innerHTML = `
     <div class="meta">
       <span>${idx + 1} <span style="color:var(--border)">/ ${questions.length}</span></span>
-      <span>Score <strong>${score}</strong></span>
+      <span style="display:flex;align-items:center;gap:10px">Score <strong>${score}</strong>
+        <button class="btn-exit" id="btn-exit" title="Quitter">&#10005;</button>
+      </span>
     </div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
     <div class="sentence-wrap"><div class="sentence">${fmtBlank(addVerbTooltip(q.s, q.e))}</div></div>
@@ -716,9 +725,10 @@ app.addEventListener('click', e => {
   if (opt && !answered) { handleAnswer(opt); return; }
   const id = (e.target.id || e.target.closest('button')?.id);
   if (id === 'btn-next')    { nextQ(); return; }
+  if (id === 'btn-exit')    { exitToStart(); return; }
   if (id === 'btn-gemini')  { askGemini(); return; }
   if (id === 'btn-start' || id === 'btn-restart') {
-    questions = shuffle(VERBS); idx = 0; score = 0; answered = false; sessionResults = []; showCorrect = true; const rs = document.getElementById('results-section'); if (rs) rs.style.display='none'; const rb = document.getElementById('results-tbody'); if (rb) rb.innerHTML=''; renderQ();
+    questions = shuffle(VERBS).slice(0, 20); idx = 0; score = 0; answered = false; sessionResults = []; showCorrect = true; const rs = document.getElementById('results-section'); if (rs) rs.style.display='none'; const rb = document.getElementById('results-tbody'); if (rb) rb.innerHTML=''; renderQ();
   }
 });
 
@@ -789,6 +799,15 @@ function renderResultsTable() {
   }).join('');
 }
 
+
+function exitToStart() {
+  sessionResults = []; showCorrect = true; idx = 0; score = 0; answered = false;
+  const rs = document.getElementById('results-section'); if(rs) rs.style.display='none';
+  const rb = document.getElementById('results-tbody'); if(rb) rb.innerHTML='';
+  const btc = document.getElementById('btn-toggle-correct');
+  if(btc){btc.textContent='Masquer les bonnes réponses';btc.classList.remove('hiding');}
+  showStart();
+}
 
 init();
 </script>
