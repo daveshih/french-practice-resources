@@ -248,6 +248,86 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   .options { grid-template-columns: 1fr 1fr; }
   .opt-btn { font-size: 1.1rem; padding: 12px 6px 10px; }
 }
+
+/* ── Session results table ─────────────────────────────────────── */
+.results-section {
+  max-width: 680px;
+  width: 100%;
+  margin-top: 22px;
+}
+.results-section h3 {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.results-table-wrap {
+  max-height: 420px;
+  overflow-y: auto;
+  border-radius: 1px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 3px 3px 0 var(--border);
+}
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.81rem;
+  table-layout: fixed;
+}
+.results-table colgroup col:nth-child(1) { width: 38%; }
+.results-table colgroup col:nth-child(2) { width: 38%; }
+.results-table colgroup col:nth-child(3) { width: 24%; }
+.results-table th {
+  text-align: left;
+  padding: 7px 11px;
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.71rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: -apple-system, sans-serif;
+  border-bottom: 1.5px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.results-table td {
+  padding: 8px 11px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  vertical-align: top;
+  line-height: 1.45;
+  word-break: break-word;
+}
+.results-table tr:last-child td { border-bottom: none; }
+.rt-row-wrong  { background: #FEF2F2; }
+.rt-row-correct { background: #EAF6EF; }
+.rt-sentence {
+  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+  font-size: 0.91rem;
+  color: var(--ink);
+}
+.rt-ans-correct { color: var(--green); font-weight: bold; }
+.rt-ans-wrong   { color: var(--red);   font-weight: bold; }
+.rt-picked {
+  font-size: 0.73rem;
+  color: var(--red);
+  margin-top: 3px;
+}
+.rt-note b  { color: var(--blue); }
+.rt-english {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 2px;
+}
+.rt-cat {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
 </style>
 </head>
 <body>
@@ -257,155 +337,169 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 </header>
 <div class="card" id="app"></div>
 <div class="toast" id="toast"></div>
+<div class="results-section" id="results-section" style="display:none">
+  <h3>R&#233;sultats de la session</h3>
+  <div class="results-table-wrap">
+    <table class="results-table">
+      <colgroup><col><col><col></colgroup>
+      <thead><tr>
+        <th>Phrase correcte</th>
+        <th>Construction &middot; Traduction</th>
+        <th>Cat&#233;gorie</th>
+      </tr></thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+  </div>
+</div>
 <script>
 const V = (s,a,n,e,r) => ({s,a,n,e,r});
 const NONE = '\u2014';
 
 const VERBS = [
-  V(`Il s'abstient ___ fumer.`,`de`,`s'abstenir <b>de</b> faire qqch`,`to refrain from doing sth`,`This verb always takes "de" before an infinitive. Pattern: arrêter de, cesser de, finir de.`),
-  V(`Elle accepte ___ l'invitation.`,`—`,`accepter qqch — objet direct`,`to accept sth (no preposition needed)`,`"Accepter" takes a direct noun object — no preposition.`),
-  V(`Il accepte ___ partir.`,`de`,`accepter <b>de</b> faire qqch`,`to agree to do sth`,`"Accepter" takes "de" before an infinitive. ↔ accepter qqch (direct noun).`),
-  V(`Elle achète un cadeau ___ sa mère.`,`à`,`acheter qqch <b>à</b> qqn`,`to buy sth for/from sb`,`"Acheter" uses "à" for the person whether you're buying FOR someone or FROM someone — context clarifies. Same pattern: louer à, emprunter à, voler à.`),
-  V(`Il s'adresse ___ la directrice.`,`à`,`s'adresser <b>à</b> qqn`,`to speak to / address sb`,`"S'adresser" always takes "à" before the person you're speaking to.`),
-  V(`Elle aide son ami ___ comprendre.`,`à`,`aider qqn <b>à</b> faire qqch`,`to help sb do sth`,`"Aider qqn" uses "à" before the infinitive that describes what you're helping with.`),
-  V(`Il aime ___ le sport.`,`—`,`aimer qqch / qqn — objet direct`,`to like sth (no preposition)`,`"Aimer" takes a direct object — no preposition before a noun.`),
-  V(`Ils s'amusent ___ jouer aux échecs.`,`à`,`s'amuser <b>à</b> faire qqch`,`to enjoy doing sth`,`"S'amuser" takes "à" before an infinitive. Pattern: s'amuser à, mettre du temps à, passer du temps à.`),
-  V(`Elle annonce la nouvelle ___ ses collègues.`,`à`,`annoncer qqch <b>à</b> qqn`,`to announce sth to sb`,`"Annoncer" uses "à" for the person receiving the news. This is the rule for all communication verbs: dire à, expliquer à, écrire à.`),
-  V(`Il aperçoit ___ sa voisine.`,`—`,`apercevoir qqch / qqn — objet direct`,`to spot / notice sb (no preposition)`,`"Apercevoir" takes a direct object. Same for all perception verbs: voir, regarder, entendre, écouter.`),
-  V(`Elle s'aperçoit ___ son erreur.`,`de`,`s'apercevoir <b>de</b> qqch`,`to realize sth`,`The reflexive "s'apercevoir" always takes "de". ↔ apercevoir qqch (direct, non-reflexive).`),
-  V(`Il appelle ___ sa sœur.`,`—`,`appeler qqn — objet direct`,`to call sb (no preposition)`,`"Appeler" takes a direct object. ↔ téléphoner À qqn (same meaning but uses "à"!) — one of the most common errors.`),
-  V(`Elle apporte un livre ___ son ami.`,`à`,`apporter qqch <b>à</b> qqn`,`to bring sth to sb`,`"Apporter" uses "à" for the person receiving what's brought. Pattern for all transfer verbs: donner à, envoyer à, remettre à.`),
-  V(`Il apprend l'espagnol ___ ses étudiants.`,`à`,`apprendre qqch <b>à</b> qqn`,`to teach sth to sb`,`"Apprendre" uses "à" for the student. ↔ apprendre qqch (direct) = to learn sth — no "à".`),
-  V(`Elle arrête ___ travailler.`,`de`,`arrêter <b>de</b> faire qqch`,`to stop doing sth`,`"Arrêter" always takes "de" before an infinitive. Pattern: arrêter de, cesser de, finir de, éviter de.`),
-  V(`Il attend ___ le bus.`,`—`,`attendre qqch / qqn — objet direct`,`to wait for sth (no preposition)`,`"Attendre" takes a direct object — don't add "pour" or "à" as in English "wait for". Same: écouter qqch, chercher qqch.`),
-  V(`Elle s'attend ___ ce résultat.`,`à`,`s'attendre <b>à</b> qqch`,`to expect sth`,`"S'attendre" always takes "à". ↔ attendre qqch (direct) = simply wait, with no "à".`),
-  V(`Il s'attend ___ réussir.`,`à`,`s'attendre <b>à</b> faire qqch`,`to expect to do sth`,`"S'attendre" takes "à" before an infinitive too.`),
-  V(`Elle cache son plan ___ ses parents.`,`à`,`cacher qqch <b>à</b> qqn`,`to hide sth from sb`,`"Cacher" uses "à" for the person being kept in the dark. Same pattern: montrer à, dire à, expliquer à.`),
-  V(`Il cesse ___ se plaindre.`,`de`,`cesser <b>de</b> faire qqch`,`to stop doing sth`,`"Cesser" always takes "de" before an infinitive. Pattern: cesser de, arrêter de, finir de.`),
-  V(`Elle cherche ___ ses lunettes.`,`—`,`chercher qqch / qqn — objet direct`,`to look for sth (no preposition)`,`"Chercher" takes a direct object — the "for" is built into the verb, like "attendre" and "écouter".`),
-  V(`Il cherche ___ améliorer sa prononciation.`,`à`,`chercher <b>à</b> faire qqch`,`to try to do sth`,`"Chercher à faire" = try to do (attempt sense) — uses "à". ↔ chercher qqch (direct) = look for sth. Same verb, different meaning, different preposition.`),
-  V(`Elle choisit ___ rester.`,`de`,`choisir <b>de</b> faire qqch`,`to choose to do sth`,`"Choisir" takes "de" before an infinitive. Pattern: choisir de, décider de, accepter de, refuser de.`),
-  V(`Il commence ___ neiger.`,`à`,`commencer <b>à</b> faire qqch`,`to start doing sth`,`"Commencer" takes "à" before an infinitive. "Commencer de" also exists but is literary/archaic.`),
-  V(`Elle confirme le rendez-vous ___ son client.`,`à`,`confirmer qqch <b>à</b> qqn`,`to confirm sth to sb`,`"Confirmer" uses "à" for the person receiving the confirmation. Same as all communication verbs.`),
-  V(`Il conseille ce livre ___ sa fille.`,`à`,`conseiller qqch <b>à</b> qqn`,`to recommend sth to sb`,`"Conseiller" uses "à" for the person advised. The action advised uses "de": conseiller À qqn DE faire qqch.`),
-  V(`Elle lui conseille ___ se reposer.`,`de`,`conseiller <b>à</b> qqn de faire qqch`,`to advise sb to do sth`,`"Conseiller" takes "de" before the infinitive. Full structure: conseiller À qqn DE faire.`),
-  V(`Il continue ___ marcher sous la pluie.`,`à`,`continuer <b>à</b> / de faire qqch`,`to continue doing sth`,`"Continuer" takes "à" or "de" before an infinitive — both correct. "Continuer à" is more natural in spoken French.`),
-  V(`Elle contribue ___ résoudre le problème.`,`à`,`contribuer <b>à</b> faire qqch`,`to contribute to doing sth`,`"Contribuer" always takes "à". Like aider à — both express working toward a result.`),
-  V(`Il convainc Marie ___ accepter.`,`de`,`convaincre qqn <b>de</b> faire qqch`,`to convince sb to do sth`,`"Convaincre" takes "de" before the infinitive. ↔ obliger qqn À faire (similar meaning but uses "à"!) — a common confusion.`),
-  V(`Elle craint ___ faire une erreur.`,`de`,`craindre <b>de</b> faire qqch`,`to fear doing sth`,`"Craindre" always takes "de" before an infinitive. Pattern: craindre de, risquer de, regretter de.`),
+  V(`Il s'abstient ___ fumer.`,`de`,`s'abstenir <b>de</b> faire qqch`,`to refrain from doing sth`,`Stopping/refraining verb — this category always takes "de + inf": arrêter de, cesser de, finir de, éviter de, refuser de.`),
+  V(`Elle accepte ___ l'invitation.`,`—`,`accepter qqch — objet direct`,`to accept sth (no preposition needed)`,`"Accepter" takes a direct noun object. Like other acceptance/appreciation verbs: aimer, désirer, vouloir.`),
+  V(`Il accepte ___ partir.`,`de`,`accepter <b>de</b> faire qqch`,`to agree to do sth`,`Deciding/agreeing verb — this category takes "de + inf": accepter de, choisir de, décider de, refuser de. ↔ accepter qqch (direct noun).`),
+  V(`Elle achète un cadeau ___ sa mère.`,`à`,`acheter qqch <b>à</b> qqn`,`to buy sth for/from sb`,`Transaction verb — "à" for the person whether you're buying FOR someone or FROM someone — context clarifies. Same pattern: louer à, emprunter à, voler à.`),
+  V(`Il s'adresse ___ la directrice.`,`à`,`s'adresser <b>à</b> qqn`,`to speak to / address sb`,`Communication verb — this category always uses "à + person" for the recipient or addressee: s'adresser à, dire à, expliquer à, annoncer à, écrire à.`),
+  V(`Elle aide son ami ___ comprendre.`,`à`,`aider qqn <b>à</b> faire qqch`,`to help sb do sth`,`"Aider qqn" uses "à" before the infinitive describing what you're helping with. Verbs expressing help or movement toward a goal tend to use "à": aider à, contribuer à, encourager à.`),
+  V(`Il aime ___ le sport.`,`—`,`aimer qqch / qqn — objet direct`,`to like sth (no preposition)`,`Appreciation/wanting verb — this category takes a direct object: aimer, adorer, détester, désirer, vouloir, espérer.`),
+  V(`Ils s'amusent ___ jouer aux échecs.`,`à`,`s'amuser <b>à</b> faire qqch`,`to enjoy doing sth`,`"S'amuser" takes "à" before an infinitive. Time-use and leisure verbs tend to use "à": s'amuser à, mettre du temps à, passer du temps à, perdre du temps à.`),
+  V(`Elle annonce la nouvelle ___ ses collègues.`,`à`,`annoncer qqch <b>à</b> qqn`,`to announce sth to sb`,`Communication verb — this category always uses "à + person" for the recipient: annoncer à, dire à, expliquer à, écrire à.`),
+  V(`Il aperçoit ___ sa voisine.`,`—`,`apercevoir qqch / qqn — objet direct`,`to spot / notice sb (no preposition)`,`Perception verb — this category takes a direct object with no preposition: voir, apercevoir, regarder, entendre, écouter.`),
+  V(`Elle s'aperçoit ___ son erreur.`,`de`,`s'apercevoir <b>de</b> qqch`,`to realize sth`,`The reflexive "s'apercevoir" always takes "de". Many reflexive verbs expressing mental engagement take "de": s'apercevoir de, se souvenir de, se méfier de, s'occuper de. ↔ apercevoir qqch (direct, non-reflexive).`),
+  V(`Il appelle ___ sa sœur.`,`—`,`appeler qqn — objet direct`,`to call sb (no preposition)`,`"Appeler" takes a direct object. ↔ téléphoner À qqn (same meaning but a communication verb that uses "à"!) — one of the most common errors.`),
+  V(`Elle apporte un livre ___ son ami.`,`à`,`apporter qqch <b>à</b> qqn`,`to bring sth to sb`,`Transfer verb — this category uses "à" for the recipient: apporter à, donner à, envoyer à, remettre à, offrir à.`),
+  V(`Il apprend l'espagnol ___ ses étudiants.`,`à`,`apprendre qqch <b>à</b> qqn`,`to teach sth to sb`,`Transfer verb (of knowledge) — "à" for the recipient, like all transfer verbs: apprendre qqch à qqn, enseigner qqch à qqn. ↔ apprendre qqch (direct) = to learn sth.`),
+  V(`Elle arrête ___ travailler.`,`de`,`arrêter <b>de</b> faire qqch`,`to stop doing sth`,`Stopping/avoidance verb — this category takes "de + inf": arrêter de, cesser de, finir de, éviter de, s'abstenir de, refuser de.`),
+  V(`Il attend ___ le bus.`,`—`,`attendre qqch / qqn — objet direct`,`to wait for sth (no preposition)`,`"Attendre" takes a direct object — don't add "pour" or "à" as in English "wait for". The preposition is absorbed into the verb meaning, like écouter, chercher, regarder.`),
+  V(`Elle s'attend ___ ce résultat.`,`à`,`s'attendre <b>à</b> qqch`,`to expect sth`,`Reflexive orientation verb — verbs expressing psychological orientation toward a future state tend to use "à": s'attendre à, se préparer à, s'habituer à, se décider à. ↔ attendre qqch (direct) = simply wait.`),
+  V(`Il s'attend ___ réussir.`,`à`,`s'attendre <b>à</b> faire qqch`,`to expect to do sth`,`Same category: reflexive orientation verbs use "à" before an infinitive too.`),
+  V(`Elle cache son plan ___ ses parents.`,`à`,`cacher qqch <b>à</b> qqn`,`to hide sth from sb`,`"Cacher" uses "à" for the person, like all verbs where something goes TO or FROM a specific person: cacher à, montrer à, dire à, expliquer à.`),
+  V(`Il cesse ___ se plaindre.`,`de`,`cesser <b>de</b> faire qqch`,`to stop doing sth`,`Stopping verb — this category takes "de + inf": cesser de, arrêter de, finir de, s'abstenir de, éviter de.`),
+  V(`Elle cherche ___ ses lunettes.`,`—`,`chercher qqch / qqn — objet direct`,`to look for sth (no preposition)`,`"Chercher" takes a direct object — the "for" is built into the verb, like attendre, écouter, regarder.`),
+  V(`Il cherche ___ améliorer sa prononciation.`,`à`,`chercher <b>à</b> faire qqch`,`to try to do sth`,`When "chercher" means try/attempt, it takes "à + inf". Note: most attempt verbs use "de" (essayer de, tenter de), but "chercher à" is a verb-specific exception.`),
+  V(`Elle choisit ___ rester.`,`de`,`choisir <b>de</b> faire qqch`,`to choose to do sth`,`Deciding verb — this category takes "de + inf": choisir de, décider de, accepter de, refuser de.`),
+  V(`Il commence ___ neiger.`,`à`,`commencer <b>à</b> faire qqch`,`to start doing sth`,`Starting verb — "commencer" takes "à + inf". Like se mettre à. "Commencer de" also exists but is literary.`),
+  V(`Elle confirme le rendez-vous ___ son client.`,`à`,`confirmer qqch <b>à</b> qqn`,`to confirm sth to sb`,`Communication verb — "à + person" for the recipient. Like all communication verbs: dire à, annoncer à, expliquer à.`),
+  V(`Il conseille ce livre ___ sa fille.`,`à`,`conseiller qqch <b>à</b> qqn`,`to recommend sth to sb`,`Communication verb — "à" for the person, like all verbs where advice goes TO someone. The action advised uses "de": conseiller À qqn DE faire.`),
+  V(`Elle lui conseille ___ se reposer.`,`de`,`conseiller <b>à</b> qqn de faire qqch`,`to advise sb to do sth`,`"Conseiller" takes "de" before the infinitive for the advised action. Full double structure: conseiller À qqn DE faire — "à" for the person, "de" for the action.`),
+  V(`Il continue ___ marcher sous la pluie.`,`à`,`continuer <b>à</b> / de faire qqch`,`to continue doing sth`,`"Continuer" takes "à" or "de" — both correct. "Continuer à" is more natural in spoken French.`),
+  V(`Elle contribue ___ résoudre le problème.`,`à`,`contribuer <b>à</b> faire qqch`,`to contribute to doing sth`,`"Contribuer" always takes "à". Like aider à and encourager à — verbs expressing working toward a result tend to use "à".`),
+  V(`Il convainc Marie ___ accepter.`,`de`,`convaincre qqn <b>de</b> faire qqch`,`to convince sb to do sth`,`Persuasion verb — "de + inf" for the persuaded action. ↔ obliger qqn À faire (compulsion verb — similar result but uses "à"!). The distinction: persuasion → de; compulsion → à.`),
+  V(`Elle craint ___ faire une erreur.`,`de`,`craindre <b>de</b> faire qqch`,`to fear doing sth`,`Fear/risk verb — this category takes "de + inf": craindre de, risquer de, regretter de, menacer de.`),
   V(`Il critique ___ son propre travail.`,`—`,`critiquer qqch / qqn — objet direct`,`to criticize sth (no preposition)`,`"Critiquer" takes a direct object.`),
-  V(`Elle croit ___ la chance.`,`à`,`croire <b>à</b> qqch`,`to believe in sth (a concept)`,`"Croire à" = believe in a concept or idea. ↔ croire EN qqn = deep trust in a person's character. ↔ croire qqn (direct) = believe what sb says.`),
-  V(`Il croit ___ ses enfants.`,`en`,`croire <b>en</b> qqn`,`to trust in / believe in sb`,`"Croire en" = deep personal trust in a person's abilities/character. ↔ croire À qqch = believe in a concept. ↔ croire qqn (direct) = believe what sb says.`),
-  V(`Elle se décide ___ accepter l'offre.`,`à`,`se décider <b>à</b> faire qqch`,`to make up one's mind to do sth`,`"Se décider" always takes "à" before an infinitive.`),
-  V(`Il demande la clé ___ sa voisine.`,`à`,`demander qqch <b>à</b> qqn`,`to ask sb for sth`,`"Demander" uses "à" for the person asked. The requested action uses "de": demander À qqn DE faire.`),
-  V(`Elle demande ___ Marie d'appeler.`,`à`,`demander <b>à</b> qqn de faire qqch`,`to ask sb to do sth`,`"Demander" uses both: "à" for the person, "de" for the requested action.`),
+  V(`Elle croit ___ la chance.`,`à`,`croire <b>à</b> qqch`,`to believe in sth (a concept)`,`"Croire à" = believe in a concept or idea. ↔ croire EN qqn = deep trust in a person's character. ↔ croire qqn (direct) = believe what sb says. The preposition shifts with what you believe in.`),
+  V(`Il croit ___ ses enfants.`,`en`,`croire <b>en</b> qqn`,`to trust in / believe in sb`,`"Croire en" = deep personal trust in a person's abilities or character. ↔ croire À qqch = believe in a concept. ↔ croire qqn (direct) = believe what sb says.`),
+  V(`Elle se décide ___ accepter l'offre.`,`à`,`se décider <b>à</b> faire qqch`,`to make up one's mind to do sth`,`Reflexive orientation verb — verbs expressing psychological orientation toward something tend to use "à": se décider à, s'attendre à, se préparer à, s'habituer à.`),
+  V(`Il demande la clé ___ sa voisine.`,`à`,`demander qqch <b>à</b> qqn`,`to ask sb for sth`,`Communication/transaction verb — "à" for the person, like all verbs where something is directed TO a person. The requested action uses "de": demander À qqn DE faire.`),
+  V(`Elle demande ___ Marie d'appeler.`,`à`,`demander <b>à</b> qqn de faire qqch`,`to ask sb to do sth`,`Double structure: "à" for the person, "de" for the requested action. Same pattern: dire À qqn DE faire, promettre À qqn DE faire, conseiller À qqn DE faire.`),
   V(`Tout dépend ___ la météo.`,`de`,`dépendre <b>de</b> qqch / de qqn`,`to depend on sth`,`"Dépendre" always takes "de" — not "à". Don't say "dépendre à".`),
-  V(`Il désire ___ ce nouveau poste.`,`—`,`désirer qqch / qqn — objet direct`,`to desire sth (no preposition)`,`"Désirer" takes a direct object. Like vouloir and espérer.`),
-  V(`Elle déteste ___ la violence.`,`—`,`détester qqch / qqn — objet direct`,`to detest sth (no preposition)`,`"Détester" takes a direct object — no preposition. Like aimer, adorer.`),
-  V(`Il doit de la gratitude ___ ses parents.`,`à`,`devoir qqch <b>à</b> qqn`,`to owe sth to sb`,`"Devoir" uses "à" for the person something is owed to.`),
-  V(`Elle dit la vérité ___ son patron.`,`à`,`dire qqch <b>à</b> qqn`,`to say/tell sth to sb`,`"Dire" always uses "à" for the listener. Same for all communication verbs: expliquer à, écrire à, raconter à.`),
-  V(`Il dit ___ ses enfants de rentrer.`,`à`,`dire <b>à</b> qqn de faire qqch`,`to tell sb to do sth`,`"Dire" uses both: "à" for the person, "de" for the instruction.`),
-  V(`Elle donne un cadeau ___ Marie.`,`à`,`donner qqch <b>à</b> qqn`,`to give sth to sb`,`"Donner" uses "à" for the recipient. The most fundamental transfer verb — all others follow the same pattern: offrir à, envoyer à, remettre à, passer à.`),
-  V(`Il écrit une lettre ___ sa grand-mère.`,`à`,`écrire qqch <b>à</b> qqn`,`to write sth to sb`,`"Écrire" always uses "à" for the recipient. Pattern: écrire à, téléphoner à, répondre à.`),
-  V(`Elle écoute ___ la radio.`,`—`,`écouter qqch / qqn — objet direct`,`to listen to sth (no preposition)`,`"Écouter" takes a direct object — the "to" is built into the verb. ↔ téléphoner À qqn (a communication verb that uses "à").`),
-  V(`Il empêche ses enfants ___ sortir.`,`de`,`empêcher qqn <b>de</b> faire qqch`,`to prevent sb from doing sth`,`"Empêcher" always takes "de" before the infinitive: "empêcher qqn DE faire qqch."`),
-  V(`Elle emprunte la voiture ___ son frère.`,`à`,`emprunter qqch <b>à</b> qqn`,`to borrow sth from sb`,`"Emprunter" uses "à" for the lender. Same pattern: acheter à, voler à, louer à.`),
-  V(`Il encourage ses élèves ___ lire.`,`à`,`encourager qqn <b>à</b> faire qqch`,`to encourage sb to do sth`,`"Encourager" takes "à" before the infinitive. Pattern: encourager à, inviter à, inciter à.`),
-  V(`Elle enseigne les maths ___ ses étudiants.`,`à`,`enseigner qqch <b>à</b> qqn`,`to teach sth to sb`,`"Enseigner" uses "à" for the student. Same pattern as apprendre qqch à qqn.`),
-  V(`Il entend ___ une mélodie familière.`,`—`,`entendre qqch / qqn — objet direct`,`to hear sth (no preposition)`,`"Entendre" takes a direct object. Same for all perception verbs: voir, écouter, regarder. ↔ entendre parler DE qqch = hear about sth (a fixed phrase).`),
-  V(`Elle entend parler ___ cette exposition.`,`de`,`entendre parler <b>de</b> qqch / de qqn`,`to hear about sth`,`"Entendre parler de" is a fixed phrase — "de" is part of it. ↔ entendre qqch (direct) = hear sth directly.`),
-  V(`Il envoie une carte ___ son ami.`,`à`,`envoyer qqch <b>à</b> qqn`,`to send sth to sb`,`"Envoyer" uses "à" for the recipient. Same structure as donner à, offrir à, remettre à.`),
-  V(`Elle espère ___ une bonne réponse.`,`—`,`espérer qqch — objet direct`,`to hope for sth (no preposition)`,`"Espérer" takes a direct object or direct infinitive — no preposition. Like pouvoir, vouloir, savoir, oser.`),
-  V(`Il essaie ___ trouver une solution.`,`de`,`essayer <b>de</b> faire qqch`,`to try to do sth`,`"Essayer" always takes "de" before an infinitive. Pattern: essayer de, tenter de, tâcher de.`),
-  V(`Elle évite ___ conduire la nuit.`,`de`,`éviter <b>de</b> faire qqch`,`to avoid doing sth`,`"Éviter" always takes "de" before an infinitive. Pattern: éviter de, arrêter de, refuser de.`),
-  V(`Il excuse son ami ___ son retard.`,`de`,`excuser qqn <b>de</b> faire qqch`,`to excuse sb for doing sth`,`"Excuser qqn" uses "de" for what they're excused for. Pattern: excuser de, remercier de, féliciter de.`),
-  V(`Elle s'excuse ___ son comportement.`,`de`,`s'excuser <b>de</b> qqch`,`to apologize for sth`,`"S'excuser" always takes "de".`),
-  V(`Il exige une réponse ___ son employé.`,`de`,`exiger qqch <b>de</b> qqn`,`to demand sth from sb`,`"Exiger" uses "de" for the person being demanded of. The demanded thing is a direct object.`),
-  V(`Elle explique la règle ___ sa fille.`,`à`,`expliquer qqch <b>à</b> qqn`,`to explain sth to sb`,`"Expliquer" uses "à" for the person receiving the explanation. Same pattern as dire à, montrer à.`),
-  V(`Il se fâche ___ son voisin.`,`contre`,`se fâcher <b>contre</b> qqn`,`to get angry at sb (one-sided)`,`"Se fâcher contre" = one-sided anger directed at someone. ↔ se fâcher AVEC qqn = a mutual falling-out where the relationship between both parties changes.`),
-  V(`Elle se fâche ___ ses collègues.`,`avec`,`se fâcher <b>avec</b> qqn`,`to fall out with sb (mutual)`,`"Se fâcher avec" = a mutual falling-out. ↔ se fâcher CONTRE qqn = one-sided anger aimed at someone.`),
-  V(`Il félicite son ami ___ avoir réussi.`,`de`,`féliciter qqn <b>de</b> faire qqch`,`to congratulate sb on doing sth`,`"Féliciter qqn" uses "de" for what they're congratulated for. Pattern: féliciter de, remercier de, excuser de.`),
-  V(`Elle se fie ___ son instinct.`,`à`,`se fier <b>à</b> qqn / qqch`,`to trust sb / sth`,`"Se fier" always takes "à". Like faire confiance à.`),
-  V(`Il finit ___ ranger sa chambre.`,`de`,`finir <b>de</b> faire qqch`,`to finish doing sth`,`"Finir" always takes "de" before an infinitive. Pattern: finir de, arrêter de, cesser de.`),
-  V(`Ça fait plaisir ___ tout le monde.`,`à`,`faire qqch <b>à</b> qqn`,`to do sth to/for sb`,`"Faire qqch" uses "à" for the person affected.`),
-  V(`Il s'habitue ___ sa nouvelle vie.`,`à`,`s'habituer <b>à</b> qqch`,`to get used to sth`,`"S'habituer" always takes "à".`),
-  V(`Elle hésite ___ répondre.`,`à`,`hésiter <b>à</b> faire qqch`,`to hesitate to do sth`,`"Hésiter" takes "à" before an infinitive. ↔ "hésiter entre + noun" = hesitate between two options (different construction, no "à").`),
-  V(`Il interdit la télévision ___ ses enfants.`,`à`,`interdire qqch <b>à</b> qqn`,`to forbid sb sth`,`"Interdire" uses "à" for the person forbidden ("interdire qqch À qqn"), and "de" for the forbidden action ("interdire à qqn DE faire").`),
-  V(`Elle s'intéresse ___ l'architecture.`,`à`,`s'intéresser <b>à</b> qqch / <b>à</b> qqn`,`to be interested in sth`,`"S'intéresser" always takes "à". Like tenir à, s'opposer à.`),
-  V(`Il invite ses amis ___ partager son repas.`,`à`,`inviter qqn <b>à</b> faire qqch`,`to invite sb to do sth`,`"Inviter" takes "à" before an infinitive or event. Like encourager à, inciter à.`),
-  V(`Elle joue ___ la flûte.`,`de`,`jouer <b>de</b> qqch (instrument)`,`to play a musical instrument`,`"Jouer" takes "de" for musical instruments. ↔ jouer À for sports and games. Rule: instrument → de; sport/game → à.`),
-  V(`Il joue ___ la pétanque.`,`à`,`jouer <b>à</b> qqch (sport / jeu)`,`to play a sport or game`,`"Jouer" takes "à" for sports and games. ↔ jouer DE for musical instruments. Rule: sport/game → à; instrument → de.`),
-  V(`Elle laisse ses clés ___ son voisin.`,`à`,`laisser qqch <b>à</b> qqn`,`to leave sth to sb`,`"Laisser" uses "à" for the recipient.`),
-  V(`Il lit une histoire ___ sa fille.`,`à`,`lire qqch <b>à</b> qqn`,`to read sth to sb`,`"Lire" uses "à" for the audience. Same pattern: dire à, expliquer à, raconter à.`),
-  V(`Elle loue sa maison ___ des étudiants.`,`à`,`louer qqch <b>à</b> qqn`,`to rent sth to sb`,`"Louer" uses "à" for the tenant. ↔ louer qqch DE qqn = rent FROM sb (same verb, reversed roles, different preposition).`),
-  V(`Il a manqué ___ rater son train.`,`de`,`manquer <b>de</b> faire qqch`,`to nearly do sth / almost fail to do sth`,`"Manquer de faire" = almost do sth (near-miss). ↔ manquer À qqn = be missed by sb — a completely different construction with a reversed subject.`),
-  V(`La France manque ___ tous ceux qui l'ont quittée.`,`à`,`manquer <b>à</b> qqn`,`to be missed by sb`,`With "manquer à", the subject is what's missed and "à + person" is who misses it. "La France manque à Marie" = Marie misses France (lit. "France is missed TO Marie"). ↔ manquer DE faire = nearly do sth.`),
-  V(`Il se méfie ___ cette situation.`,`de`,`se méfier <b>de</b> qqch / de qqn`,`to be wary of sth / sb`,`"Se méfier" always takes "de". Like se souvenir de, s'occuper de.`),
-  V(`Elle menace son employé ___ le licencier.`,`de`,`menacer qqn <b>de</b> faire qqch`,`to threaten sb with doing sth`,`"Menacer" takes "de" before the threatened action. Like risquer de, craindre de.`),
+  V(`Il désire ___ ce nouveau poste.`,`—`,`désirer qqch / qqn — objet direct`,`to desire sth (no preposition)`,`Wanting/appreciation verb — direct object. Like vouloir, espérer, aimer, détester.`),
+  V(`Elle déteste ___ la violence.`,`—`,`détester qqch / qqn — objet direct`,`to detest sth (no preposition)`,`Appreciation verb — direct object. Like aimer, adorer, désirer, vouloir.`),
+  V(`Il doit de la gratitude ___ ses parents.`,`à`,`devoir qqch <b>à</b> qqn`,`to owe sth to sb`,`Transfer verb (of debt) — "à" for the person owed, like all transfer verbs: donner à, offrir à, devoir à.`),
+  V(`Elle dit la vérité ___ son patron.`,`à`,`dire qqch <b>à</b> qqn`,`to say/tell sth to sb`,`Communication verb — "à + person" for the listener. The most fundamental communication verb — all others follow: expliquer à, écrire à, raconter à, annoncer à.`),
+  V(`Il dit ___ ses enfants de rentrer.`,`à`,`dire <b>à</b> qqn de faire qqch`,`to tell sb to do sth`,`Double structure: "à" for the person, "de" for the instruction. Same pattern: promettre À qqn DE faire, conseiller À qqn DE faire.`),
+  V(`Elle donne un cadeau ___ Marie.`,`à`,`donner qqch <b>à</b> qqn`,`to give sth to sb`,`Transfer verb — "à" for the recipient. The most fundamental giving verb — all others follow: offrir à, envoyer à, remettre à, passer à, apporter à.`),
+  V(`Il écrit une lettre ___ sa grand-mère.`,`à`,`écrire qqch <b>à</b> qqn`,`to write sth to sb`,`Communication verb — "à + person" for the recipient. Like all communication verbs: écrire à, téléphoner à, répondre à.`),
+  V(`Elle écoute ___ la radio.`,`—`,`écouter qqch / qqn — objet direct`,`to listen to sth (no preposition)`,`Perception verb — direct object with no preposition. Like all perception verbs: voir, entendre, regarder, apercevoir. ↔ téléphoner À qqn (a communication verb that uses "à").`),
+  V(`Il empêche ses enfants ___ sortir.`,`de`,`empêcher qqn <b>de</b> faire qqch`,`to prevent sb from doing sth`,`"Empêcher" takes "de + inf" for the blocked action. Think of it as a reversed stopping verb: the subject stops someone else from doing sth. "Empêcher qqn DE faire qqch."`),
+  V(`Elle emprunte la voiture ___ son frère.`,`à`,`emprunter qqch <b>à</b> qqn`,`to borrow sth from sb`,`Transaction verb — "à" for the person (here the lender/source). In French, "à" marks the person in a personal transaction regardless of direction: acheter à, voler à, louer à, emprunter à.`),
+  V(`Il encourage ses élèves ___ lire.`,`à`,`encourager qqn <b>à</b> faire qqch`,`to encourage sb to do sth`,`Motivation verb — "à + inf" for the encouraged action. Verbs that move someone toward doing something tend to use "à": encourager à, inviter à, inciter à.`),
+  V(`Elle enseigne les maths ___ ses étudiants.`,`à`,`enseigner qqch <b>à</b> qqn`,`to teach sth to sb`,`Transfer verb (of knowledge) — "à" for the student. Same pattern as apprendre qqch à qqn.`),
+  V(`Il entend ___ une mélodie familière.`,`—`,`entendre qqch / qqn — objet direct`,`to hear sth (no preposition)`,`Perception verb — direct object. Like all perception verbs: voir, écouter, regarder. ↔ entendre parler DE qqch = hear about sth (a fixed phrase with "de").`),
+  V(`Elle entend parler ___ cette exposition.`,`de`,`entendre parler <b>de</b> qqch / de qqn`,`to hear about sth`,`"Entendre parler de" is a fixed phrase — "de" is part of the expression, not a general rule about topics. ↔ entendre qqch (direct perception verb).`),
+  V(`Il envoie une carte ___ son ami.`,`à`,`envoyer qqch <b>à</b> qqn`,`to send sth to sb`,`Transfer verb — "à" for the recipient. Like donner à, offrir à, remettre à, apporter à.`),
+  V(`Elle espère ___ une bonne réponse.`,`—`,`espérer qqch — objet direct`,`to hope for sth (no preposition)`,`Semi-modal verb — direct object or direct infinitive, no preposition. This group (pouvoir, vouloir, devoir, savoir, oser, espérer) is one of the clearest and most reliable patterns in French.`),
+  V(`Il essaie ___ trouver une solution.`,`de`,`essayer <b>de</b> faire qqch`,`to try to do sth`,`Attempt verb — "de + inf". Most attempt verbs use "de": essayer de, tenter de, tâcher de. ↔ chercher À faire (also means try, but uses "à" — a verb-specific exception).`),
+  V(`Elle évite ___ conduire la nuit.`,`de`,`éviter <b>de</b> faire qqch`,`to avoid doing sth`,`Stopping/avoidance verb — "de + inf". Like all stopping/avoidance verbs: éviter de, arrêter de, cesser de, refuser de.`),
+  V(`Il excuse son ami ___ son retard.`,`de`,`excuser qqn <b>de</b> faire qqch`,`to excuse sb for doing sth`,`Acknowledgment verb — "de" for what someone is excused for. Verbs that acknowledge a reason (excuser, remercier, féliciter) always use "de" for that reason.`),
+  V(`Elle s'excuse ___ son comportement.`,`de`,`s'excuser <b>de</b> qqch`,`to apologize for sth`,`Acknowledgment verb — "de" for the cause. Like remercier de, féliciter de.`),
+  V(`Il exige une réponse ___ son employé.`,`de`,`exiger qqch <b>de</b> qqn`,`to demand sth from sb`,`"Exiger" uses "de" for the person being demanded of. Note the direction: transfer verbs use "à" for who receives; demand verbs use "de" for who must give.`),
+  V(`Elle explique la règle ___ sa fille.`,`à`,`expliquer qqch <b>à</b> qqn`,`to explain sth to sb`,`Communication verb — "à + person" for the recipient. Like all communication verbs: expliquer à, dire à, montrer à, raconter à.`),
+  V(`Il se fâche ___ son voisin.`,`contre`,`se fâcher <b>contre</b> qqn`,`to get angry at sb (one-sided)`,`"Se fâcher contre" = one-sided anger directed at someone. ↔ se fâcher AVEC qqn = mutual falling-out affecting both parties. "Contre" signals directed opposition; "avec" signals a shared situation.`),
+  V(`Elle se fâche ___ ses collègues.`,`avec`,`se fâcher <b>avec</b> qqn`,`to fall out with sb (mutual)`,`"Se fâcher avec" = mutual falling-out. ↔ se fâcher CONTRE qqn = one-sided anger aimed at someone. "Avec" signals a shared/mutual situation; "contre" signals opposition.`),
+  V(`Il félicite son ami ___ avoir réussi.`,`de`,`féliciter qqn <b>de</b> faire qqch`,`to congratulate sb on doing sth`,`Acknowledgment verb — "de" for what someone is congratulated for. Verbs that acknowledge a reason (féliciter, remercier, excuser) always use "de" for that reason.`),
+  V(`Elle se fie ___ son instinct.`,`à`,`se fier <b>à</b> qqn / qqch`,`to trust sb / sth`,`"Se fier" always takes "à". Like faire confiance à — trust verbs orient toward a person or thing with "à".`),
+  V(`Il finit ___ ranger sa chambre.`,`de`,`finir <b>de</b> faire qqch`,`to finish doing sth`,`Stopping/completing verb — "de + inf". Like all stopping verbs: finir de, arrêter de, cesser de.`),
+  V(`Ça fait plaisir ___ tout le monde.`,`à`,`faire qqch <b>à</b> qqn`,`to do sth to/for sb`,`"Faire qqch" uses "à" for the person affected, like transfer and communication verbs: donner à, montrer à, dire à.`),
+  V(`Il s'habitue ___ sa nouvelle vie.`,`à`,`s'habituer <b>à</b> qqch`,`to get used to sth`,`Reflexive orientation verb — "à" marks what you orient toward. Like s'attendre à, se préparer à, se décider à, s'intéresser à.`),
+  V(`Elle hésite ___ répondre.`,`à`,`hésiter <b>à</b> faire qqch`,`to hesitate to do sth`,`"Hésiter" takes "à" before an infinitive — it expresses attitude toward a future action, and these tend to use "à". ↔ "hésiter entre + noun" = hesitate between two options (different construction).`),
+  V(`Il interdit la télévision ___ ses enfants.`,`à`,`interdire qqch <b>à</b> qqn`,`to forbid sb sth`,`"Interdire" uses "à" for the person forbidden (the prohibition goes TO someone, like a transfer verb). The forbidden action then uses "de": interdire À qqn DE faire.`),
+  V(`Elle s'intéresse ___ l'architecture.`,`à`,`s'intéresser <b>à</b> qqch / <b>à</b> qqn`,`to be interested in sth`,`Reflexive orientation verb — "à" marks what you orient toward. Like s'attendre à, se préparer à, s'habituer à, s'opposer à, se décider à.`),
+  V(`Il invite ses amis ___ partager son repas.`,`à`,`inviter qqn <b>à</b> faire qqch`,`to invite sb to do sth`,`Motivation verb — "à + inf/event" for the purpose. Like all verbs that move someone toward something: inviter à, encourager à, inciter à.`),
+  V(`Elle joue ___ la flûte.`,`de`,`jouer <b>de</b> qqch (instrument)`,`to play a musical instrument`,`"Jouer" takes "de" for instruments and "à" for sports/games. This is one of the most reliable semantic rules in the set: instrument → de; sport/game → à.`),
+  V(`Il joue ___ la pétanque.`,`à`,`jouer <b>à</b> qqch (sport / jeu)`,`to play a sport or game`,`"Jouer" takes "à" for sports and games and "de" for instruments. Rule: sport/game → à; instrument → de.`),
+  V(`Elle laisse ses clés ___ son voisin.`,`à`,`laisser qqch <b>à</b> qqn`,`to leave sth to sb`,`Transfer verb — "à" for the recipient. Like donner à, passer à, remettre à.`),
+  V(`Il lit une histoire ___ sa fille.`,`à`,`lire qqch <b>à</b> qqn`,`to read sth to sb`,`Communication/transfer verb — "à" for the audience, like all verbs where something is directed TO a person: lire à, dire à, expliquer à, raconter à.`),
+  V(`Elle loue sa maison ___ des étudiants.`,`à`,`louer qqch <b>à</b> qqn`,`to rent sth to sb`,`Transaction verb — "à" for the person (here the tenant). Same pattern: acheter à, emprunter à. ↔ louer qqch DE qqn = rent FROM sb (same verb, reversed roles, different preposition).`),
+  V(`Il a manqué ___ rater son train.`,`de`,`manquer <b>de</b> faire qqch`,`to nearly do sth / almost fail to do sth`,`"Manquer de faire" = near-miss — a fixed idiomatic use where "de" is part of the phrase. ↔ manquer À qqn = be missed by sb — completely different construction and meaning.`),
+  V(`La France manque ___ tous ceux qui l'ont quittée.`,`à`,`manquer <b>à</b> qqn`,`to be missed by sb`,`With "manquer à", the subject is what's missed and "à + person" is who misses it: "La France manque à Marie" = Marie misses France. This reversed structure is unique to "manquer" — English and French subjects are swapped. ↔ manquer DE faire = near-miss.`),
+  V(`Il se méfie ___ cette situation.`,`de`,`se méfier <b>de</b> qqch / de qqn`,`to be wary of sth / sb`,`Reflexive mental engagement verb — "de" for the object of the mental state. This category consistently uses "de": se méfier de, se souvenir de, s'occuper de, se plaindre de.`),
+  V(`Elle menace son employé ___ le licencier.`,`de`,`menacer qqn <b>de</b> faire qqch`,`to threaten sb with doing sth`,`Fear/risk verb — "de + inf" for the threatened action. Like the broader category: craindre de, risquer de, regretter de.`),
   V(`Il mérite ___ gagner ce prix.`,`de`,`mériter <b>de</b> faire qqch`,`to deserve to do sth`,`"Mériter" takes "de" before an infinitive.`),
-  V(`Elle met du temps ___ apprendre cette langue.`,`à`,`mettre du temps <b>à</b> faire qqch`,`to take time to do sth`,`"Mettre du temps" takes "à" before the activity. Fixed phrase: "mettre du temps À faire qqch". Like passer du temps à.`),
-  V(`Il se met ___ travailler.`,`à`,`se mettre <b>à</b> faire qqch`,`to start doing sth (often suddenly)`,`"Se mettre" always takes "à" before an infinitive. ↔ commencer à (neutral start with same preposition, but se mettre suggests more sudden commitment).`),
-  V(`Elle montre ses dessins ___ sa famille.`,`à`,`montrer qqch <b>à</b> qqn`,`to show sth to sb`,`"Montrer" uses "à" for the audience. Same pattern: dire à, expliquer à, lire à.`),
-  V(`Il néglige ___ répondre à ses messages.`,`de`,`négliger <b>de</b> faire qqch`,`to neglect to do sth`,`"Négliger" takes "de" before an infinitive. Like oublier de.`),
-  V(`Elle oblige ses enfants ___ se laver les mains.`,`à`,`obliger qqn <b>à</b> faire qqch`,`to force sb to do sth`,`"Obliger" takes "à" before the imposed action. ↔ convaincre/persuader DE faire (similar meaning but "de"!) — a common confusion.`),
-  V(`Il obtient une faveur ___ son ami.`,`de`,`obtenir qqch <b>de</b> qqn`,`to obtain sth from sb`,`"Obtenir" uses "de" for the person you obtain sth from. Like recevoir de.`),
-  V(`Elle s'occupe ___ la logistique.`,`de`,`s'occuper <b>de</b> qqch / de qqn`,`to take care of sth / sb`,`"S'occuper" always takes "de". Like se charger de, se méfier de.`),
-  V(`Il offre un bouquet ___ Marie.`,`à`,`offrir qqch <b>à</b> qqn`,`to offer / give sth to sb`,`"Offrir" uses "à" for the recipient. Same structure as donner à, envoyer à, remettre à.`),
-  V(`Elle s'oppose ___ cette décision.`,`à`,`s'opposer <b>à</b> qqch`,`to oppose sth`,`"S'opposer" always takes "à". Like s'intéresser à, tenir à.`),
-  V(`Il ose ___ demander une augmentation.`,`—`,`oser faire qqch — infinitif direct`,`to dare to do sth (no preposition)`,`"Oser" takes a direct infinitive — no preposition. Like pouvoir, vouloir, devoir, savoir, espérer.`),
-  V(`Elle oublie ___ fermer la porte.`,`de`,`oublier <b>de</b> faire qqch`,`to forget to do sth`,`"Oublier" takes "de" before an infinitive. Pattern: oublier de, négliger de.`),
-  V(`Il parle ___ son prochain voyage.`,`de`,`parler <b>de</b> qqch`,`to talk about sth`,`"Parler de" = talk about a topic (any topic — the preposition comes from the verb, not the topic). ↔ parler À qqn = speak to a person. Both combine: "Je parle DE sport À mon ami".`),
-  V(`Elle pardonne l'erreur ___ son ami.`,`à`,`pardonner qqch <b>à</b> qqn`,`to forgive sb for sth`,`"Pardonner" uses "à" for the person forgiven. Same pattern: donner à, dire à.`),
-  V(`Il passe le document ___ sa collègue.`,`à`,`passer qqch <b>à</b> qqn`,`to pass sth to sb`,`"Passer" uses "à" for the recipient.`),
-  V(`Elle paie le café ___ ses amis.`,`à`,`payer qqch <b>à</b> qqn`,`to treat sb to sth`,`"Payer qqch à qqn" = treat sb to sth. ↔ payer qqch (direct) = pay for sth. Same verb, different construction, different meaning.`),
-  V(`Il pense ___ ses vacances.`,`à`,`penser <b>à</b> qqch / <b>à</b> qqn`,`to think about sth (mentally occupied)`,`"Penser à" = mental preoccupation — daydreaming, worrying, remembering. ↔ penser DE = ask for an opinion. "Je pense À toi" (I'm thinking about you) vs "Que penses-tu DE lui?" (What do you think of him?)`),
-  V(`Que penses-tu ___ ce film ?`,`de`,`penser <b>de</b> qqch (opinion uniquement)`,`to think of sth (have an opinion)`,`"Penser de" = ask for or give an opinion — almost always in a question. ↔ penser À = mental preoccupation. "Qu'est-ce que tu penses DE ce film?" — you can't swap in "à" here.`),
+  V(`Elle met du temps ___ apprendre cette langue.`,`à`,`mettre du temps <b>à</b> faire qqch`,`to take time to do sth`,`Time-use expression — "à + inf" for the activity. This pattern applies broadly: mettre du temps à, perdre du temps à, passer du temps à.`),
+  V(`Il se met ___ travailler.`,`à`,`se mettre <b>à</b> faire qqch`,`to start doing sth (often suddenly)`,`Starting verb and reflexive orientation verb — both categories take "à". Like commencer à (same preposition, but se mettre implies more sudden commitment). ↔ commencer à = neutral start.`),
+  V(`Elle montre ses dessins ___ sa famille.`,`à`,`montrer qqch <b>à</b> qqn`,`to show sth to sb`,`Transfer/communication verb — "à" for the audience. Like all verbs where something is directed TO a person: montrer à, dire à, expliquer à, lire à.`),
+  V(`Il néglige ___ répondre à ses messages.`,`de`,`négliger <b>de</b> faire qqch`,`to neglect to do sth`,`"Négliger" takes "de" before an infinitive. Verbs of failing or forgetting to do something tend to use "de": négliger de, oublier de.`),
+  V(`Elle oblige ses enfants ___ se laver les mains.`,`à`,`obliger qqn <b>à</b> faire qqch`,`to force sb to do sth`,`Compulsion verb — "à + inf" for the imposed action. ↔ convaincre/persuader DE faire (persuasion verbs — similar outcome but "de"). The distinction: compulsion → à; persuasion → de.`),
+  V(`Il obtient une faveur ___ son ami.`,`de`,`obtenir qqch <b>de</b> qqn`,`to obtain sth from sb`,`"Obtenir" uses "de" for the source person. Verbs of receiving or getting something from someone use "de" for that source: obtenir de, recevoir de.`),
+  V(`Elle s'occupe ___ la logistique.`,`de`,`s'occuper <b>de</b> qqch / de qqn`,`to take care of sth / sb`,`Reflexive mental engagement verb — "de" for the object. Like se méfier de, se souvenir de, se plaindre de — this category consistently uses "de".`),
+  V(`Il offre un bouquet ___ Marie.`,`à`,`offrir qqch <b>à</b> qqn`,`to offer / give sth to sb`,`Transfer verb — "à" for the recipient. Like all giving/transfer verbs: offrir à, donner à, envoyer à, remettre à.`),
+  V(`Elle s'oppose ___ cette décision.`,`à`,`s'opposer <b>à</b> qqch`,`to oppose sth`,`Reflexive orientation verb — "à" marks what you orient toward (here, what you oppose). Like s'intéresser à, s'attendre à, s'habituer à.`),
+  V(`Il ose ___ demander une augmentation.`,`—`,`oser faire qqch — infinitif direct`,`to dare to do sth (no preposition)`,`Semi-modal verb — direct infinitive, no preposition. This is the clearest and most reliable rule in the set: pouvoir, vouloir, devoir, savoir, oser, espérer all take a direct infinitive.`),
+  V(`Elle oublie ___ fermer la porte.`,`de`,`oublier <b>de</b> faire qqch`,`to forget to do sth`,`"Oublier" takes "de" before an infinitive. Verbs of failing or forgetting to do something tend to use "de": oublier de, négliger de.`),
+  V(`Il parle ___ son prochain voyage.`,`de`,`parler <b>de</b> qqch`,`to talk about sth`,`"Parler de" = talk about a topic — the "de" comes from the verb, not the topic. You use "de" regardless of what you're talking about. ↔ parler À qqn = speak to a person (communication verb direction with "à").`),
+  V(`Elle pardonne l'erreur ___ son ami.`,`à`,`pardonner qqch <b>à</b> qqn`,`to forgive sb for sth`,`"Pardonner" uses "à" for the person forgiven, like transfer and communication verbs: donner à, dire à.`),
+  V(`Il passe le document ___ sa collègue.`,`à`,`passer qqch <b>à</b> qqn`,`to pass sth to sb`,`Transfer verb — "à" for the recipient. Like donner à, offrir à, remettre à.`),
+  V(`Elle paie le café ___ ses amis.`,`à`,`payer qqch <b>à</b> qqn`,`to treat sb to sth`,`Transaction verb — "payer qqch à qqn" = treat sb to sth. ↔ payer qqch (direct) = pay for sth. Same verb, different construction, different meaning.`),
+  V(`Il pense ___ ses vacances.`,`à`,`penser <b>à</b> qqch / <b>à</b> qqn`,`to think about sth (mentally occupied)`,`"Penser à" = mental preoccupation — daydreaming, worrying, remembering. Thinking/reflection verbs tend to use "à": penser à, réfléchir à, songer à, rêver à. ↔ penser DE = opinion (a different use of "penser" where "de" marks what's being evaluated).`),
+  V(`Que penses-tu ___ ce film ?`,`de`,`penser <b>de</b> qqch (opinion uniquement)`,`to think of sth (have an opinion)`,`"Penser de" = give or ask for an opinion — almost always in questions. ↔ penser À = mental preoccupation. These are genuinely different meanings, not just different prepositions.`),
   V(`Il perd ___ son chemin.`,`—`,`perdre qqch / qqn — objet direct`,`to lose sth (no preposition)`,`"Perdre" takes a direct object.`),
-  V(`Elle perd du temps ___ cette activité.`,`à`,`perdre du temps <b>à</b> qqch`,`to waste time on sth`,`"Perdre du temps" takes "à" before the activity. Fixed phrase, like "mettre du temps à".`),
-  V(`Il permet ___ ses enfants de jouer dehors.`,`à`,`permettre <b>à</b> qqn de faire qqch`,`to allow sb to do sth`,`"Permettre" uses "à" for the person and "de" for the action: "permettre À qqn DE faire". Both prepositions are required.`),
-  V(`Elle persuade Marie ___ rester.`,`de`,`persuader qqn <b>de</b> faire qqch`,`to persuade sb to do sth`,`"Persuader" takes "de" before the infinitive. ↔ obliger qqn À faire (similar meaning but uses "à"!) — a common confusion.`),
-  V(`Il se plaint ___ la chaleur.`,`de`,`se plaindre <b>de</b> qqch`,`to complain about sth`,`"Se plaindre" always takes "de". Like se souvenir de, parler de.`),
+  V(`Elle perd du temps ___ cette activité.`,`à`,`perdre du temps <b>à</b> qqch`,`to waste time on sth`,`Time-use expression — "à" for the activity. Like mettre du temps à, passer du temps à.`),
+  V(`Il permet ___ ses enfants de jouer dehors.`,`à`,`permettre <b>à</b> qqn de faire qqch`,`to allow sb to do sth`,`Double structure — "à" for the person, "de" for the action: "permettre À qqn DE faire". Same pattern as: dire À qqn DE faire, promettre À qqn DE faire, conseiller À qqn DE faire.`),
+  V(`Elle persuade Marie ___ rester.`,`de`,`persuader qqn <b>de</b> faire qqch`,`to persuade sb to do sth`,`Persuasion verb — "de + inf" for the persuaded action. ↔ obliger qqn À faire (compulsion — similar result but "à"). Persuasion → de; compulsion → à.`),
+  V(`Il se plaint ___ la chaleur.`,`de`,`se plaindre <b>de</b> qqch`,`to complain about sth`,`Reflexive mental engagement verb — "de" for the object of the complaint. Like se méfier de, se souvenir de, s'occuper de.`),
   V(`Elle porte ___ ses courses.`,`—`,`porter qqch / qqn — objet direct`,`to carry sth (no preposition)`,`"Porter" takes a direct object.`),
-  V(`Il prend ___ sa voiture.`,`—`,`prendre qqch / qqn — objet direct`,`to take sth (no preposition)`,`"Prendre" takes a direct object. "Prendre le bus/train/avion" — all direct, no preposition.`),
-  V(`Elle se prépare ___ la réunion.`,`à`,`se préparer <b>à</b> qqch`,`to prepare for sth`,`"Se préparer" always takes "à". Like s'attendre à, s'habituer à.`),
-  V(`Il présente son ami ___ sa famille.`,`à`,`présenter qqn <b>à</b> qqn`,`to introduce sb to sb`,`"Présenter" uses "à" for the person being introduced to.`),
-  V(`Elle promet un voyage ___ sa fille.`,`à`,`promettre qqch <b>à</b> qqn`,`to promise sth to sb`,`"Promettre" uses "à" for the recipient of the promise.`),
-  V(`Il promet ___ arriver à l'heure.`,`de`,`promettre <b>de</b> faire qqch`,`to promise to do sth`,`"Promettre" takes "de" before an infinitive.`),
-  V(`Elle propose une idée ___ son équipe.`,`à`,`proposer qqch <b>à</b> qqn`,`to suggest sth to sb`,`"Proposer" uses "à" for the person receiving the suggestion. Like conseiller à, suggérer à.`),
-  V(`Il propose ___ aller au cinéma.`,`de`,`proposer <b>de</b> faire qqch`,`to suggest doing sth`,`"Proposer" takes "de" before an infinitive.`),
-  V(`Elle raconte ses aventures ___ ses amis.`,`à`,`raconter qqch <b>à</b> qqn`,`to tell sth to sb`,`"Raconter" uses "à" for the audience. Same pattern: dire à, expliquer à, lire à.`),
-  V(`Il rappelle la date ___ son équipe.`,`à`,`rappeler qqch <b>à</b> qqn`,`to remind sb of sth`,`"Rappeler" uses "à" for the person being reminded.`),
-  V(`Elle se rappelle ___ son premier jour d'école.`,`—`,`se rappeler qqch — objet direct (≠ se souvenir de!)`,`to remember sth (no preposition!)`,`"Se rappeler" takes a DIRECT object — do NOT add "de"! "Je me rappelle mon enfance" ✓ vs "Je me rappelle DE mon enfance" ✗. ↔ se souvenir DE qqch (which DOES use "de").`),
-  V(`Il reçoit un message ___ son ami.`,`de`,`recevoir qqch <b>de</b> qqn`,`to receive sth from sb`,`"Recevoir" uses "de" for the person you receive sth from. Like obtenir de.`),
-  V(`Elle recommande ce café ___ ses visiteurs.`,`à`,`recommander qqch <b>à</b> qqn`,`to recommend sth to sb`,`"Recommander" uses "à" for the person receiving the recommendation. Like conseiller à, proposer à.`),
-  V(`Il réfléchit ___ sa décision.`,`à`,`réfléchir <b>à</b> qqch`,`to reflect on / think about sth`,`"Réfléchir" always takes "à". Like penser à, songer à.`),
-  V(`Elle refuse ___ obéir.`,`de`,`refuser <b>de</b> faire qqch`,`to refuse to do sth`,`"Refuser" always takes "de" before an infinitive. Pattern: refuser de, éviter de, arrêter de.`),
-  V(`Il regarde ___ les étoiles.`,`—`,`regarder qqch / qqn — objet direct`,`to look at sth (no preposition)`,`"Regarder" takes a direct object — the "at" is built into the verb. ↔ réfléchir À (thinking verb — a completely different category).`),
-  V(`Elle regrette ___ avoir accepté.`,`de`,`regretter <b>de</b> faire qqch`,`to regret doing sth`,`"Regretter" always takes "de" before an infinitive. Like craindre de, risquer de.`),
-  V(`Il remercie son ami ___ l'avoir aidé.`,`de`,`remercier qqn <b>de</b> faire qqch`,`to thank sb for doing sth`,`"Remercier qqn" uses "de" for what they're thanked for. Pattern: remercier de, féliciter de, excuser de.`),
-  V(`Elle remet le dossier ___ son chef.`,`à`,`remettre qqch <b>à</b> qqn`,`to hand sth over to sb`,`"Remettre" uses "à" for the recipient. Like donner à, passer à.`),
-  V(`Il rencontre ___ ses amis place du marché.`,`—`,`rencontrer qqn — objet direct`,`to meet sb (no preposition)`,`"Rencontrer" takes a direct object. Unlike "parler À" or "téléphoner À" — no preposition.`),
-  V(`Elle renonce ___ son projet.`,`à`,`renoncer <b>à</b> qqch`,`to give up sth`,`"Renoncer" always takes "à". Like tenir à, s'intéresser à.`),
-  V(`Il répond ___ la question.`,`à`,`répondre <b>à</b> qqch / <b>à</b> qqn`,`to answer sth / reply to sb`,`"Répondre" always takes "à" — it never takes a direct object. Don't say "répondre qqch".`),
+  V(`Il prend ___ sa voiture.`,`—`,`prendre qqch / qqn — objet direct`,`to take sth (no preposition)`,`"Prendre" takes a direct object. "Prendre le bus/train/avion" — all direct.`),
+  V(`Elle se prépare ___ la réunion.`,`à`,`se préparer <b>à</b> qqch`,`to prepare for sth`,`Reflexive orientation verb — "à" marks what you orient toward. Like s'attendre à, s'habituer à, se décider à, s'intéresser à.`),
+  V(`Il présente son ami ___ sa famille.`,`à`,`présenter qqn <b>à</b> qqn`,`to introduce sb to sb`,`Transfer verb — "à" for the person being introduced to. Like all verbs where someone or something is directed TO a person.`),
+  V(`Elle promet un voyage ___ sa fille.`,`à`,`promettre qqch <b>à</b> qqn`,`to promise sth to sb`,`Transfer verb — "à" for the recipient of the promise. Like donner à, offrir à.`),
+  V(`Il promet ___ arriver à l'heure.`,`de`,`promettre <b>de</b> faire qqch`,`to promise to do sth`,`"Promettre" takes "de" before an infinitive. Part of the double structure: promettre À qqn DE faire.`),
+  V(`Elle propose une idée ___ son équipe.`,`à`,`proposer qqch <b>à</b> qqn`,`to suggest sth to sb`,`Communication verb — "à" for the person receiving the suggestion. Like conseiller à, suggérer à, recommander à.`),
+  V(`Il propose ___ aller au cinéma.`,`de`,`proposer <b>de</b> faire qqch`,`to suggest doing sth`,`"Proposer" takes "de" before an infinitive. Like promettre de, conseiller de.`),
+  V(`Elle raconte ses aventures ___ ses amis.`,`à`,`raconter qqch <b>à</b> qqn`,`to tell sth to sb`,`Communication verb — "à" for the audience. Like dire à, expliquer à, lire à.`),
+  V(`Il rappelle la date ___ son équipe.`,`à`,`rappeler qqch <b>à</b> qqn`,`to remind sb of sth`,`Communication/transfer verb — "à" for the person being reminded. Like montrer à, expliquer à.`),
+  V(`Elle se rappelle ___ son premier jour d'école.`,`—`,`se rappeler qqch — objet direct (≠ se souvenir de!)`,`to remember sth (no preposition!)`,`"Se rappeler" takes a DIRECT object — do NOT add "de"! "Je me rappelle mon enfance" ✓. This is the main exception among memory verbs: "se rappeler" takes a direct object while "se souvenir" takes "de". ↔ se souvenir DE qqch.`),
+  V(`Il reçoit un message ___ son ami.`,`de`,`recevoir qqch <b>de</b> qqn`,`to receive sth from sb`,`"Recevoir" uses "de" for the source person. Verbs of receiving or getting something from someone use "de" for that source: recevoir de, obtenir de.`),
+  V(`Elle recommande ce café ___ ses visiteurs.`,`à`,`recommander qqch <b>à</b> qqn`,`to recommend sth to sb`,`Communication verb — "à" for the person receiving the recommendation. Like conseiller à, proposer à, suggérer à.`),
+  V(`Il réfléchit ___ sa décision.`,`à`,`réfléchir <b>à</b> qqch`,`to reflect on / think about sth`,`Thinking/reflection verb — "à" marks what you think about. This category tends to use "à": réfléchir à, penser à, songer à.`),
+  V(`Elle refuse ___ obéir.`,`de`,`refuser <b>de</b> faire qqch`,`to refuse to do sth`,`Stopping/avoidance verb — "de + inf". Like all stopping/refusal verbs: refuser de, éviter de, arrêter de, cesser de.`),
+  V(`Il regarde ___ les étoiles.`,`—`,`regarder qqch / qqn — objet direct`,`to look at sth (no preposition)`,`Perception verb — direct object. Like all perception verbs: voir, entendre, écouter, apercevoir. ↔ réfléchir À (thinking verb — a completely different category).`),
+  V(`Elle regrette ___ avoir accepté.`,`de`,`regretter <b>de</b> faire qqch`,`to regret doing sth`,`Fear/regret verb — "de + inf". Like all verbs expressing negative emotion about an action: regretter de, craindre de, risquer de.`),
+  V(`Il remercie son ami ___ l'avoir aidé.`,`de`,`remercier qqn <b>de</b> faire qqch`,`to thank sb for doing sth`,`Acknowledgment verb — "de" for what someone is thanked for. Verbs that acknowledge a reason (remercier, féliciter, excuser) always use "de" for that reason.`),
+  V(`Elle remet le dossier ___ son chef.`,`à`,`remettre qqch <b>à</b> qqn`,`to hand sth over to sb`,`Transfer verb — "à" for the recipient. Like donner à, passer à.`),
+  V(`Il rencontre ___ ses amis place du marché.`,`—`,`rencontrer qqn — objet direct`,`to meet sb (no preposition)`,`"Rencontrer" takes a direct object — unlike "parler À" or "téléphoner À", it's not a communication verb.`),
+  V(`Elle renonce ___ son projet.`,`à`,`renoncer <b>à</b> qqch`,`to give up sth`,`"Renoncer" always takes "à". Like other verbs expressing orientation toward something: tenir à, s'intéresser à, s'opposer à.`),
+  V(`Il répond ___ la question.`,`à`,`répondre <b>à</b> qqch / <b>à</b> qqn`,`to answer sth / reply to sb`,`Communication verb — "à" for what/who you reply to. Unlike most communication verbs, "répondre" never takes a direct object for the content — always "à". Don't say "répondre qqch".`),
   V(`Elle ressemble beaucoup ___ sa mère.`,`à`,`ressembler <b>à</b> qqch / <b>à</b> qqn`,`to look like / resemble sb`,`"Ressembler" always takes "à" — no exceptions.`),
-  V(`Il réussit ___ passer l'examen.`,`à`,`réussir <b>à</b> faire qqch`,`to succeed in doing sth`,`"Réussir à faire" = succeed in doing sth (takes "à"). ↔ réussir qqch (direct) = succeed at sth — an exam, a task.`),
-  V(`Elle rêve ___ voyager au Japon.`,`de`,`rêver <b>de</b> faire qqch`,`to dream of doing sth (with desire/goal)`,`"Rêver de" = dream of doing sth with desire or intention. ↔ rêver À qqch = idle daydream about sth. "Je rêve DE devenir chanteur" (a goal) vs "Je rêve À mes vacances" (vague musing).`),
-  V(`Il rêve ___ un monde meilleur.`,`à`,`rêver <b>à</b> qqch`,`to daydream about sth (vague, no specific goal)`,`"Rêver à" = idle daydream about sth, no particular goal. ↔ rêver DE faire = dream of doing with desire/intention. Like réfléchir à, penser à.`),
-  V(`Tout le monde rit ___ ses propres erreurs.`,`de`,`rire <b>de</b> qqch / de qqn`,`to laugh at sth / sb`,`"Rire" always takes "de" — don't say "rire à". "Laugh at" = "rire de".`),
-  V(`Elle risque ___ tout perdre.`,`de`,`risquer <b>de</b> faire qqch`,`to risk doing sth`,`"Risquer" always takes "de" before an infinitive. Pattern: risquer de, craindre de, manquer de.`),
-  V(`Il sait ___ la vérité.`,`—`,`savoir qqch — objet direct`,`to know sth (no preposition)`,`"Savoir" takes a direct object. Also "savoir + inf" (no preposition): "savoir conduire" = know how to drive.`),
-  V(`Cet appareil sert ___ chauffer l'eau.`,`à`,`servir <b>à</b> faire qqch`,`to be used for doing sth`,`"Servir à faire" = be used for doing sth (takes "à"). ↔ se servir DE qqch = use sth as a tool. Two different verbs, two different prepositions, two different meanings.`),
-  V(`Elle se sert ___ un couteau spécial.`,`de`,`se servir <b>de</b> qqch`,`to use sth`,`"Se servir" always takes "de". ↔ servir À faire = be useful for doing. Different verb, different preposition, different meaning.`),
-  V(`Il songe ___ changer de carrière.`,`à`,`songer <b>à</b> qqch`,`to think about / consider sth`,`"Songer" always takes "à". Like penser à, réfléchir à.`),
-  V(`Elle souhaite bonne santé ___ ses amis.`,`à`,`souhaiter qqch <b>à</b> qqn`,`to wish sb sth`,`"Souhaiter qqch" uses "à" for the recipient of the wish.`),
-  V(`Il se souvient ___ son enfance.`,`de`,`se souvenir <b>de</b> qqch / de qqn`,`to remember sth`,`"Se souvenir" always takes "de". ↔ se rappeler qqch (DIRECT object!) — one of the most common errors is adding "de" to se rappeler.`),
-  V(`Elle suggère une solution ___ son collègue.`,`à`,`suggérer qqch <b>à</b> qqn`,`to suggest sth to sb`,`"Suggérer" uses "à" for the person receiving the suggestion. Like proposer à, conseiller à.`),
-  V(`Il téléphone ___ sa mère chaque jour.`,`à`,`téléphoner <b>à</b> qqn`,`to call sb`,`"Téléphoner" always takes "à". ↔ appeler qqn (DIRECT object!) — same meaning but different preposition. "Téléphoner" always needs "à".`),
-  V(`Elle tient beaucoup ___ sa liberté.`,`à`,`tenir <b>à</b> qqch`,`to value / be attached to sth`,`"Tenir à" = care about sth / be attached to it. Always takes "à".`),
-  V(`Il tente ___ briser le record.`,`de`,`tenter <b>de</b> faire qqch`,`to attempt to do sth`,`"Tenter" always takes "de" before an infinitive. Like essayer de. ↔ chercher À faire (also means try, but uses "à") — a common mix-up.`),
-  V(`Elle utilise cet outil ___ couper le bois.`,`pour`,`utiliser qqch <b>pour</b> faire qqch`,`to use sth to do sth`,`"Utiliser" takes "pour" before the purpose infinitive. The only verb in this set where "pour" is the key preposition.`),
+  V(`Il réussit ___ passer l'examen.`,`à`,`réussir <b>à</b> faire qqch`,`to succeed in doing sth`,`"Réussir à faire" = succeed in doing sth. ↔ réussir qqch (direct) = succeed at something (an exam, a task). Same verb, different construction, different preposition.`),
+  V(`Elle rêve ___ voyager au Japon.`,`de`,`rêver <b>de</b> faire qqch`,`to dream of doing sth (with desire/goal)`,`"Rêver de faire" = dream of doing sth with desire or intention. ↔ rêver À qqch = idle daydream about sth. Like the thinking verb pattern: idle mental dwelling → à; aspiring/desiring → de.`),
+  V(`Il rêve ___ un monde meilleur.`,`à`,`rêver <b>à</b> qqch`,`to daydream about sth (vague, no specific goal)`,`"Rêver à" = idle daydream — fits the thinking/reflection verb category (réfléchir à, penser à, songer à). ↔ rêver DE faire = dream of doing with desire or intention.`),
+  V(`Tout le monde rit ___ ses propres erreurs.`,`de`,`rire <b>de</b> qqch / de qqn`,`to laugh at sth / sb`,`"Rire" always takes "de" — don't say "rire à".`),
+  V(`Elle risque ___ tout perdre.`,`de`,`risquer <b>de</b> faire qqch`,`to risk doing sth`,`Risk/danger verb — "de + inf". Like the fear/risk category: risquer de, craindre de, menacer de.`),
+  V(`Il sait ___ la vérité.`,`—`,`savoir qqch — objet direct`,`to know sth (no preposition)`,`Semi-modal verb — direct object or direct infinitive, no preposition. Like pouvoir, vouloir, devoir, oser, espérer. "Savoir conduire" = know how to drive — direct infinitive, no preposition.`),
+  V(`Cet appareil sert ___ chauffer l'eau.`,`à`,`servir <b>à</b> faire qqch`,`to be used for doing sth`,`"Servir à faire" = be used for doing sth (takes "à"). ↔ se servir DE qqch = use sth as a tool. Two different verbs (reflexive vs non-reflexive), two different prepositions, two different meanings.`),
+  V(`Elle se sert ___ un couteau spécial.`,`de`,`se servir <b>de</b> qqch`,`to use sth`,`Reflexive tool-use verb — "de" for the instrument used. Like the reflexive mental engagement verbs (se souvenir de, se méfier de), the reflexive form takes "de". ↔ servir À faire = be useful for doing.`),
+  V(`Il songe ___ changer de carrière.`,`à`,`songer <b>à</b> qqch`,`to think about / consider sth`,`Thinking/reflection verb — "à" marks what you think about. Like penser à, réfléchir à — this category tends to use "à" for the object of thought.`),
+  V(`Elle souhaite bonne santé ___ ses amis.`,`à`,`souhaiter qqch <b>à</b> qqn`,`to wish sb sth`,`Transfer verb — "à" for the recipient of the wish. Like donner à, offrir à.`),
+  V(`Il se souvient ___ son enfance.`,`de`,`se souvenir <b>de</b> qqch / de qqn`,`to remember sth`,`Reflexive mental engagement verb — "de" for the memory content. Like se méfier de, s'occuper de. ↔ se rappeler qqch (DIRECT object!) — the main exception in this category.`),
+  V(`Elle suggère une solution ___ son collègue.`,`à`,`suggérer qqch <b>à</b> qqn`,`to suggest sth to sb`,`Communication verb — "à" for the person receiving the suggestion. Like proposer à, conseiller à, recommander à.`),
+  V(`Il téléphone ___ sa mère chaque jour.`,`à`,`téléphoner <b>à</b> qqn`,`to call sb`,`Communication verb — "à + person" for the recipient. ↔ appeler qqn (DIRECT object!) — same meaning but "appeler" is not treated as a communication verb and takes a direct object.`),
+  V(`Elle tient beaucoup ___ sa liberté.`,`à`,`tenir <b>à</b> qqch`,`to value / be attached to sth`,`"Tenir à" = care about / be attached to sth. Like other orientation verbs: s'intéresser à, s'opposer à, renoncer à.`),
+  V(`Il tente ___ briser le record.`,`de`,`tenter <b>de</b> faire qqch`,`to attempt to do sth`,`Attempt verb — "de + inf". Like essayer de, tâcher de. ↔ chercher À faire (also means try, but uses "à" — a verb-specific exception to the attempt verb pattern).`),
+  V(`Elle utilise cet outil ___ couper le bois.`,`pour`,`utiliser qqch <b>pour</b> faire qqch`,`to use sth to do sth`,`"Utiliser" takes "pour" before a purpose infinitive. "Pour + inf" = in order to. The only verb in this set where "pour" is the key preposition.`),
   V(`Il visite ___ le château.`,`—`,`visiter qqch / qqn — objet direct`,`to visit sth (no preposition)`,`"Visiter" takes a direct object.`),
-  V(`Elle veut ___ une explication.`,`—`,`vouloir qqch — objet direct`,`to want sth (no preposition)`,`"Vouloir" takes a direct object or a direct infinitive: "vouloir partir" = want to leave.`),
+  V(`Elle veut ___ une explication.`,`—`,`vouloir qqch — objet direct`,`to want sth (no preposition)`,`Semi-modal verb — direct object or direct infinitive, no preposition: "vouloir partir" = want to leave. Like pouvoir, devoir, savoir, oser, espérer.`),
 ];
 
 const DIST = {
@@ -418,7 +512,7 @@ const DIST = {
   'en':       ['\u00e0', 'de', NONE, 'pour', 'contre'],
 };
 
-let questions, idx, score, answered;
+let questions, idx, score, answered, sessionResults;
 const app = document.getElementById('app');
 
 function shuffle(arr) {
@@ -432,7 +526,7 @@ function shuffle(arr) {
 
 function init() {
   questions = shuffle(VERBS);
-  idx = 0; score = 0; answered = false;
+  idx = 0; score = 0; answered = false; sessionResults = [];
   showStart();
 }
 
@@ -494,6 +588,8 @@ function handleAnswer(btn) {
   const chosen = btn.dataset.val;
   const correct = chosen === q.a;
   if (correct) score++;
+  sessionResults.push({s:q.s,a:q.a,n:q.n,e:q.e,r:q.r,correct,chosen});
+  renderResultsTable();
 
   app.querySelectorAll('.opt-btn').forEach(b => {
     b.disabled = true;
@@ -587,7 +683,7 @@ app.addEventListener('click', e => {
   if (id === 'btn-next')    { nextQ(); return; }
   if (id === 'btn-gemini')  { askGemini(); return; }
   if (id === 'btn-start' || id === 'btn-restart') {
-    questions = shuffle(VERBS); idx = 0; score = 0; answered = false; renderQ();
+    questions = shuffle(VERBS); idx = 0; score = 0; answered = false; sessionResults = []; const rs = document.getElementById('results-section'); if (rs) rs.style.display='none'; const rb = document.getElementById('results-tbody'); if (rb) rb.innerHTML=''; renderQ();
   }
 });
 
@@ -599,6 +695,39 @@ document.addEventListener('keydown', e => {
     if (btn) handleAnswer(btn);
   }
 });
+
+function extractCategory(rule) {
+  const m = rule.match(/^([A-Z][^"\u2014]{4,60})\s*\u2014\s/);
+  if (!m) return '';
+  const cat = m[1].trim();
+  return /\b(verb|expression|structure|phrase)\b/i.test(cat) ? cat : '';
+}
+
+function renderResultsTable() {
+  const sec = document.getElementById('results-section');
+  if (sec) sec.style.display = 'block';
+  const tbody = document.getElementById('results-tbody');
+  if (!tbody) return;
+  // wrong answers first, then correct; stable within each group
+  const wrong   = sessionResults.filter(r => !r.correct);
+  const correct = sessionResults.filter(r =>  r.correct);
+  const sorted  = [...wrong, ...correct];
+  tbody.innerHTML = sorted.map(r => {
+    const dispA = r.a === NONE ? '\u00d8' : r.a;
+    const dispC = r.chosen === NONE ? '\u00d8' : r.chosen;
+    const filled = r.s.replace('___',
+      `<span class="${r.correct ? 'rt-ans-correct' : 'rt-ans-wrong'}">${dispA}</span>`);
+    const wrongNote = r.correct ? '' :
+      `<div class="rt-picked">&#10007;&nbsp;choisi&nbsp;: <strong>${dispC}</strong></div>`;
+    const cat = extractCategory(r.r);
+    return `<tr class="${r.correct ? 'rt-row-correct' : 'rt-row-wrong'}">
+      <td><span class="rt-sentence">${filled}</span>${wrongNote}</td>
+      <td><span class="rt-note">${r.n}</span><div class="rt-english">${r.e}</div></td>
+      <td class="rt-cat">${cat}</td>
+    </tr>`;
+  }).join('');
+}
+
 
 init();
 </script>
