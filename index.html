@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>French Resources</title>
+<style>
+:root {
+  --paper: #FDFCF5;
+  --bg: #EAE5DA;
+  --ink: #1C1C2E;
+  --blue: #002E8C;
+  --blue-light: #EEF3FF;
+  --muted: #8A8A9A;
+  --border: #D0CBBA;
+  --rule-line: #D0E2F5;
+  --margin: rgba(178,42,42,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23000' fill-opacity='.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  color: var(--ink);
+}
+header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+header h1 {
+  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+  font-size: 2.2rem;
+  color: var(--blue);
+  font-weight: normal;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+header p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.card {
+  background: var(--paper);
+  border-radius: 1px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.10), 5px 5px 0 var(--border);
+  padding: 10px 30px 10px 58px;
+  max-width: 520px;
+  width: 100%;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  left: 44px; top: 0; bottom: 0;
+  width: 1.5px;
+  background: var(--margin);
+}
+.resource {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule-line);
+  text-decoration: none;
+  color: inherit;
+  transition: background .12s;
+}
+.resource:last-child { border-bottom: none; }
+.resource:hover .resource-title { color: var(--blue); }
+.resource:hover .resource-arrow { opacity: 1; transform: translateX(3px); }
+.resource-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+.resource-body { flex: 1; min-width: 0; }
+.resource-title {
+  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+  font-size: 1.15rem;
+  color: var(--ink);
+  transition: color .12s;
+  margin-bottom: 3px;
+}
+.resource-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.resource-arrow {
+  color: var(--blue);
+  font-size: 1rem;
+  opacity: 0.3;
+  transition: opacity .12s, transform .12s;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>&#x1F1EB;&#x1F1F7; French Resources</h1>
+  <p>Interactive grammar quizzes</p>
+</header>
+<div class="card">
+  <a class="resource" href="relative_pronouns_quiz/">
+    <span class="resource-icon">&#128279;</span>
+    <div class="resource-body">
+      <div class="resource-title">Relative Pronouns</div>
+      <div class="resource-desc">qui &middot; que &middot; dont &middot; où &middot; lequel &mdash; 20 randomly generated questions per session</div>
+    </div>
+    <span class="resource-arrow">&#8594;</span>
+  </a>
+  <a class="resource" href="prepositions_quiz/">
+    <span class="resource-icon">&#128218;</span>
+    <div class="resource-body">
+      <div class="resource-title">Verb Prepositions</div>
+      <div class="resource-desc">à &middot; de &middot; pour &middot; &mdash; &mdash; 20 random questions from 144 constructions (Espace FLE p.&thinsp;2)</div>
+    </div>
+    <span class="resource-arrow">&#8594;</span>
+  </a>
+</div>
+</body>
+</html>
