@@ -16,7 +16,7 @@
   --green-light: #EAF6EF;
   --muted: #8A8A9A;
   --border: #D0CBBA;
-  --rule: #D0E2F5;
+  --rule-line: #D0E2F5;
   --margin: rgba(178,42,42,0.18);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,61 +31,43 @@ body {
   padding: 24px 16px 48px;
   color: var(--ink);
 }
-
-header {
-  text-align: center;
-  margin-bottom: 24px;
-}
+header { text-align: center; margin-bottom: 22px; }
 header h1 {
   font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  font-size: 1.9rem;
-  color: var(--blue);
-  font-weight: normal;
-  letter-spacing: -0.01em;
+  font-size: 1.9rem; color: var(--blue); font-weight: normal; letter-spacing: -0.01em;
 }
 header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 
 .card {
   background: var(--paper);
   border-radius: 1px;
-  box-shadow:
-    0 1px 3px rgba(0,0,0,0.08),
-    0 4px 16px rgba(0,0,0,0.10),
-    5px 5px 0 var(--border);
-  padding: 28px 32px 28px 60px;
-  max-width: 660px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.10), 5px 5px 0 var(--border);
+  padding: 26px 30px 26px 58px;
+  max-width: 680px;
   width: 100%;
   position: relative;
-  min-height: 420px;
 }
-/* red margin line */
 .card::before {
   content: '';
   position: absolute;
-  left: 46px;
-  top: 0; bottom: 0;
+  left: 44px; top: 0; bottom: 0;
   width: 1.5px;
   background: var(--margin);
 }
 
-/* ── META BAR ─────────────────────────────────────────── */
 .meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 9px;
   font-size: 0.82rem;
   color: var(--muted);
-  font-variant-numeric: tabular-nums;
 }
 .meta strong { color: var(--ink); }
 
 .progress-bar {
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  margin-bottom: 22px;
-  overflow: hidden;
+  height: 4px; background: var(--border); border-radius: 2px;
+  margin-bottom: 20px; overflow: hidden;
 }
 .progress-fill {
   height: 100%;
@@ -94,19 +76,18 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   transition: width 0.5s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── SENTENCE ─────────────────────────────────────────── */
 .sentence-wrap {
   background: repeating-linear-gradient(
     transparent, transparent 27px,
-    var(--rule) 27px, var(--rule) 28px
+    var(--rule-line) 27px, var(--rule-line) 28px
   );
-  padding: 10px 14px 14px;
-  margin: 0 -4px 26px;
+  padding: 10px 12px 14px;
+  margin: 0 -4px 22px;
   border-radius: 1px;
 }
 .sentence {
   font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  font-size: 1.42rem;
+  font-size: 1.4rem;
   line-height: 28px;
   color: var(--ink);
 }
@@ -122,14 +103,10 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 }
 .ans-filled {
   display: inline-block;
-  color: var(--blue);
-  font-weight: bold;
-  font-style: italic;
+  color: var(--blue); font-weight: bold; font-style: italic;
   border-bottom: 2.5px solid var(--blue);
-  min-width: 46px;
-  text-align: center;
-  margin: 0 5px -2px;
-  vertical-align: bottom;
+  min-width: 46px; text-align: center;
+  margin: 0 5px -2px; vertical-align: bottom;
   animation: inkIn .35s ease-out;
 }
 .ans-filled.empty { border-bottom-style: dashed; font-style: normal; color: var(--muted); }
@@ -138,19 +115,18 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── OPTIONS ─────────────────────────────────────────── */
 .options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 22px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 9px;
+  margin-bottom: 20px;
 }
 .opt-btn {
-  padding: 16px 10px 12px;
+  padding: 14px 8px 11px;
   border: 1.5px solid var(--border);
   border-radius: 2px;
   background: #fff;
-  font-size: 1.45rem;
+  font-size: 1.3rem;
   font-family: 'Palatino Linotype', Palatino, Georgia, serif;
   cursor: pointer;
   transition: border-color .12s, background .12s, transform .12s, box-shadow .12s;
@@ -163,7 +139,7 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   line-height: 1;
 }
 .opt-btn .sub {
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-family: -apple-system, sans-serif;
   color: var(--muted);
   letter-spacing: 0.06em;
@@ -176,28 +152,15 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   box-shadow: 0 4px 10px rgba(0,46,140,0.12);
 }
 .opt-btn:disabled { cursor: default; }
-.opt-btn.correct {
-  border-color: var(--green);
-  background: var(--green-light);
-  color: var(--green);
-}
-.opt-btn.wrong {
-  border-color: #E8DCDC;
-  background: #FBF5F5;
-  color: #C8B8B8;
-}
-.opt-btn.picked-wrong {
-  border-color: var(--red);
-  background: #FEF2F2;
-  color: var(--red);
-}
+.opt-btn.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+.opt-btn.wrong { border-color: #E8DCDC; background: #FBF5F5; color: #C8B8B8; }
+.opt-btn.picked-wrong { border-color: var(--red); background: #FEF2F2; color: var(--red); }
 
-/* ── EXPLANATION ─────────────────────────────────────── */
 .explanation {
   display: none;
   border-left: 3px solid var(--blue);
   padding: 12px 14px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   background: var(--blue-light);
   border-radius: 0 2px 2px 0;
   animation: slideIn .25s ease-out;
@@ -207,53 +170,29 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   from { opacity: 0; transform: translateX(-8px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-.exp-verdict {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 7px;
-}
+.exp-verdict { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
 .exp-verdict.ok { color: var(--green); }
 .exp-verdict.ko { color: var(--red); }
-.exp-sentence {
-  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  font-size: 1.1rem;
-  margin-bottom: 7px;
-  color: var(--ink);
-}
-.exp-note {
-  font-size: 0.85rem;
-  color: var(--muted);
-}
+.exp-note { font-size: 0.88rem; color: var(--muted); margin-bottom: 2px; }
 .exp-note b { color: var(--blue); }
-.exp-english {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin-top: 3px;
-  font-style: italic;
+.exp-english { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-bottom: 8px; }
+.exp-rule {
+  font-size: 0.84rem;
+  color: var(--ink);
+  line-height: 1.55;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,46,140,0.15);
 }
 
-/* ── ACTIONS ─────────────────────────────────────────── */
-.actions {
-  display: none;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
+.actions { display: none; justify-content: space-between; align-items: center; gap: 10px; }
 .actions.show { display: flex; }
 
 .btn-gemini {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: flex; align-items: center; gap: 6px;
   padding: 9px 14px;
-  background: none;
-  border: 1.5px solid var(--border);
-  border-radius: 2px;
-  font-size: 0.83rem;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all .15s;
-  white-space: nowrap;
+  background: none; border: 1.5px solid var(--border); border-radius: 2px;
+  font-size: 0.83rem; color: var(--muted); cursor: pointer;
+  transition: all .15s; white-space: nowrap;
 }
 .btn-gemini:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
 .btn-gemini.copied { border-color: var(--green); color: var(--green); background: var(--green-light); }
@@ -261,279 +200,227 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 .btn-next {
   margin-left: auto;
   padding: 10px 28px;
-  background: var(--blue);
-  color: #fff;
-  border: none;
-  border-radius: 2px;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 2px;
   font-size: 0.95rem;
   font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  cursor: pointer;
-  letter-spacing: 0.02em;
+  cursor: pointer; letter-spacing: 0.02em;
   transition: background .15s;
   box-shadow: 0 2px 8px rgba(0,46,140,0.2);
 }
 .btn-next:hover { background: #003BB5; }
 
-/* ── START / END ─────────────────────────────────────── */
 .start-screen, .end-screen { text-align: center; padding: 20px 0; }
 .start-screen h2, .end-screen h2 {
   font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  font-size: 1.6rem;
-  font-weight: normal;
-  color: var(--blue);
-  margin-bottom: 14px;
+  font-size: 1.6rem; font-weight: normal; color: var(--blue); margin-bottom: 14px;
 }
-.start-screen p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 8px; }
-.start-screen p.count { font-size: 0.85rem; margin-top: 6px; }
+.start-screen p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 6px; }
 .btn-start, .btn-restart {
-  margin-top: 24px;
-  padding: 12px 40px;
-  background: var(--blue);
-  color: #fff;
-  border: none;
-  border-radius: 2px;
-  font-size: 1rem;
-  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,46,140,0.2);
-  transition: background .15s;
+  margin-top: 22px; padding: 12px 40px;
+  background: var(--blue); color: #fff; border: none; border-radius: 2px;
+  font-size: 1rem; font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,46,140,0.2); transition: background .15s;
 }
 .btn-start:hover, .btn-restart:hover { background: #003BB5; }
-
 .final-score {
-  font-size: 3.5rem;
-  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  color: var(--blue);
-  line-height: 1;
-  margin: 20px 0 6px;
+  font-size: 3.5rem; font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+  color: var(--blue); line-height: 1; margin: 20px 0 6px;
 }
 .final-pct { font-size: 1.1rem; color: var(--muted); margin-bottom: 16px; }
 .final-grade { font-size: 1.2rem; margin-bottom: 10px; }
 
-/* ── TOAST ───────────────────────────────────────────── */
 .toast {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
+  position: fixed; bottom: 28px; left: 50%;
   transform: translateX(-50%) translateY(70px);
-  background: #1C1C2E;
-  color: #fff;
-  padding: 10px 22px;
-  border-radius: 24px;
+  background: #1C1C2E; color: #fff;
+  padding: 10px 22px; border-radius: 24px;
   font-size: 0.85rem;
   transition: transform .3s cubic-bezier(.4,0,.2,1);
-  z-index: 999;
-  pointer-events: none;
+  z-index: 999; pointer-events: none;
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
-/* ── LABEL CHIP ──────────────────────────────────────── */
-.col-chip {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-family: -apple-system, sans-serif;
-  color: var(--muted);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 2px 8px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-/* ── RESPONSIVE ──────────────────────────────────────── */
 @media (max-width: 520px) {
-  .card { padding: 20px 18px 20px 44px; }
-  .card::before { left: 32px; }
-  .sentence { font-size: 1.2rem; }
-  .opt-btn { font-size: 1.2rem; padding: 13px 8px 10px; }
+  .card { padding: 18px 16px 18px 42px; }
+  .card::before { left: 30px; }
+  .sentence { font-size: 1.15rem; }
+  .options { grid-template-columns: 1fr 1fr; }
+  .opt-btn { font-size: 1.1rem; padding: 12px 6px 10px; }
 }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>🇫🇷 Verbes &amp; Prépositions</h1>
-  <p>Constructions verbales · Espace FLE page 2</p>
+  <h1>&#x1F1EB;&#x1F1F7; Verbes &amp; Pr&#233;positions</h1>
+  <p>Constructions verbales &middot; Espace FLE page&#160;2</p>
 </header>
-
 <div class="card" id="app"></div>
 <div class="toast" id="toast"></div>
-
 <script>
-// ─── VERB DATA ───────────────────────────────────────────────────────────────
-// Fields: s = sentence (with ___), a = answer, n = grammatical note (HTML ok), e = English
-const V = (s,a,n,e) => ({s,a,n,e});
-const NONE = '—';
+const V = (s,a,n,e,r) => ({s,a,n,e,r});
+const NONE = '\u2014';
 
 const VERBS = [
-  // ── COLUMN 1 ──────────────────────────────────────────────────────────────
-  V(`Il s'abstient ___ fumer.`,                         'de',   `s'abstenir <b>de</b> faire qqch`,                 'to refrain from doing sth'),
-  V(`Elle accepte ___ l'invitation.`,                   NONE,   `accepter qqch — objet direct`,                    'to accept sth (no preposition)'),
-  V(`Il accepte ___ partir.`,                           'de',   `accepter <b>de</b> faire qqch`,                   'to agree to do sth'),
-  V(`Elle achète un cadeau ___ sa mère.`,               'à',    `acheter qqch <b>à</b> qqn`,                       'to buy sth for sb'),
-  V(`Il s'adresse ___ la directrice.`,                  'à',    `s'adresser <b>à</b> qqn`,                         'to speak to / address sb'),
-  V(`Elle aide son ami ___ comprendre.`,                'à',    `aider qqn <b>à</b> faire qqch`,                   'to help sb do sth'),
-  V(`Il aime ___ le sport.`,                            NONE,   `aimer qqch / qqn — objet direct`,                 'to like sth (no preposition)'),
-  V(`Ils s'amusent ___ jouer aux échecs.`,              'à',    `s'amuser <b>à</b> faire qqch`,                    'to enjoy doing sth'),
-  V(`Elle annonce la nouvelle ___ ses collègues.`,      'à',    `annoncer qqch <b>à</b> qqn`,                      'to announce sth to sb'),
-  V(`Il aperçoit ___ sa voisine.`,                      NONE,   `apercevoir qqch / qqn — objet direct`,            'to spot / notice sb (no preposition)'),
-  V(`Elle s'aperçoit ___ son erreur.`,                  'de',   `s'apercevoir <b>de</b> qqch`,                     'to realize sth'),
-  V(`Il appelle ___ sa sœur.`,                          NONE,   `appeler qqn — objet direct`,                      'to call sb (no preposition)'),
-  V(`Elle apporte un livre ___ son ami.`,               'à',    `apporter qqch <b>à</b> qqn`,                      'to bring sth to sb'),
-  V(`Il apprend l'espagnol ___ ses étudiants.`,         'à',    `apprendre qqch <b>à</b> qqn`,                     'to teach sth to sb'),
-  V(`Elle arrête ___ travailler.`,                      'de',   `arrêter <b>de</b> faire qqch`,                    'to stop doing sth'),
-  V(`Il attend ___ le bus.`,                            NONE,   `attendre qqch / qqn — objet direct`,              'to wait for sth (no preposition)'),
-  V(`Elle s'attend ___ ce résultat.`,                   'à',    `s'attendre <b>à</b> qqch`,                        'to expect sth'),
-  V(`Il s'attend ___ réussir.`,                         'à',    `s'attendre <b>à</b> faire qqch`,                  'to expect to do sth'),
-  V(`Elle cache son plan ___ ses parents.`,             'à',    `cacher qqch <b>à</b> qqn`,                        'to hide sth from sb'),
-  V(`Il cesse ___ se plaindre.`,                        'de',   `cesser <b>de</b> faire qqch`,                     'to stop doing sth'),
-  V(`Elle cherche ___ ses lunettes.`,                   NONE,   `chercher qqch / qqn — objet direct`,              'to look for sth (no preposition)'),
-  V(`Il cherche ___ améliorer sa prononciation.`,       'à',    `chercher <b>à</b> faire qqch`,                    'to try to do sth'),
-  V(`Elle choisit ___ rester.`,                         'de',   `choisir <b>de</b> faire qqch`,                    'to choose to do sth'),
-  V(`Il commence ___ neiger.`,                          'à',    `commencer <b>à</b> faire qqch`,                   'to start doing sth'),
-  V(`Elle confirme le rendez-vous ___ son client.`,     'à',    `confirmer qqch <b>à</b> qqn`,                     'to confirm sth to sb'),
-  V(`Il conseille ce livre ___ sa fille.`,              'à',    `conseiller qqch <b>à</b> qqn`,                    'to recommend sth to sb'),
-  V(`Elle conseille ___ son ami de consulter un médecin.`, 'à', `conseiller <b>à</b> qqn de faire qqch`,           'to advise sb to do sth'),
-  V(`Il continue ___ marcher sous la pluie.`,           'à',    `continuer <b>à</b> / de faire qqch`,              'to continue doing sth'),
-  V(`Elle contribue ___ résoudre le problème.`,         'à',    `contribuer <b>à</b> faire qqch`,                  'to contribute to doing sth'),
-  V(`Il convainc Marie ___ accepter.`,                  'de',   `convaincre qqn <b>de</b> faire qqch`,             'to convince sb to do sth'),
-  V(`Elle craint ___ faire une erreur.`,                'de',   `craindre <b>de</b> faire qqch`,                   'to fear doing sth'),
-  V(`Il critique ___ son propre travail.`,              NONE,   `critiquer qqch / qqn — objet direct`,             'to criticize sth (no preposition)'),
-  V(`Elle croit ___ la chance.`,                        'à',    `croire <b>à</b> qqch`,                            'to believe in sth'),
-  V(`Il croit ___ ses enfants.`,                        'en',   `croire <b>en</b> qqn`,                            'to believe in / trust sb'),
-  // ── COLUMN 2 ──────────────────────────────────────────────────────────────
-  V(`Elle se décide ___ accepter l'offre.`,             'à',    `se décider <b>à</b> faire qqch`,                  'to make up one\'s mind to do sth'),
-  V(`Il demande la clé ___ sa voisine.`,                'à',    `demander qqch <b>à</b> qqn`,                      'to ask sb for sth'),
-  V(`Elle demande ___ Marie d'appeler.`,                'à',    `demander <b>à</b> qqn de faire qqch`,             'to ask sb to do sth'),
-  V(`Tout dépend ___ la météo.`,                        'de',   `dépendre <b>de</b> qqch / de qqn`,                'to depend on sth'),
-  V(`Il désire ___ ce nouveau poste.`,                  NONE,   `désirer qqch / qqn — objet direct`,               'to desire sth (no preposition)'),
-  V(`Elle déteste ___ la violence.`,                    NONE,   `détester qqch / qqn — objet direct`,              'to detest sth (no preposition)'),
-  V(`Il doit de la gratitude ___ ses parents.`,         'à',    `devoir qqch <b>à</b> qqn`,                        'to owe sth to sb'),
-  V(`Elle dit la vérité ___ son patron.`,               'à',    `dire qqch <b>à</b> qqn`,                          'to say/tell sth to sb'),
-  V(`Il dit ___ ses enfants de rentrer.`,               'à',    `dire <b>à</b> qqn de faire qqch`,                 'to tell sb to do sth'),
-  V(`Elle donne un cadeau ___ Marie.`,                  'à',    `donner qqch <b>à</b> qqn`,                        'to give sth to sb'),
-  V(`Il écrit une lettre ___ sa grand-mère.`,           'à',    `écrire qqch <b>à</b> qqn`,                        'to write sth to sb'),
-  V(`Elle écoute ___ la radio.`,                        NONE,   `écouter qqch / qqn — objet direct`,               'to listen to sth (no preposition)'),
-  V(`Il empêche ses enfants ___ sortir.`,               'de',   `empêcher qqn <b>de</b> faire qqch`,               'to prevent sb from doing sth'),
-  V(`Elle emprunte la voiture ___ son frère.`,          'à',    `emprunter qqch <b>à</b> qqn`,                     'to borrow sth from sb'),
-  V(`Il encourage ses élèves ___ lire.`,                'à',    `encourager qqn <b>à</b> faire qqch`,              'to encourage sb to do sth'),
-  V(`Elle enseigne les maths ___ ses étudiants.`,       'à',    `enseigner qqch <b>à</b> qqn`,                     'to teach sth to sb'),
-  V(`Il entend ___ une mélodie familière.`,             NONE,   `entendre qqch / qqn — objet direct`,              'to hear sth (no preposition)'),
-  V(`Elle entend parler ___ cette exposition.`,         'de',   `entendre parler <b>de</b> qqch / de qqn`,         'to hear about sth'),
-  V(`Il envoie une carte ___ son ami.`,                 'à',    `envoyer qqch <b>à</b> qqn`,                       'to send sth to sb'),
-  V(`Elle espère ___ une bonne réponse.`,               NONE,   `espérer qqch — objet direct`,                     'to hope for sth (no preposition)'),
-  V(`Il essaie ___ trouver une solution.`,              'de',   `essayer <b>de</b> faire qqch`,                    'to try to do sth'),
-  V(`Elle évite ___ conduire la nuit.`,                 'de',   `éviter <b>de</b> faire qqch`,                     'to avoid doing sth'),
-  V(`Il excuse son ami ___ son retard.`,                'de',   `excuser qqn <b>de</b> faire qqch`,                'to excuse sb for doing sth'),
-  V(`Elle s'excuse ___ son comportement.`,              'de',   `s'excuser <b>de</b> qqch`,                        'to apologize for sth'),
-  V(`Il exige une réponse ___ son employé.`,            'de',   `exiger qqch <b>de</b> qqn`,                       'to demand sth from sb'),
-  V(`Elle explique la règle ___ sa fille.`,             'à',    `expliquer qqch <b>à</b> qqn`,                     'to explain sth to sb'),
-  V(`Il se fâche ___ son voisin.`,                      'contre', `se fâcher <b>contre</b> qqn`,                   'to get angry at sb'),
-  V(`Elle se fâche ___ son meilleur ami.`,              'avec', `se fâcher <b>avec</b> qqn`,                       'to fall out with sb'),
-  V(`Il félicite son ami ___ avoir réussi.`,            'de',   `féliciter qqn <b>de</b> faire qqch`,              'to congratulate sb on doing sth'),
-  V(`Elle se fie ___ son instinct.`,                    'à',    `se fier <b>à</b> qqn / qqch`,                     'to trust sb / sth'),
-  V(`Il finit ___ ranger sa chambre.`,                  'de',   `finir <b>de</b> faire qqch`,                      'to finish doing sth'),
-  // ── COLUMN 3 ──────────────────────────────────────────────────────────────
-  V(`Ça fait plaisir ___ tout le monde.`,               'à',    `faire qqch <b>à</b> qqn`,                         'to do sth for / to sb'),
-  V(`Il s'habitue ___ sa nouvelle vie.`,                'à',    `s'habituer <b>à</b> qqch`,                        'to get used to sth'),
-  V(`Elle hésite ___ répondre.`,                        'à',    `hésiter <b>à</b> faire qqch`,                     'to hesitate to do sth'),
-  V(`Il interdit la télévision ___ ses enfants.`,       'à',    `interdire qqch <b>à</b> qqn`,                     'to forbid sb sth'),
-  V(`Elle s'intéresse ___ l'architecture.`,             'à',    `s'intéresser <b>à</b> qqch / <b>à</b> qqn`,       'to be interested in sth'),
-  V(`Il invite ses amis ___ partager son repas.`,       'à',    `inviter qqn <b>à</b> faire qqch`,                 'to invite sb to do sth'),
-  V(`Elle joue ___ la flûte.`,                          'de',   `jouer <b>de</b> qqch (instrument)`,               'to play an instrument'),
-  V(`Il joue ___ la pétanque.`,                         'à',    `jouer <b>à</b> qqch (sport / jeu)`,               'to play a sport or game'),
-  V(`Elle laisse ses clés ___ son voisin.`,             'à',    `laisser qqch <b>à</b> qqn`,                       'to leave sth to sb'),
-  V(`Il lit une histoire ___ sa fille.`,                'à',    `lire qqch <b>à</b> qqn`,                          'to read sth to sb'),
-  V(`Elle loue sa maison ___ des étudiants.`,           'à',    `louer qqch <b>à</b> qqn`,                         'to rent sth to sb'),
-  V(`Il a manqué ___ rater son train.`,                 'de',   `manquer <b>de</b> faire qqch`,                    'to nearly do sth / to fail to do sth'),
-  V(`La France manque ___ tous ceux qui l'ont quittée.`, 'à',  `manquer <b>à</b> qqn`,                            'to be missed by sb (note reversed subject!)'),
-  V(`Elle se méfie ___ cette situation.`,               'de',   `se méfier <b>de</b> qqch / de qqn`,              'to be wary of sth / sb'),
-  V(`Il menace son employé ___ le licencier.`,          'de',   `menacer qqn <b>de</b> faire qqch`,                'to threaten sb with doing sth'),
-  V(`Elle mérite ___ gagner ce prix.`,                  'de',   `mériter <b>de</b> faire qqch`,                    'to deserve to do sth'),
-  V(`Il met du temps ___ apprendre cette langue.`,      'à',    `mettre du temps <b>à</b> faire qqch`,             'to take time to do sth'),
-  V(`Elle se met ___ travailler.`,                      'à',    `se mettre <b>à</b> faire qqch`,                   'to start doing sth'),
-  V(`Il montre ses dessins ___ sa famille.`,            'à',    `montrer qqch <b>à</b> qqn`,                       'to show sth to sb'),
-  V(`Elle néglige ___ répondre à ses messages.`,        'de',   `négliger <b>de</b> faire qqch`,                   'to neglect to do sth'),
-  V(`Il oblige ses enfants ___ se laver les mains.`,    'à',    `obliger qqn <b>à</b> faire qqch`,                 'to force sb to do sth'),
-  V(`Elle obtient une faveur ___ son ami.`,             'de',   `obtenir qqch <b>de</b> qqn`,                      'to obtain sth from sb'),
-  V(`Il s'occupe ___ la logistique.`,                   'de',   `s'occuper <b>de</b> qqch / de qqn`,              'to take care of sth / sb'),
-  V(`Elle offre un bouquet ___ Marie.`,                 'à',    `offrir qqch <b>à</b> qqn`,                        'to offer / give sth to sb'),
-  V(`Il s'oppose ___ cette décision.`,                  'à',    `s'opposer <b>à</b> qqch`,                         'to oppose sth'),
-  V(`Elle ose ___ demander une augmentation.`,          NONE,   `oser faire qqch — infinitif direct`,              'to dare to do sth (no preposition)'),
-  V(`Il oublie ___ fermer la porte.`,                   'de',   `oublier <b>de</b> faire qqch`,                    'to forget to do sth'),
-  V(`Elle parle ___ son prochain voyage.`,              'de',   `parler <b>de</b> qqch`,                           'to talk about sth'),
-  V(`Il pardonne l'erreur ___ son ami.`,                'à',    `pardonner qqch <b>à</b> qqn`,                     'to forgive sb for sth'),
-  V(`Elle passe le document ___ sa collègue.`,          'à',    `passer qqch <b>à</b> qqn`,                        'to pass sth to sb'),
-  // ── COLUMN 4 ──────────────────────────────────────────────────────────────
-  V(`Il paie le café ___ ses amis.`,                    'à',    `payer qqch <b>à</b> qqn`,                         'to treat sb to sth'),
-  V(`Elle pense ___ ses vacances.`,                     'à',    `penser <b>à</b> qqch / <b>à</b> qqn`,            'to think about sth'),
-  V(`Que penses-tu ___ ce film ?`,                      'de',   `penser <b>de</b> qqch (opinion uniquement)`,      'to think of sth (opinion)'),
-  V(`Il perd ___ son chemin.`,                          NONE,   `perdre qqch / qqn — objet direct`,                'to lose sth (no preposition)'),
-  V(`Elle perd du temps ___ cette activité.`,           'à',    `perdre du temps <b>à</b> qqch`,                   'to waste time on sth'),
-  V(`Il permet ___ ses enfants de jouer dehors.`,       'à',    `permettre <b>à</b> qqn de faire qqch`,            'to allow sb to do sth'),
-  V(`Elle persuade Marie ___ rester.`,                  'de',   `persuader qqn <b>de</b> faire qqch`,              'to persuade sb to do sth'),
-  V(`Il se plaint ___ la chaleur.`,                     'de',   `se plaindre <b>de</b> qqch`,                      'to complain about sth'),
-  V(`Elle porte ___ ses courses.`,                      NONE,   `porter qqch / qqn — objet direct`,                'to carry sth (no preposition)'),
-  V(`Il prend ___ sa voiture.`,                         NONE,   `prendre qqch / qqn — objet direct`,               'to take sth (no preposition)'),
-  V(`Elle se prépare ___ la réunion.`,                  'à',    `se préparer <b>à</b> qqch`,                       'to prepare for sth'),
-  V(`Il présente son ami ___ sa famille.`,              'à',    `présenter qqn <b>à</b> qqn`,                      'to introduce sb to sb'),
-  V(`Elle promet un voyage ___ sa fille.`,              'à',    `promettre qqch <b>à</b> qqn`,                     'to promise sth to sb'),
-  V(`Il promet ___ arriver à l'heure.`,                 'de',   `promettre <b>de</b> faire qqch`,                  'to promise to do sth'),
-  V(`Elle propose une idée ___ son équipe.`,            'à',    `proposer qqch <b>à</b> qqn`,                      'to suggest sth to sb'),
-  V(`Il propose ___ aller au cinéma.`,                  'de',   `proposer <b>de</b> faire qqch`,                   'to suggest doing sth'),
-  V(`Elle raconte ses aventures ___ ses amis.`,         'à',    `raconter qqch <b>à</b> qqn`,                      'to tell sth to sb'),
-  V(`Il rappelle la date ___ son équipe.`,              'à',    `rappeler qqch <b>à</b> qqn`,                      'to remind sb of sth'),
-  V(`Elle se rappelle ___ son premier jour d'école.`,   NONE,   `se rappeler qqch — objet direct (≠ se souvenir de!)`, 'to remember sth (no preposition — unlike se souvenir de)'),
-  V(`Il reçoit un message ___ son ami.`,                'de',   `recevoir qqch <b>de</b> qqn`,                     'to receive sth from sb'),
-  V(`Elle recommande ce café ___ ses visiteurs.`,       'à',    `recommander qqch <b>à</b> qqn`,                   'to recommend sth to sb'),
-  V(`Il réfléchit ___ sa décision.`,                    'à',    `réfléchir <b>à</b> qqch`,                         'to reflect on sth'),
-  V(`Elle refuse ___ obéir.`,                           'de',   `refuser <b>de</b> faire qqch`,                    'to refuse to do sth'),
-  V(`Il regarde ___ les étoiles.`,                      NONE,   `regarder qqch / qqn — objet direct`,              'to watch / look at sth (no preposition)'),
-  V(`Elle regrette ___ avoir accepté.`,                 'de',   `regretter <b>de</b> faire qqch`,                  'to regret doing sth'),
-  V(`Il remercie son ami ___ l'avoir aidé.`,            'de',   `remercier qqn <b>de</b> faire qqch`,              'to thank sb for doing sth'),
-  V(`Elle remet le dossier ___ son chef.`,              'à',    `remettre qqch <b>à</b> qqn`,                      'to hand sth over to sb'),
-  V(`Il rencontre ___ ses amis place du marché.`,       NONE,   `rencontrer qqn — objet direct`,                   'to meet sb (no preposition)'),
-  V(`Elle renonce ___ son projet.`,                     'à',    `renoncer <b>à</b> qqch`,                          'to give up sth'),
-  V(`Il répond ___ la question.`,                       'à',    `répondre <b>à</b> qqch / <b>à</b> qqn`,          'to answer sth'),
-  // ── COLUMN 5 ──────────────────────────────────────────────────────────────
-  V(`Elle ressemble beaucoup ___ sa mère.`,             'à',    `ressembler <b>à</b> qqch / <b>à</b> qqn`,        'to look like / resemble sb'),
-  V(`Il réussit ___ passer l'examen.`,                  'à',    `réussir <b>à</b> faire qqch`,                     'to succeed in doing sth'),
-  V(`Elle rêve ___ voyager au Japon.`,                  'de',   `rêver <b>de</b> faire qqch`,                      'to dream of doing sth'),
-  V(`Il rêve ___ un monde meilleur.`,                   'à',    `rêver <b>à</b> qqch`,                             'to daydream about sth'),
-  V(`Tout le monde rit ___ ses propres erreurs.`,       'de',   `rire <b>de</b> qqch / de qqn`,                    'to laugh at sth / sb'),
-  V(`Elle risque ___ tout perdre.`,                     'de',   `risquer <b>de</b> faire qqch`,                    'to risk doing sth'),
-  V(`Il sait ___ la vérité.`,                           NONE,   `savoir qqch — objet direct`,                      'to know sth (no preposition)'),
-  V(`Cet appareil sert ___ chauffer l'eau.`,            'à',    `servir <b>à</b> faire qqch`,                      'to be used for doing sth'),
-  V(`Elle se sert ___ un couteau spécial.`,             'de',   `se servir <b>de</b> qqch`,                        'to use sth'),
-  V(`Il songe ___ changer de carrière.`,                'à',    `songer <b>à</b> qqch`,                            'to think about / consider sth'),
-  V(`Elle souhaite bonne santé ___ ses amis.`,          'à',    `souhaiter qqch <b>à</b> qqn`,                     'to wish sb sth'),
-  V(`Il se souvient ___ son enfance.`,                  'de',   `se souvenir <b>de</b> qqch / de qqn`,            'to remember sth'),
-  V(`Elle suggère une solution ___ son collègue.`,      'à',    `suggérer qqch <b>à</b> qqn`,                      'to suggest sth to sb'),
-  V(`Il téléphone ___ sa mère chaque jour.`,            'à',    `téléphoner <b>à</b> qqn`,                         'to call sb'),
-  V(`Elle tient beaucoup ___ sa liberté.`,              'à',    `tenir <b>à</b> qqch`,                             'to value / be attached to sth'),
-  V(`Il tente ___ briser le record.`,                   'de',   `tenter <b>de</b> faire qqch`,                     'to attempt to do sth'),
-  V(`Elle utilise cet outil ___ couper le bois.`,       'pour', `utiliser qqch <b>pour</b> faire qqch`,            'to use sth to do sth'),
-  V(`Il visite ___ le château.`,                        NONE,   `visiter qqch / qqn — objet direct`,               'to visit sth (no preposition)'),
-  V(`Elle veut ___ une explication.`,                   NONE,   `vouloir qqch — objet direct`,                     'to want sth (no preposition)'),
+  V(`Il s'abstient ___ fumer.`,`de`,`s'abstenir <b>de</b> faire qqch`,`to refrain from doing sth`,`This verb always takes "de" before an infinitive. Pattern: arrêter de, cesser de, finir de.`),
+  V(`Elle accepte ___ l'invitation.`,`—`,`accepter qqch — objet direct`,`to accept sth (no preposition needed)`,`"Accepter" takes a direct noun object — no preposition.`),
+  V(`Il accepte ___ partir.`,`de`,`accepter <b>de</b> faire qqch`,`to agree to do sth`,`"Accepter" takes "de" before an infinitive. ↔ accepter qqch (direct noun).`),
+  V(`Elle achète un cadeau ___ sa mère.`,`à`,`acheter qqch <b>à</b> qqn`,`to buy sth for/from sb`,`"Acheter" uses "à" for the person whether you're buying FOR someone or FROM someone — context clarifies. Same pattern: louer à, emprunter à, voler à.`),
+  V(`Il s'adresse ___ la directrice.`,`à`,`s'adresser <b>à</b> qqn`,`to speak to / address sb`,`"S'adresser" always takes "à" before the person you're speaking to.`),
+  V(`Elle aide son ami ___ comprendre.`,`à`,`aider qqn <b>à</b> faire qqch`,`to help sb do sth`,`"Aider qqn" uses "à" before the infinitive that describes what you're helping with.`),
+  V(`Il aime ___ le sport.`,`—`,`aimer qqch / qqn — objet direct`,`to like sth (no preposition)`,`"Aimer" takes a direct object — no preposition before a noun.`),
+  V(`Ils s'amusent ___ jouer aux échecs.`,`à`,`s'amuser <b>à</b> faire qqch`,`to enjoy doing sth`,`"S'amuser" takes "à" before an infinitive. Pattern: s'amuser à, mettre du temps à, passer du temps à.`),
+  V(`Elle annonce la nouvelle ___ ses collègues.`,`à`,`annoncer qqch <b>à</b> qqn`,`to announce sth to sb`,`"Annoncer" uses "à" for the person receiving the news. This is the rule for all communication verbs: dire à, expliquer à, écrire à.`),
+  V(`Il aperçoit ___ sa voisine.`,`—`,`apercevoir qqch / qqn — objet direct`,`to spot / notice sb (no preposition)`,`"Apercevoir" takes a direct object. Same for all perception verbs: voir, regarder, entendre, écouter.`),
+  V(`Elle s'aperçoit ___ son erreur.`,`de`,`s'apercevoir <b>de</b> qqch`,`to realize sth`,`The reflexive "s'apercevoir" always takes "de". ↔ apercevoir qqch (direct, non-reflexive).`),
+  V(`Il appelle ___ sa sœur.`,`—`,`appeler qqn — objet direct`,`to call sb (no preposition)`,`"Appeler" takes a direct object. ↔ téléphoner À qqn (same meaning but uses "à"!) — one of the most common errors.`),
+  V(`Elle apporte un livre ___ son ami.`,`à`,`apporter qqch <b>à</b> qqn`,`to bring sth to sb`,`"Apporter" uses "à" for the person receiving what's brought. Pattern for all transfer verbs: donner à, envoyer à, remettre à.`),
+  V(`Il apprend l'espagnol ___ ses étudiants.`,`à`,`apprendre qqch <b>à</b> qqn`,`to teach sth to sb`,`"Apprendre" uses "à" for the student. ↔ apprendre qqch (direct) = to learn sth — no "à".`),
+  V(`Elle arrête ___ travailler.`,`de`,`arrêter <b>de</b> faire qqch`,`to stop doing sth`,`"Arrêter" always takes "de" before an infinitive. Pattern: arrêter de, cesser de, finir de, éviter de.`),
+  V(`Il attend ___ le bus.`,`—`,`attendre qqch / qqn — objet direct`,`to wait for sth (no preposition)`,`"Attendre" takes a direct object — don't add "pour" or "à" as in English "wait for". Same: écouter qqch, chercher qqch.`),
+  V(`Elle s'attend ___ ce résultat.`,`à`,`s'attendre <b>à</b> qqch`,`to expect sth`,`"S'attendre" always takes "à". ↔ attendre qqch (direct) = simply wait, with no "à".`),
+  V(`Il s'attend ___ réussir.`,`à`,`s'attendre <b>à</b> faire qqch`,`to expect to do sth`,`"S'attendre" takes "à" before an infinitive too.`),
+  V(`Elle cache son plan ___ ses parents.`,`à`,`cacher qqch <b>à</b> qqn`,`to hide sth from sb`,`"Cacher" uses "à" for the person being kept in the dark. Same pattern: montrer à, dire à, expliquer à.`),
+  V(`Il cesse ___ se plaindre.`,`de`,`cesser <b>de</b> faire qqch`,`to stop doing sth`,`"Cesser" always takes "de" before an infinitive. Pattern: cesser de, arrêter de, finir de.`),
+  V(`Elle cherche ___ ses lunettes.`,`—`,`chercher qqch / qqn — objet direct`,`to look for sth (no preposition)`,`"Chercher" takes a direct object — the "for" is built into the verb, like "attendre" and "écouter".`),
+  V(`Il cherche ___ améliorer sa prononciation.`,`à`,`chercher <b>à</b> faire qqch`,`to try to do sth`,`"Chercher à faire" = try to do (attempt sense) — uses "à". ↔ chercher qqch (direct) = look for sth. Same verb, different meaning, different preposition.`),
+  V(`Elle choisit ___ rester.`,`de`,`choisir <b>de</b> faire qqch`,`to choose to do sth`,`"Choisir" takes "de" before an infinitive. Pattern: choisir de, décider de, accepter de, refuser de.`),
+  V(`Il commence ___ neiger.`,`à`,`commencer <b>à</b> faire qqch`,`to start doing sth`,`"Commencer" takes "à" before an infinitive. "Commencer de" also exists but is literary/archaic.`),
+  V(`Elle confirme le rendez-vous ___ son client.`,`à`,`confirmer qqch <b>à</b> qqn`,`to confirm sth to sb`,`"Confirmer" uses "à" for the person receiving the confirmation. Same as all communication verbs.`),
+  V(`Il conseille ce livre ___ sa fille.`,`à`,`conseiller qqch <b>à</b> qqn`,`to recommend sth to sb`,`"Conseiller" uses "à" for the person advised. The action advised uses "de": conseiller À qqn DE faire qqch.`),
+  V(`Elle lui conseille ___ se reposer.`,`de`,`conseiller <b>à</b> qqn de faire qqch`,`to advise sb to do sth`,`"Conseiller" takes "de" before the infinitive. Full structure: conseiller À qqn DE faire.`),
+  V(`Il continue ___ marcher sous la pluie.`,`à`,`continuer <b>à</b> / de faire qqch`,`to continue doing sth`,`"Continuer" takes "à" or "de" before an infinitive — both correct. "Continuer à" is more natural in spoken French.`),
+  V(`Elle contribue ___ résoudre le problème.`,`à`,`contribuer <b>à</b> faire qqch`,`to contribute to doing sth`,`"Contribuer" always takes "à". Like aider à — both express working toward a result.`),
+  V(`Il convainc Marie ___ accepter.`,`de`,`convaincre qqn <b>de</b> faire qqch`,`to convince sb to do sth`,`"Convaincre" takes "de" before the infinitive. ↔ obliger qqn À faire (similar meaning but uses "à"!) — a common confusion.`),
+  V(`Elle craint ___ faire une erreur.`,`de`,`craindre <b>de</b> faire qqch`,`to fear doing sth`,`"Craindre" always takes "de" before an infinitive. Pattern: craindre de, risquer de, regretter de.`),
+  V(`Il critique ___ son propre travail.`,`—`,`critiquer qqch / qqn — objet direct`,`to criticize sth (no preposition)`,`"Critiquer" takes a direct object.`),
+  V(`Elle croit ___ la chance.`,`à`,`croire <b>à</b> qqch`,`to believe in sth (a concept)`,`"Croire à" = believe in a concept or idea. ↔ croire EN qqn = deep trust in a person's character. ↔ croire qqn (direct) = believe what sb says.`),
+  V(`Il croit ___ ses enfants.`,`en`,`croire <b>en</b> qqn`,`to trust in / believe in sb`,`"Croire en" = deep personal trust in a person's abilities/character. ↔ croire À qqch = believe in a concept. ↔ croire qqn (direct) = believe what sb says.`),
+  V(`Elle se décide ___ accepter l'offre.`,`à`,`se décider <b>à</b> faire qqch`,`to make up one's mind to do sth`,`"Se décider" always takes "à" before an infinitive.`),
+  V(`Il demande la clé ___ sa voisine.`,`à`,`demander qqch <b>à</b> qqn`,`to ask sb for sth`,`"Demander" uses "à" for the person asked. The requested action uses "de": demander À qqn DE faire.`),
+  V(`Elle demande ___ Marie d'appeler.`,`à`,`demander <b>à</b> qqn de faire qqch`,`to ask sb to do sth`,`"Demander" uses both: "à" for the person, "de" for the requested action.`),
+  V(`Tout dépend ___ la météo.`,`de`,`dépendre <b>de</b> qqch / de qqn`,`to depend on sth`,`"Dépendre" always takes "de" — not "à". Don't say "dépendre à".`),
+  V(`Il désire ___ ce nouveau poste.`,`—`,`désirer qqch / qqn — objet direct`,`to desire sth (no preposition)`,`"Désirer" takes a direct object. Like vouloir and espérer.`),
+  V(`Elle déteste ___ la violence.`,`—`,`détester qqch / qqn — objet direct`,`to detest sth (no preposition)`,`"Détester" takes a direct object — no preposition. Like aimer, adorer.`),
+  V(`Il doit de la gratitude ___ ses parents.`,`à`,`devoir qqch <b>à</b> qqn`,`to owe sth to sb`,`"Devoir" uses "à" for the person something is owed to.`),
+  V(`Elle dit la vérité ___ son patron.`,`à`,`dire qqch <b>à</b> qqn`,`to say/tell sth to sb`,`"Dire" always uses "à" for the listener. Same for all communication verbs: expliquer à, écrire à, raconter à.`),
+  V(`Il dit ___ ses enfants de rentrer.`,`à`,`dire <b>à</b> qqn de faire qqch`,`to tell sb to do sth`,`"Dire" uses both: "à" for the person, "de" for the instruction.`),
+  V(`Elle donne un cadeau ___ Marie.`,`à`,`donner qqch <b>à</b> qqn`,`to give sth to sb`,`"Donner" uses "à" for the recipient. The most fundamental transfer verb — all others follow the same pattern: offrir à, envoyer à, remettre à, passer à.`),
+  V(`Il écrit une lettre ___ sa grand-mère.`,`à`,`écrire qqch <b>à</b> qqn`,`to write sth to sb`,`"Écrire" always uses "à" for the recipient. Pattern: écrire à, téléphoner à, répondre à.`),
+  V(`Elle écoute ___ la radio.`,`—`,`écouter qqch / qqn — objet direct`,`to listen to sth (no preposition)`,`"Écouter" takes a direct object — the "to" is built into the verb. ↔ téléphoner À qqn (a communication verb that uses "à").`),
+  V(`Il empêche ses enfants ___ sortir.`,`de`,`empêcher qqn <b>de</b> faire qqch`,`to prevent sb from doing sth`,`"Empêcher" always takes "de" before the infinitive: "empêcher qqn DE faire qqch."`),
+  V(`Elle emprunte la voiture ___ son frère.`,`à`,`emprunter qqch <b>à</b> qqn`,`to borrow sth from sb`,`"Emprunter" uses "à" for the lender. Same pattern: acheter à, voler à, louer à.`),
+  V(`Il encourage ses élèves ___ lire.`,`à`,`encourager qqn <b>à</b> faire qqch`,`to encourage sb to do sth`,`"Encourager" takes "à" before the infinitive. Pattern: encourager à, inviter à, inciter à.`),
+  V(`Elle enseigne les maths ___ ses étudiants.`,`à`,`enseigner qqch <b>à</b> qqn`,`to teach sth to sb`,`"Enseigner" uses "à" for the student. Same pattern as apprendre qqch à qqn.`),
+  V(`Il entend ___ une mélodie familière.`,`—`,`entendre qqch / qqn — objet direct`,`to hear sth (no preposition)`,`"Entendre" takes a direct object. Same for all perception verbs: voir, écouter, regarder. ↔ entendre parler DE qqch = hear about sth (a fixed phrase).`),
+  V(`Elle entend parler ___ cette exposition.`,`de`,`entendre parler <b>de</b> qqch / de qqn`,`to hear about sth`,`"Entendre parler de" is a fixed phrase — "de" is part of it. ↔ entendre qqch (direct) = hear sth directly.`),
+  V(`Il envoie une carte ___ son ami.`,`à`,`envoyer qqch <b>à</b> qqn`,`to send sth to sb`,`"Envoyer" uses "à" for the recipient. Same structure as donner à, offrir à, remettre à.`),
+  V(`Elle espère ___ une bonne réponse.`,`—`,`espérer qqch — objet direct`,`to hope for sth (no preposition)`,`"Espérer" takes a direct object or direct infinitive — no preposition. Like pouvoir, vouloir, savoir, oser.`),
+  V(`Il essaie ___ trouver une solution.`,`de`,`essayer <b>de</b> faire qqch`,`to try to do sth`,`"Essayer" always takes "de" before an infinitive. Pattern: essayer de, tenter de, tâcher de.`),
+  V(`Elle évite ___ conduire la nuit.`,`de`,`éviter <b>de</b> faire qqch`,`to avoid doing sth`,`"Éviter" always takes "de" before an infinitive. Pattern: éviter de, arrêter de, refuser de.`),
+  V(`Il excuse son ami ___ son retard.`,`de`,`excuser qqn <b>de</b> faire qqch`,`to excuse sb for doing sth`,`"Excuser qqn" uses "de" for what they're excused for. Pattern: excuser de, remercier de, féliciter de.`),
+  V(`Elle s'excuse ___ son comportement.`,`de`,`s'excuser <b>de</b> qqch`,`to apologize for sth`,`"S'excuser" always takes "de".`),
+  V(`Il exige une réponse ___ son employé.`,`de`,`exiger qqch <b>de</b> qqn`,`to demand sth from sb`,`"Exiger" uses "de" for the person being demanded of. The demanded thing is a direct object.`),
+  V(`Elle explique la règle ___ sa fille.`,`à`,`expliquer qqch <b>à</b> qqn`,`to explain sth to sb`,`"Expliquer" uses "à" for the person receiving the explanation. Same pattern as dire à, montrer à.`),
+  V(`Il se fâche ___ son voisin.`,`contre`,`se fâcher <b>contre</b> qqn`,`to get angry at sb (one-sided)`,`"Se fâcher contre" = one-sided anger directed at someone. ↔ se fâcher AVEC qqn = a mutual falling-out where the relationship between both parties changes.`),
+  V(`Elle se fâche ___ ses collègues.`,`avec`,`se fâcher <b>avec</b> qqn`,`to fall out with sb (mutual)`,`"Se fâcher avec" = a mutual falling-out. ↔ se fâcher CONTRE qqn = one-sided anger aimed at someone.`),
+  V(`Il félicite son ami ___ avoir réussi.`,`de`,`féliciter qqn <b>de</b> faire qqch`,`to congratulate sb on doing sth`,`"Féliciter qqn" uses "de" for what they're congratulated for. Pattern: féliciter de, remercier de, excuser de.`),
+  V(`Elle se fie ___ son instinct.`,`à`,`se fier <b>à</b> qqn / qqch`,`to trust sb / sth`,`"Se fier" always takes "à". Like faire confiance à.`),
+  V(`Il finit ___ ranger sa chambre.`,`de`,`finir <b>de</b> faire qqch`,`to finish doing sth`,`"Finir" always takes "de" before an infinitive. Pattern: finir de, arrêter de, cesser de.`),
+  V(`Ça fait plaisir ___ tout le monde.`,`à`,`faire qqch <b>à</b> qqn`,`to do sth to/for sb`,`"Faire qqch" uses "à" for the person affected.`),
+  V(`Il s'habitue ___ sa nouvelle vie.`,`à`,`s'habituer <b>à</b> qqch`,`to get used to sth`,`"S'habituer" always takes "à".`),
+  V(`Elle hésite ___ répondre.`,`à`,`hésiter <b>à</b> faire qqch`,`to hesitate to do sth`,`"Hésiter" takes "à" before an infinitive. ↔ "hésiter entre + noun" = hesitate between two options (different construction, no "à").`),
+  V(`Il interdit la télévision ___ ses enfants.`,`à`,`interdire qqch <b>à</b> qqn`,`to forbid sb sth`,`"Interdire" uses "à" for the person forbidden ("interdire qqch À qqn"), and "de" for the forbidden action ("interdire à qqn DE faire").`),
+  V(`Elle s'intéresse ___ l'architecture.`,`à`,`s'intéresser <b>à</b> qqch / <b>à</b> qqn`,`to be interested in sth`,`"S'intéresser" always takes "à". Like tenir à, s'opposer à.`),
+  V(`Il invite ses amis ___ partager son repas.`,`à`,`inviter qqn <b>à</b> faire qqch`,`to invite sb to do sth`,`"Inviter" takes "à" before an infinitive or event. Like encourager à, inciter à.`),
+  V(`Elle joue ___ la flûte.`,`de`,`jouer <b>de</b> qqch (instrument)`,`to play a musical instrument`,`"Jouer" takes "de" for musical instruments. ↔ jouer À for sports and games. Rule: instrument → de; sport/game → à.`),
+  V(`Il joue ___ la pétanque.`,`à`,`jouer <b>à</b> qqch (sport / jeu)`,`to play a sport or game`,`"Jouer" takes "à" for sports and games. ↔ jouer DE for musical instruments. Rule: sport/game → à; instrument → de.`),
+  V(`Elle laisse ses clés ___ son voisin.`,`à`,`laisser qqch <b>à</b> qqn`,`to leave sth to sb`,`"Laisser" uses "à" for the recipient.`),
+  V(`Il lit une histoire ___ sa fille.`,`à`,`lire qqch <b>à</b> qqn`,`to read sth to sb`,`"Lire" uses "à" for the audience. Same pattern: dire à, expliquer à, raconter à.`),
+  V(`Elle loue sa maison ___ des étudiants.`,`à`,`louer qqch <b>à</b> qqn`,`to rent sth to sb`,`"Louer" uses "à" for the tenant. ↔ louer qqch DE qqn = rent FROM sb (same verb, reversed roles, different preposition).`),
+  V(`Il a manqué ___ rater son train.`,`de`,`manquer <b>de</b> faire qqch`,`to nearly do sth / almost fail to do sth`,`"Manquer de faire" = almost do sth (near-miss). ↔ manquer À qqn = be missed by sb — a completely different construction with a reversed subject.`),
+  V(`La France manque ___ tous ceux qui l'ont quittée.`,`à`,`manquer <b>à</b> qqn`,`to be missed by sb`,`With "manquer à", the subject is what's missed and "à + person" is who misses it. "La France manque à Marie" = Marie misses France (lit. "France is missed TO Marie"). ↔ manquer DE faire = nearly do sth.`),
+  V(`Il se méfie ___ cette situation.`,`de`,`se méfier <b>de</b> qqch / de qqn`,`to be wary of sth / sb`,`"Se méfier" always takes "de". Like se souvenir de, s'occuper de.`),
+  V(`Elle menace son employé ___ le licencier.`,`de`,`menacer qqn <b>de</b> faire qqch`,`to threaten sb with doing sth`,`"Menacer" takes "de" before the threatened action. Like risquer de, craindre de.`),
+  V(`Il mérite ___ gagner ce prix.`,`de`,`mériter <b>de</b> faire qqch`,`to deserve to do sth`,`"Mériter" takes "de" before an infinitive.`),
+  V(`Elle met du temps ___ apprendre cette langue.`,`à`,`mettre du temps <b>à</b> faire qqch`,`to take time to do sth`,`"Mettre du temps" takes "à" before the activity. Fixed phrase: "mettre du temps À faire qqch". Like passer du temps à.`),
+  V(`Il se met ___ travailler.`,`à`,`se mettre <b>à</b> faire qqch`,`to start doing sth (often suddenly)`,`"Se mettre" always takes "à" before an infinitive. ↔ commencer à (neutral start with same preposition, but se mettre suggests more sudden commitment).`),
+  V(`Elle montre ses dessins ___ sa famille.`,`à`,`montrer qqch <b>à</b> qqn`,`to show sth to sb`,`"Montrer" uses "à" for the audience. Same pattern: dire à, expliquer à, lire à.`),
+  V(`Il néglige ___ répondre à ses messages.`,`de`,`négliger <b>de</b> faire qqch`,`to neglect to do sth`,`"Négliger" takes "de" before an infinitive. Like oublier de.`),
+  V(`Elle oblige ses enfants ___ se laver les mains.`,`à`,`obliger qqn <b>à</b> faire qqch`,`to force sb to do sth`,`"Obliger" takes "à" before the imposed action. ↔ convaincre/persuader DE faire (similar meaning but "de"!) — a common confusion.`),
+  V(`Il obtient une faveur ___ son ami.`,`de`,`obtenir qqch <b>de</b> qqn`,`to obtain sth from sb`,`"Obtenir" uses "de" for the person you obtain sth from. Like recevoir de.`),
+  V(`Elle s'occupe ___ la logistique.`,`de`,`s'occuper <b>de</b> qqch / de qqn`,`to take care of sth / sb`,`"S'occuper" always takes "de". Like se charger de, se méfier de.`),
+  V(`Il offre un bouquet ___ Marie.`,`à`,`offrir qqch <b>à</b> qqn`,`to offer / give sth to sb`,`"Offrir" uses "à" for the recipient. Same structure as donner à, envoyer à, remettre à.`),
+  V(`Elle s'oppose ___ cette décision.`,`à`,`s'opposer <b>à</b> qqch`,`to oppose sth`,`"S'opposer" always takes "à". Like s'intéresser à, tenir à.`),
+  V(`Il ose ___ demander une augmentation.`,`—`,`oser faire qqch — infinitif direct`,`to dare to do sth (no preposition)`,`"Oser" takes a direct infinitive — no preposition. Like pouvoir, vouloir, devoir, savoir, espérer.`),
+  V(`Elle oublie ___ fermer la porte.`,`de`,`oublier <b>de</b> faire qqch`,`to forget to do sth`,`"Oublier" takes "de" before an infinitive. Pattern: oublier de, négliger de.`),
+  V(`Il parle ___ son prochain voyage.`,`de`,`parler <b>de</b> qqch`,`to talk about sth`,`"Parler de" = talk about a topic (any topic — the preposition comes from the verb, not the topic). ↔ parler À qqn = speak to a person. Both combine: "Je parle DE sport À mon ami".`),
+  V(`Elle pardonne l'erreur ___ son ami.`,`à`,`pardonner qqch <b>à</b> qqn`,`to forgive sb for sth`,`"Pardonner" uses "à" for the person forgiven. Same pattern: donner à, dire à.`),
+  V(`Il passe le document ___ sa collègue.`,`à`,`passer qqch <b>à</b> qqn`,`to pass sth to sb`,`"Passer" uses "à" for the recipient.`),
+  V(`Elle paie le café ___ ses amis.`,`à`,`payer qqch <b>à</b> qqn`,`to treat sb to sth`,`"Payer qqch à qqn" = treat sb to sth. ↔ payer qqch (direct) = pay for sth. Same verb, different construction, different meaning.`),
+  V(`Il pense ___ ses vacances.`,`à`,`penser <b>à</b> qqch / <b>à</b> qqn`,`to think about sth (mentally occupied)`,`"Penser à" = mental preoccupation — daydreaming, worrying, remembering. ↔ penser DE = ask for an opinion. "Je pense À toi" (I'm thinking about you) vs "Que penses-tu DE lui?" (What do you think of him?)`),
+  V(`Que penses-tu ___ ce film ?`,`de`,`penser <b>de</b> qqch (opinion uniquement)`,`to think of sth (have an opinion)`,`"Penser de" = ask for or give an opinion — almost always in a question. ↔ penser À = mental preoccupation. "Qu'est-ce que tu penses DE ce film?" — you can't swap in "à" here.`),
+  V(`Il perd ___ son chemin.`,`—`,`perdre qqch / qqn — objet direct`,`to lose sth (no preposition)`,`"Perdre" takes a direct object.`),
+  V(`Elle perd du temps ___ cette activité.`,`à`,`perdre du temps <b>à</b> qqch`,`to waste time on sth`,`"Perdre du temps" takes "à" before the activity. Fixed phrase, like "mettre du temps à".`),
+  V(`Il permet ___ ses enfants de jouer dehors.`,`à`,`permettre <b>à</b> qqn de faire qqch`,`to allow sb to do sth`,`"Permettre" uses "à" for the person and "de" for the action: "permettre À qqn DE faire". Both prepositions are required.`),
+  V(`Elle persuade Marie ___ rester.`,`de`,`persuader qqn <b>de</b> faire qqch`,`to persuade sb to do sth`,`"Persuader" takes "de" before the infinitive. ↔ obliger qqn À faire (similar meaning but uses "à"!) — a common confusion.`),
+  V(`Il se plaint ___ la chaleur.`,`de`,`se plaindre <b>de</b> qqch`,`to complain about sth`,`"Se plaindre" always takes "de". Like se souvenir de, parler de.`),
+  V(`Elle porte ___ ses courses.`,`—`,`porter qqch / qqn — objet direct`,`to carry sth (no preposition)`,`"Porter" takes a direct object.`),
+  V(`Il prend ___ sa voiture.`,`—`,`prendre qqch / qqn — objet direct`,`to take sth (no preposition)`,`"Prendre" takes a direct object. "Prendre le bus/train/avion" — all direct, no preposition.`),
+  V(`Elle se prépare ___ la réunion.`,`à`,`se préparer <b>à</b> qqch`,`to prepare for sth`,`"Se préparer" always takes "à". Like s'attendre à, s'habituer à.`),
+  V(`Il présente son ami ___ sa famille.`,`à`,`présenter qqn <b>à</b> qqn`,`to introduce sb to sb`,`"Présenter" uses "à" for the person being introduced to.`),
+  V(`Elle promet un voyage ___ sa fille.`,`à`,`promettre qqch <b>à</b> qqn`,`to promise sth to sb`,`"Promettre" uses "à" for the recipient of the promise.`),
+  V(`Il promet ___ arriver à l'heure.`,`de`,`promettre <b>de</b> faire qqch`,`to promise to do sth`,`"Promettre" takes "de" before an infinitive.`),
+  V(`Elle propose une idée ___ son équipe.`,`à`,`proposer qqch <b>à</b> qqn`,`to suggest sth to sb`,`"Proposer" uses "à" for the person receiving the suggestion. Like conseiller à, suggérer à.`),
+  V(`Il propose ___ aller au cinéma.`,`de`,`proposer <b>de</b> faire qqch`,`to suggest doing sth`,`"Proposer" takes "de" before an infinitive.`),
+  V(`Elle raconte ses aventures ___ ses amis.`,`à`,`raconter qqch <b>à</b> qqn`,`to tell sth to sb`,`"Raconter" uses "à" for the audience. Same pattern: dire à, expliquer à, lire à.`),
+  V(`Il rappelle la date ___ son équipe.`,`à`,`rappeler qqch <b>à</b> qqn`,`to remind sb of sth`,`"Rappeler" uses "à" for the person being reminded.`),
+  V(`Elle se rappelle ___ son premier jour d'école.`,`—`,`se rappeler qqch — objet direct (≠ se souvenir de!)`,`to remember sth (no preposition!)`,`"Se rappeler" takes a DIRECT object — do NOT add "de"! "Je me rappelle mon enfance" ✓ vs "Je me rappelle DE mon enfance" ✗. ↔ se souvenir DE qqch (which DOES use "de").`),
+  V(`Il reçoit un message ___ son ami.`,`de`,`recevoir qqch <b>de</b> qqn`,`to receive sth from sb`,`"Recevoir" uses "de" for the person you receive sth from. Like obtenir de.`),
+  V(`Elle recommande ce café ___ ses visiteurs.`,`à`,`recommander qqch <b>à</b> qqn`,`to recommend sth to sb`,`"Recommander" uses "à" for the person receiving the recommendation. Like conseiller à, proposer à.`),
+  V(`Il réfléchit ___ sa décision.`,`à`,`réfléchir <b>à</b> qqch`,`to reflect on / think about sth`,`"Réfléchir" always takes "à". Like penser à, songer à.`),
+  V(`Elle refuse ___ obéir.`,`de`,`refuser <b>de</b> faire qqch`,`to refuse to do sth`,`"Refuser" always takes "de" before an infinitive. Pattern: refuser de, éviter de, arrêter de.`),
+  V(`Il regarde ___ les étoiles.`,`—`,`regarder qqch / qqn — objet direct`,`to look at sth (no preposition)`,`"Regarder" takes a direct object — the "at" is built into the verb. ↔ réfléchir À (thinking verb — a completely different category).`),
+  V(`Elle regrette ___ avoir accepté.`,`de`,`regretter <b>de</b> faire qqch`,`to regret doing sth`,`"Regretter" always takes "de" before an infinitive. Like craindre de, risquer de.`),
+  V(`Il remercie son ami ___ l'avoir aidé.`,`de`,`remercier qqn <b>de</b> faire qqch`,`to thank sb for doing sth`,`"Remercier qqn" uses "de" for what they're thanked for. Pattern: remercier de, féliciter de, excuser de.`),
+  V(`Elle remet le dossier ___ son chef.`,`à`,`remettre qqch <b>à</b> qqn`,`to hand sth over to sb`,`"Remettre" uses "à" for the recipient. Like donner à, passer à.`),
+  V(`Il rencontre ___ ses amis place du marché.`,`—`,`rencontrer qqn — objet direct`,`to meet sb (no preposition)`,`"Rencontrer" takes a direct object. Unlike "parler À" or "téléphoner À" — no preposition.`),
+  V(`Elle renonce ___ son projet.`,`à`,`renoncer <b>à</b> qqch`,`to give up sth`,`"Renoncer" always takes "à". Like tenir à, s'intéresser à.`),
+  V(`Il répond ___ la question.`,`à`,`répondre <b>à</b> qqch / <b>à</b> qqn`,`to answer sth / reply to sb`,`"Répondre" always takes "à" — it never takes a direct object. Don't say "répondre qqch".`),
+  V(`Elle ressemble beaucoup ___ sa mère.`,`à`,`ressembler <b>à</b> qqch / <b>à</b> qqn`,`to look like / resemble sb`,`"Ressembler" always takes "à" — no exceptions.`),
+  V(`Il réussit ___ passer l'examen.`,`à`,`réussir <b>à</b> faire qqch`,`to succeed in doing sth`,`"Réussir à faire" = succeed in doing sth (takes "à"). ↔ réussir qqch (direct) = succeed at sth — an exam, a task.`),
+  V(`Elle rêve ___ voyager au Japon.`,`de`,`rêver <b>de</b> faire qqch`,`to dream of doing sth (with desire/goal)`,`"Rêver de" = dream of doing sth with desire or intention. ↔ rêver À qqch = idle daydream about sth. "Je rêve DE devenir chanteur" (a goal) vs "Je rêve À mes vacances" (vague musing).`),
+  V(`Il rêve ___ un monde meilleur.`,`à`,`rêver <b>à</b> qqch`,`to daydream about sth (vague, no specific goal)`,`"Rêver à" = idle daydream about sth, no particular goal. ↔ rêver DE faire = dream of doing with desire/intention. Like réfléchir à, penser à.`),
+  V(`Tout le monde rit ___ ses propres erreurs.`,`de`,`rire <b>de</b> qqch / de qqn`,`to laugh at sth / sb`,`"Rire" always takes "de" — don't say "rire à". "Laugh at" = "rire de".`),
+  V(`Elle risque ___ tout perdre.`,`de`,`risquer <b>de</b> faire qqch`,`to risk doing sth`,`"Risquer" always takes "de" before an infinitive. Pattern: risquer de, craindre de, manquer de.`),
+  V(`Il sait ___ la vérité.`,`—`,`savoir qqch — objet direct`,`to know sth (no preposition)`,`"Savoir" takes a direct object. Also "savoir + inf" (no preposition): "savoir conduire" = know how to drive.`),
+  V(`Cet appareil sert ___ chauffer l'eau.`,`à`,`servir <b>à</b> faire qqch`,`to be used for doing sth`,`"Servir à faire" = be used for doing sth (takes "à"). ↔ se servir DE qqch = use sth as a tool. Two different verbs, two different prepositions, two different meanings.`),
+  V(`Elle se sert ___ un couteau spécial.`,`de`,`se servir <b>de</b> qqch`,`to use sth`,`"Se servir" always takes "de". ↔ servir À faire = be useful for doing. Different verb, different preposition, different meaning.`),
+  V(`Il songe ___ changer de carrière.`,`à`,`songer <b>à</b> qqch`,`to think about / consider sth`,`"Songer" always takes "à". Like penser à, réfléchir à.`),
+  V(`Elle souhaite bonne santé ___ ses amis.`,`à`,`souhaiter qqch <b>à</b> qqn`,`to wish sb sth`,`"Souhaiter qqch" uses "à" for the recipient of the wish.`),
+  V(`Il se souvient ___ son enfance.`,`de`,`se souvenir <b>de</b> qqch / de qqn`,`to remember sth`,`"Se souvenir" always takes "de". ↔ se rappeler qqch (DIRECT object!) — one of the most common errors is adding "de" to se rappeler.`),
+  V(`Elle suggère une solution ___ son collègue.`,`à`,`suggérer qqch <b>à</b> qqn`,`to suggest sth to sb`,`"Suggérer" uses "à" for the person receiving the suggestion. Like proposer à, conseiller à.`),
+  V(`Il téléphone ___ sa mère chaque jour.`,`à`,`téléphoner <b>à</b> qqn`,`to call sb`,`"Téléphoner" always takes "à". ↔ appeler qqn (DIRECT object!) — same meaning but different preposition. "Téléphoner" always needs "à".`),
+  V(`Elle tient beaucoup ___ sa liberté.`,`à`,`tenir <b>à</b> qqch`,`to value / be attached to sth`,`"Tenir à" = care about sth / be attached to it. Always takes "à".`),
+  V(`Il tente ___ briser le record.`,`de`,`tenter <b>de</b> faire qqch`,`to attempt to do sth`,`"Tenter" always takes "de" before an infinitive. Like essayer de. ↔ chercher À faire (also means try, but uses "à") — a common mix-up.`),
+  V(`Elle utilise cet outil ___ couper le bois.`,`pour`,`utiliser qqch <b>pour</b> faire qqch`,`to use sth to do sth`,`"Utiliser" takes "pour" before the purpose infinitive. The only verb in this set where "pour" is the key preposition.`),
+  V(`Il visite ___ le château.`,`—`,`visiter qqch / qqn — objet direct`,`to visit sth (no preposition)`,`"Visiter" takes a direct object.`),
+  V(`Elle veut ___ une explication.`,`—`,`vouloir qqch — objet direct`,`to want sth (no preposition)`,`"Vouloir" takes a direct object or a direct infinitive: "vouloir partir" = want to leave.`),
 ];
 
-// ─── DISTRACTORS ─────────────────────────────────────────────────────────────
 const DIST = {
-  'de':     ['à',      'pour',   NONE],
-  'à':      ['de',     'pour',   NONE],
-  [NONE]:   ['à',      'de',     'pour'],
-  'pour':   ['à',      'de',     NONE],
-  'contre': ['à',      'avec',   'de'],
-  'avec':   ['contre', 'à',      'de'],
-  'en':     ['à',      'de',     NONE],
+  'de':       ['\u00e0', 'pour', NONE, 'en', 'contre'],
+  '\u00e0':  ['de', 'pour', NONE, 'avec', 'en'],
+  [NONE]:     ['\u00e0', 'de', 'pour', 'en', 'contre'],
+  'pour':     ['\u00e0', 'de', NONE, 'en', 'avec'],
+  'contre':   ['\u00e0', 'avec', 'de', NONE, 'pour'],
+  'avec':     ['contre', '\u00e0', 'de', NONE, 'pour'],
+  'en':       ['\u00e0', 'de', NONE, 'pour', 'contre'],
 };
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
 let questions, idx, score, answered;
 const app = document.getElementById('app');
 
-// ─── SHUFFLE ─────────────────────────────────────────────────────────────────
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -543,67 +430,63 @@ function shuffle(arr) {
   return a;
 }
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
 function init() {
   questions = shuffle(VERBS);
   idx = 0; score = 0; answered = false;
   showStart();
 }
 
-// ─── START SCREEN ────────────────────────────────────────────────────────────
 function showStart() {
   app.innerHTML = `
     <div class="start-screen">
-      <h2>Prêt à réviser ?</h2>
-      <p>Chaque question présente une phrase incomplète.<br>
-         Choisissez la bonne préposition — ou <strong>—</strong> si aucune n'est nécessaire.</p>
-      <p>Le bouton <strong>Gemini ✨</strong> copie une question explicative dans votre presse-papier
-         et ouvre Gemini pour vous aider.</p>
-      <p class="count">${VERBS.length} constructions · Espace FLE p.2</p>
-      <button class="btn-start" id="btn-start">Commencer →</button>
+      <h2>Pr&#234;t &#224; r&#233;viser&#160;?</h2>
+      <p>Chaque question pr&#233;sente une phrase incomplète.<br>
+         Choisissez la bonne pr&#233;position — ou <strong>${NONE}</strong> si aucune n'est n&#233;cessaire.</p>
+      <p>6 options par question. Le bouton <strong>Gemini &#10024;</strong> copie une question
+         dans votre presse-papier et ouvre Gemini.</p>
+      <p style="margin-top:10px;font-size:.82rem">${VERBS.length} constructions &middot; Espace FLE p.&#160;2</p>
+      <button class="btn-start" id="btn-start">Commencer &#8594;</button>
     </div>`;
 }
 
-// ─── RENDER QUESTION ─────────────────────────────────────────────────────────
 function renderQ() {
   if (idx >= questions.length) { showEnd(); return; }
   const q = questions[idx];
   const opts = shuffle([q.a, ...DIST[q.a]]);
   const pct = (idx / questions.length) * 100;
-
   app.innerHTML = `
     <div class="meta">
       <span>${idx + 1} <span style="color:var(--border)">/ ${questions.length}</span></span>
       <span>Score <strong>${score}</strong></span>
     </div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="sentence-wrap">
-      <div class="sentence">${fmtBlank(q.s)}</div>
-    </div>
+    <div class="sentence-wrap"><div class="sentence">${fmtBlank(q.s)}</div></div>
     <div class="options">
       ${opts.map(o => `
         <button class="opt-btn" data-val="${o}">
-          ${o === NONE ? '<span>—</span><span class="sub">aucune</span>' : `<span>${o}</span>`}
+          ${o === NONE
+            ? `<span>${NONE}</span><span class="sub">aucune</span>`
+            : `<span>${o}</span>`}
         </button>`).join('')}
     </div>
     <div class="explanation" id="exp"></div>
     <div class="actions" id="acts">
-      <button class="btn-gemini" id="btn-gemini">✨ Demander à Gemini</button>
-      <button class="btn-next" id="btn-next">Suivant →</button>
+      <button class="btn-gemini" id="btn-gemini">&#10024; Demander &#224; Gemini</button>
+      <button class="btn-next" id="btn-next">Suivant &#8594;</button>
     </div>`;
 }
 
-function fmtBlank(sentence) {
-  return sentence.replace('___', '<span class="blank">___</span>');
+function fmtBlank(s) {
+  return s.replace('___', '<span class="blank">___</span>');
 }
 
-function fmtFilled(sentence, answer) {
-  const display = answer === NONE ? '<span style="font-style:normal;color:var(--muted)">∅</span>' : answer;
-  return sentence.replace('___',
-    `<span class="ans-filled${answer === NONE ? ' empty' : ''}">${display}</span>`);
+function fmtFilled(s, a) {
+  const disp = a === NONE
+    ? '<span style="font-style:normal;color:var(--muted)">&oslash;</span>'
+    : a;
+  return s.replace('___', `<span class="ans-filled${a===NONE?' empty':''}">${disp}</span>`);
 }
 
-// ─── ANSWER ──────────────────────────────────────────────────────────────────
 function handleAnswer(btn) {
   if (answered) return;
   answered = true;
@@ -612,121 +495,82 @@ function handleAnswer(btn) {
   const correct = chosen === q.a;
   if (correct) score++;
 
-  // Style buttons
   app.querySelectorAll('.opt-btn').forEach(b => {
     b.disabled = true;
-    if (b.dataset.val === q.a)  b.classList.add('correct');
-    else if (b === btn)          b.classList.add('picked-wrong');
-    else                         b.classList.add('wrong');
+    if (b.dataset.val === q.a)   b.classList.add('correct');
+    else if (b === btn)           b.classList.add('picked-wrong');
+    else                          b.classList.add('wrong');
   });
 
-  // Rewrite sentence with answer
-  const sentenceEl = app.querySelector('.sentence');
-  sentenceEl.innerHTML = fmtFilled(q.s, q.a);
+  app.querySelector('.sentence').innerHTML = fmtFilled(q.s, q.a);
 
-  // Explanation
   const exp = document.getElementById('exp');
   exp.classList.add('show');
   exp.innerHTML = `
     <div class="exp-verdict ${correct ? 'ok' : 'ko'}">
-      ${correct ? '✓ Correct !' : `✗ La réponse correcte est <strong>${q.a === NONE ? '— (aucune)' : q.a}</strong>`}
+      ${correct ? '&#10003; Correct&#160;!' : `&#10007; La r&#233;ponse correcte est <strong>${q.a === NONE ? NONE + ' (aucune)' : q.a}</strong>`}
     </div>
     <div class="exp-note">${q.n}</div>
-    <div class="exp-english">${q.e}</div>`;
+    <div class="exp-english">${q.e}</div>
+    <div class="exp-rule">${q.r}</div>`;
 
   document.getElementById('acts').classList.add('show');
 }
 
-// ─── NEXT ────────────────────────────────────────────────────────────────────
 function nextQ() {
-  idx++;
-  answered = false;
-  renderQ();
+  idx++; answered = false; renderQ();
 }
 
-// ─── GEMINI ──────────────────────────────────────────────────────────────────
 function askGemini() {
   const q = questions[idx];
   const ans = q.a === NONE ? 'no preposition (direct object)' : `"${q.a}"`;
-  const prompt = `Explain this French verb construction:
-
-Sentence: "${q.s.replace('___', `[${q.a === NONE ? '∅' : q.a}]`)}"
-Construction: ${q.n.replace(/<\/?b>/g, '')}
-Answer: ${ans}
-English: ${q.e}
-
-Please:
-1. Explain why this preposition is used (or why none is needed)
-2. Contrast with similar verbs that take a different preposition
-3. Give 3 more example sentences using the same construction`;
+  const prompt = `Explain this French verb construction:\n\nSentence: "${q.s.replace('___', `[${q.a === NONE ? '\u00d8' : q.a}]`)}"\nConstruction: ${q.n.replace(/<\/?b>/g, '')}\nAnswer: ${ans}\nEnglish: ${q.e}\n\nPlease:\n1. Explain why this preposition is used (or why none is needed)\n2. Contrast with similar verbs that take a different preposition\n3. Give 3 more example sentences using the same construction`;
 
   const btn = document.getElementById('btn-gemini');
-
-  const doOpen = () => {
-    window.open('https://gemini.google.com/app', '_blank');
-  };
+  const doOpen = () => window.open('https://gemini.google.com/app', '_blank');
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(prompt).then(() => {
-      btn.textContent = '✓ Copié !';
+      btn.innerHTML = '&#10003; Copi&#233;&#160;!';
       btn.classList.add('copied');
-      showToast('Question copiée — collez dans Gemini (Ctrl+V / ⌘V)');
+      showToast('Question copi\u00e9e — collez dans Gemini (Ctrl+V / \u2318V)');
       setTimeout(doOpen, 400);
-    }).catch(() => {
-      fallbackPrompt(prompt, btn, doOpen);
-    });
+    }).catch(() => fallback(prompt, doOpen));
   } else {
-    fallbackPrompt(prompt, btn, doOpen);
+    fallback(prompt, doOpen);
   }
 }
 
-function fallbackPrompt(text, btn, doOpen) {
-  // Clipboard not available (file:// in some browsers) — show in a modal
-  const modal = document.createElement('div');
-  modal.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;
-    display:flex;align-items:center;justify-content:center;padding:20px`;
-  modal.innerHTML = `
-    <div style="background:#fff;border-radius:4px;padding:24px;max-width:540px;width:100%">
-      <p style="font-size:.85rem;color:#555;margin-bottom:10px">
-        Copiez cette question et collez-la dans <strong>Gemini</strong> :
-      </p>
-      <textarea style="width:100%;height:180px;font-size:.8rem;padding:8px;
-        border:1px solid #ccc;border-radius:2px;resize:none"
-        readonly>${text}</textarea>
-      <div style="display:flex;gap:10px;margin-top:12px;justify-content:flex-end">
-        <button onclick="this.closest('div[style]').remove()"
-          style="padding:8px 16px;border:1px solid #ccc;border-radius:2px;background:#fff;cursor:pointer">
-          Fermer
-        </button>
-        <button onclick="window.open('https://gemini.google.com/app','_blank');this.closest('div[style]').remove()"
-          style="padding:8px 16px;background:#002E8C;color:#fff;border:none;border-radius:2px;cursor:pointer">
-          Ouvrir Gemini →
-        </button>
-      </div>
-    </div>`;
-  document.body.appendChild(modal);
+function fallback(text, doOpen) {
+  const m = document.createElement('div');
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML = `<div style="background:#fff;border-radius:4px;padding:24px;max-width:540px;width:100%">
+    <p style="font-size:.85rem;color:#555;margin-bottom:10px">Copiez cette question et collez-la dans <strong>Gemini</strong> :</p>
+    <textarea style="width:100%;height:180px;font-size:.8rem;padding:8px;border:1px solid #ccc;border-radius:2px;resize:none" readonly>${text}</textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;justify-content:flex-end">
+      <button onclick="this.closest('div[style]').remove()" style="padding:8px 16px;border:1px solid #ccc;border-radius:2px;background:#fff;cursor:pointer">Fermer</button>
+      <button onclick="window.open('https://gemini.google.com/app','_blank');this.closest('div[style]').remove()" style="padding:8px 16px;background:#002E8C;color:#fff;border:none;border-radius:2px;cursor:pointer">Ouvrir Gemini &#8594;</button>
+    </div></div>`;
+  document.body.appendChild(m);
 }
 
-// ─── END SCREEN ──────────────────────────────────────────────────────────────
 function showEnd() {
   const pct = Math.round((score / questions.length) * 100);
-  const grade = pct >= 90 ? '🌟 Excellent — vous maîtrisez les prépositions !'
-    : pct >= 75 ? '👍 Très bien — encore un peu de pratique !'
-    : pct >= 60 ? '😊 Bien — continuez comme ça !'
-    : pct >= 45 ? '📚 Pas mal — révisez les cas difficiles !'
-    : '💪 Ne vous découragez pas — recommencez !';
+  const grade = pct >= 90 ? '&#127775; Excellent — vous ma&#238;trisez les pr&#233;positions&#160;!'
+    : pct >= 75 ? '&#128077; Tr&#232;s bien — encore un peu de pratique&#160;!'
+    : pct >= 60 ? '&#128522; Bien — continuez comme &#231;a&#160;!'
+    : pct >= 45 ? '&#128218; Pas mal — r&#233;visez les cas difficiles&#160;!'
+    : '&#128170; Ne vous d&#233;couragez pas — recommencez&#160;!';
   app.innerHTML = `
     <div class="end-screen">
-      <h2>Quiz terminé !</h2>
+      <h2>Quiz termin&#233;&#160;!</h2>
       <div class="final-score">${score}<span style="font-size:1.5rem;color:var(--muted)"> / ${questions.length}</span></div>
-      <div class="final-pct">${pct} %</div>
+      <div class="final-pct">${pct}&#160;%</div>
       <div class="final-grade">${grade}</div>
-      <button class="btn-restart" id="btn-restart">Recommencer ↺</button>
+      <button class="btn-restart" id="btn-restart">Recommencer &#8635;</button>
     </div>`;
 }
 
-// ─── TOAST ───────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -736,35 +580,26 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
 }
 
-// ─── EVENT DELEGATION ────────────────────────────────────────────────────────
 app.addEventListener('click', e => {
-  const optBtn = e.target.closest('.opt-btn');
-  if (optBtn && !answered) { handleAnswer(optBtn); return; }
-
-  const id = e.target.id || e.target.closest('button')?.id;
+  const opt = e.target.closest('.opt-btn');
+  if (opt && !answered) { handleAnswer(opt); return; }
+  const id = (e.target.id || e.target.closest('button')?.id);
   if (id === 'btn-next')    { nextQ(); return; }
   if (id === 'btn-gemini')  { askGemini(); return; }
   if (id === 'btn-start' || id === 'btn-restart') {
-    questions = shuffle(VERBS);
-    idx = 0; score = 0; answered = false;
-    renderQ();
+    questions = shuffle(VERBS); idx = 0; score = 0; answered = false; renderQ();
   }
 });
 
-// ─── KEYBOARD SHORTCUTS ──────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === 'ArrowRight') {
-    const next = document.getElementById('btn-next');
-    if (next && answered) nextQ();
-  }
-  if (!answered && ['1','2','3','4'].includes(e.key)) {
+  if ((e.key === 'Enter' || e.key === 'ArrowRight') && answered) { nextQ(); return; }
+  if (!answered && ['1','2','3','4','5','6'].includes(e.key)) {
     const btns = [...app.querySelectorAll('.opt-btn')];
     const btn = btns[parseInt(e.key) - 1];
     if (btn) handleAnswer(btn);
   }
 });
 
-// ─── GO ──────────────────────────────────────────────────────────────────────
 init();
 </script>
 </body>
