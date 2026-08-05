@@ -72,12 +72,29 @@ header p{color:var(--muted);font-size:.88rem;margin-top:5px}
 .results-table td{padding:8px 11px;border-bottom:1px solid rgba(0,0,0,.05);vertical-align:top;line-height:1.45;word-break:break-word}
 .results-table tr:last-child td{border-bottom:none}
 .rt-row-wrong{background:#FEF2F2}.rt-row-correct{background:#EAF6EF}
-.rt-sentence{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:.91rem;color:var(--ink);cursor:help}
+.rt-sentence{
+  cursor:pointer;font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:.91rem;color:var(--ink);}
 .rt-ans-correct{color:var(--green);font-weight:bold}.rt-ans-wrong{color:var(--red);font-weight:bold}
 .rt-picked{font-size:.73rem;color:var(--red);margin-top:3px}
 .rt-note b{color:var(--blue)}
 .rt-english{font-size:.75rem;color:var(--muted);font-style:italic;margin-top:2px}
 .rt-cat{font-size:.85rem;color:var(--blue);font-family:'Palatino Linotype',Palatino,Georgia,serif;font-weight:bold}
+
+.word-modal {
+  position: absolute;
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  font-size: 0.85rem;
+  max-width: 220px;
+  z-index: 200;
+  line-height: 1.5;
+}
+.wm-fr { font-family: 'Palatino Linotype', Palatino, Georgia, serif; font-size: 1rem; color: var(--blue); font-weight: bold; margin-bottom: 3px; }
+.wm-en { color: var(--muted); font-style: italic; font-size: 0.82rem; }
+
 @media(max-width:520px){.card{padding:18px 16px 18px 42px}.card::before{left:30px}.sentence{font-size:1.1rem}.options{grid-template-columns:1fr 1fr}.opt-btn{font-size:1rem;padding:12px 6px 10px}}
 </style>
 </head>
@@ -105,6 +122,43 @@ header p{color:var(--muted);font-size:.88rem;margin-top:5px}
 // ── HELPERS ───────────────────────────────────────────────────────────────
 function an(o){ return o.a.endsWith("'") ? o.a+o.n : o.a+' '+o.n; }
 function anCap(o){ const s=an(o); return s[0].toUpperCase()+s.slice(1); }
+const MODAL_DATA = new Map();
+let _mIdx = 0, _activeMTarget = null;
+
+function showWordModal(key, targetEl) {
+  const d = MODAL_DATA.get(key);
+  if (!d) return;
+  const ex = document.getElementById('word-modal');
+  if (ex) { ex.remove(); }
+  if (_activeMTarget === targetEl) { _activeMTarget = null; return; }
+  _activeMTarget = targetEl;
+  const m = document.createElement('div');
+  m.id = 'word-modal'; m.className = 'word-modal';
+  m.innerHTML = d.fr
+    ? `<div class="wm-fr">${d.fr}</div><div class="wm-en">${d.en}</div>`
+    : `<div class="wm-en">${d.en}</div>`;
+  document.body.appendChild(m);
+  const r = targetEl.getBoundingClientRect();
+  const sy = window.scrollY||0, sx = window.scrollX||0;
+  m.style.top  = (r.bottom + sy + 6) + 'px';
+  m.style.left = (r.left   + sx) + 'px';
+  requestAnimationFrame(() => {
+    const mr = m.getBoundingClientRect();
+    if (mr.right  > window.innerWidth  - 8) m.style.left = Math.max(8, window.innerWidth  - mr.width  - 8) + 'px';
+    if (mr.bottom > window.innerHeight - 8) m.style.top  = (r.top + sy - mr.height - 6) + 'px';
+  });
+  function cleanup() {
+    const em = document.getElementById('word-modal'); if (em) em.remove();
+    _activeMTarget = null;
+    document.removeEventListener('click', outside);
+    document.removeEventListener('keydown', onKey);
+  }
+  function outside(e) { if (!document.getElementById('word-modal')?.contains(e.target) && e.target !== targetEl) cleanup(); }
+  function onKey(e)   { if (e.key === 'Escape') cleanup(); }
+  setTimeout(() => { document.addEventListener('click', outside); document.addEventListener('keydown', onKey); }, 0);
+}
+
+
 function rp(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
 // ── QUI DATA ──────────────────────────────────────────────────────────────
@@ -527,13 +581,15 @@ function renderResultsTable(){
     const wrongNote=r.correct?'':
       `<div class="rt-picked">&#10007;&nbsp;choisi&nbsp;: <strong>${r.chosen}</strong></div>`;
     return `<tr class="${r.correct?'rt-row-correct':'rt-row-wrong'}">
-      <td><span class="rt-sentence" title="${r.e}">${filled}</span>${wrongNote}</td>
+      <td><span class="rt-sentence" data-modal="${(()=>{const k=_mIdx++;MODAL_DATA.set(k,{fr:r.n.replace(/<[^>]+>/g,''),en:r.e});return k;})()}">${filled}</span>${wrongNote}</td>
       <td><span class="rt-note">${r.n}</span><div class="rt-english">${r.e}</div></td>
       <td class="rt-cat">${r.a}</td></tr>`;
   }).join('');
 }
 
 app.addEventListener('click',e=>{
+  const rs=e.target.closest('.rt-sentence');
+  if(rs){showWordModal(parseInt(rs.dataset.modal),rs);e.stopPropagation();return;}
   const opt=e.target.closest('.opt-btn');
   if(opt&&!answered){handleAnswer(opt);return;}
   const id=(e.target.id||e.target.closest('button')?.id);

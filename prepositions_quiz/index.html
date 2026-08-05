@@ -248,6 +248,25 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
   transition:all .15s;flex-shrink:0;padding:0;line-height:1;
 }
 .btn-exit:hover{border-color:var(--red);color:var(--red);}
+
+.word-modal {
+  position: absolute;
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  font-size: 0.85rem;
+  max-width: 220px;
+  z-index: 200;
+  line-height: 1.5;
+}
+.wm-fr {
+  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+  font-size: 1rem; color: var(--blue); font-weight: bold; margin-bottom: 3px;
+}
+.wm-en { color: var(--muted); font-style: italic; font-size: 0.82rem; }
+
 @media (max-width: 520px) {
   .card { padding: 18px 16px 18px 42px; }
   .card::before { left: 30px; }
@@ -310,16 +329,17 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 .rt-row-wrong  { background: #FEF2F2; }
 .rt-row-correct { background: #EAF6EF; }
 .verb-tip {
-  border-bottom: 1.5px dotted var(--muted);
-  cursor: help;
+  border-bottom: 1.5px dotted var(--blue);
+  cursor: pointer;
   transition: border-color .15s;
 }
-.verb-tip:hover { border-color: var(--blue); }
+.verb-tip:hover { border-color: var(--ink); }
 .rt-sentence {
+  cursor: pointer;
   font-family: 'Palatino Linotype', Palatino, Georgia, serif;
   font-size: 0.91rem;
   color: var(--ink);
-  cursor: help;
+  
 }
 .rt-ans-correct { color: var(--green); font-weight: bold; }
 .rt-ans-wrong   { color: var(--red);   font-weight: bold; }
@@ -542,16 +562,45 @@ const VERBS = [
   V(`Elle utilise cet outil ___ couper le bois.`,`pour`,`utiliser qqch <b>pour</b> faire qqch`,`to use sth to do sth`,`"Utiliser" takes "pour" before a purpose infinitive. "Pour + inf" = in order to. The only verb in this set where "pour" is the key preposition.`),
   V(`Il visite ___ le château.`,`—`,`visiter qqch / qqn — objet direct`,`to visit sth (no preposition)`,`"Visiter" takes a direct object.`),
   V(`Elle veut ___ une explication.`,`—`,`vouloir qqch — objet direct`,`to want sth (no preposition)`,`Semi-modal verb — direct object or direct infinitive, no preposition: "vouloir partir" = want to leave. Like pouvoir, devoir, savoir, oser, espérer.`),
+
+  // ── Added verbs ─────────────────────────────────────────────────────────────────
+  V(`Elle assiste ___ la conférence.`,`à`,`assister <b>à</b> qqch`,`to attend sth`,`False friend: "assister" takes "à" — it means attend, not assist. Like contribuer à, participer à — verbs of taking part in something use "à".`),
+  V(`Ce livre appartient ___ ma sœur.`,`à`,`appartenir <b>à</b> qqn`,`to belong to sb`,`"Appartenir" always takes "à" for the owner. Like tenir à, s'intéresser à — orientation toward someone or something uses "à".`),
+  V(`Il participe ___ le tournoi.`,`à`,`participer <b>à</b> qqch`,`to participate in sth`,`"Participer" always takes "à". Like assister à, contribuer à — taking part in something uses "à".`),
+  V(`Ce film plaît ___ tout le monde.`,`à`,`plaire <b>à</b> qqn`,`to please sb / to be liked by sb`,`Reversed structure: the subject is what is liked; "à + person" is who likes it. "Ce film plaît à Marie" = Marie likes this film. Like manquer à — the person affected takes "à".`),
+  V(`L'enfant obéit ___ ses parents.`,`à`,`obéir <b>à</b> qqn`,`to obey sb`,`"Obéir" takes "à" — never a direct object. Don't say "obéir qqn". Like répondre à, téléphoner à — always "à", never direct.`),
+  V(`Elle résiste ___ la tentation.`,`à`,`résister <b>à</b> qqch`,`to resist sth`,`"Résister" always takes "à". Like s'opposer à, tenir à — standing against or holding to something uses "à".`),
+  V(`J'ai besoin ___ ton aide.`,`de`,`avoir besoin <b>de</b> qqch`,`to need sth`,`"Avoir besoin" always takes "de". Pattern for avoir + noun expressions: avoir besoin de, avoir peur de, avoir envie de — all use "de".`),
+  V(`Il profite ___ ses vacances pour se reposer.`,`de`,`profiter <b>de</b> qqch`,`to make the most of sth`,`"Profiter" takes "de". Like se servir de, se souvenir de — verbs where you draw something from a source use "de".`),
+  V(`Elle se moque ___ ses propres erreurs.`,`de`,`se moquer <b>de</b> qqn / qqch`,`to make fun of sth`,`"Se moquer" always takes "de". Like rire de — expressing a stance toward something uses "de".`),
+  V(`Il a peur ___ l'obscurité.`,`de`,`avoir peur <b>de</b> qqch`,`to be afraid of sth`,`"Avoir peur" always takes "de". Pattern: avoir besoin de, avoir envie de, avoir peur de — all avoir + noun expressions use "de".`),
+  V(`Elle s'est trompée ___ numéro.`,`de`,`se tromper <b>de</b> qqch`,`to get the wrong sth`,`"Se tromper" takes "de" for the thing confused. "Se tromper de numéro" = dial the wrong number; "se tromper de chemin" = take the wrong road. Fixed construction.`),
+  V(`Il connaît bien ___ ses voisins.`,`—`,`connaître qqn — objet direct`,`to know sb (no preposition)`,`"Connaître" takes a direct object. ↔ "savoir" is also direct but means knowing a fact or how to do sth: "Je sais conduire" / "Je sais qu'il vient". "Connaître" = know a person, place, or work.`),
+  V(`Elle trouve ___ la solution parfaite.`,`—`,`trouver qqch — objet direct`,`to find sth (no preposition)`,`"Trouver" takes a direct object — no preposition.`),
+  V(`Il sent ___ la fumée dans le couloir.`,`—`,`sentir qqch — objet direct`,`to smell / feel sth (no preposition)`,`Perception verb — direct object, like voir, entendre, écouter.`),
+  V(`Elle compte ___ son ami pour l'aider.`,`sur`,`compter <b>sur</b> qqn`,`to count on sb`,`"Compter sur" = rely on. "Sur" marks the person or thing relied upon. Pattern: compter sur, miser sur, insister sur, se concentrer sur.`),
+  V(`Il insiste ___ ce point important.`,`sur`,`insister <b>sur</b> qqch`,`to insist on sth`,`"Insister" takes "sur". Like compter sur, porter sur — directing focus or pressure toward something uses "sur".`),
+  V(`Elle se concentre ___ son travail.`,`sur`,`se concentrer <b>sur</b> qqch`,`to concentrate on sth`,`"Se concentrer" takes "sur". Like insister sur, compter sur — focusing attention on something uses "sur".`),
+  V(`Le débat porte ___ la réforme économique.`,`sur`,`porter <b>sur</b> qqch`,`to be about / to focus on sth`,`"Porter sur" = to be about, to concern. "Sur" marks the topic or focus. Like insister sur, se concentrer sur.`),
+  V(`Il mise ___ la qualité plutôt que la quantité.`,`sur`,`miser <b>sur</b> qqch`,`to bank on / to bet on sth`,`"Miser" takes "sur". Like compter sur — placing trust or emphasis on something uses "sur".`),
+  V(`Elle opte ___ la solution la plus simple.`,`pour`,`opter <b>pour</b> qqch`,`to opt for sth`,`"Opter" always takes "pour". Like voter pour, se battre pour — choosing or advocating for something uses "pour".`),
+  V(`Il vote ___ ce candidat.`,`pour`,`voter <b>pour</b> qqn`,`to vote for sb`,`"Voter" takes "pour" for who/what you support. Like opter pour, se battre pour — verbs of choosing or supporting use "pour".`),
+  V(`Elle se bat ___ ses droits.`,`pour`,`se battre <b>pour</b> qqch`,`to fight for sth`,`"Se battre pour" = fight in support of. ↔ se battre CONTRE = fight against. "Pour" marks what you support; "contre" marks what you oppose.`),
+  V(`Ils luttent ___ la corruption.`,`contre`,`lutter <b>contre</b> qqch`,`to fight / struggle against sth`,`"Lutter contre" = fight against. Like protester contre, se battre contre — opposition uses "contre". ↔ lutter POUR = fight for.`),
+  V(`Ils protestent ___ cette décision injuste.`,`contre`,`protester <b>contre</b> qqch`,`to protest against sth`,`"Protester" takes "contre". Like lutter contre, se fâcher contre — expressing opposition uses "contre".`),
+  V(`Il s'entend bien ___ ses collègues.`,`avec`,`s'entendre <b>avec</b> qqn`,`to get along with sb`,`"S'entendre" takes "avec". Like se réconcilier avec — verbs describing mutual relationships use "avec". ↔ se fâcher AVEC (fall out) vs se fâcher CONTRE (one-sided anger).`),
+  V(`Elle s'est réconciliée ___ son frère.`,`avec`,`se réconcilier <b>avec</b> qqn`,`to make up with sb`,`"Se réconcilier" takes "avec". Like s'entendre avec — mutual relationship verbs use "avec". ↔ se réconcilier AVEC (make up) follows a conflict begun with se fâcher CONTRE/AVEC.`),
 ];
 
 const DIST = {
-  'de':       ['\u00e0', 'pour', NONE, 'en', 'contre'],
-  '\u00e0':  ['de', 'pour', NONE, 'avec', 'en'],
-  [NONE]:     ['\u00e0', 'de', 'pour', 'en', 'contre'],
-  'pour':     ['\u00e0', 'de', NONE, 'en', 'avec'],
+  'de':       ['\u00e0', 'pour', NONE, 'sur', 'contre'],
+  '\u00e0':  ['de', 'pour', NONE, 'avec', 'sur'],
+  [NONE]:     ['\u00e0', 'de', 'pour', 'sur', 'contre'],
+  'pour':     ['\u00e0', 'de', NONE, 'sur', 'avec'],
   'contre':   ['\u00e0', 'avec', 'de', NONE, 'pour'],
-  'avec':     ['contre', '\u00e0', 'de', NONE, 'pour'],
-  'en':       ['\u00e0', 'de', NONE, 'pour', 'contre'],
+  'avec':     ['contre', '\u00e0', 'de', NONE, 'sur'],
+  'en':       ['\u00e0', 'de', NONE, 'pour', 'sur'],
+  'sur':      ['\u00e0', 'de', NONE, 'pour', 'contre'],
 };
 
 let questions, idx, score, answered, sessionResults, showCorrect = true;
@@ -598,7 +647,7 @@ function renderQ() {
       </span>
     </div>
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="sentence-wrap"><div class="sentence">${fmtBlank(addVerbTooltip(q.s, q.e))}</div></div>
+    <div class="sentence-wrap"><div class="sentence">${fmtBlank(addVerbTooltip(q.s, q.e, q.n))}</div></div>
     <div class="options">
       ${opts.map(o => `
         <button class="opt-btn" data-val="${o}">
@@ -642,7 +691,7 @@ function handleAnswer(btn) {
     else                          b.classList.add('wrong');
   });
 
-  app.querySelector('.sentence').innerHTML = fmtFilled(addVerbTooltip(q.s, q.e), q.a);
+  app.querySelector('.sentence').innerHTML = fmtFilled(addVerbTooltip(q.s, q.e, q.n), q.a);
 
   const exp = document.getElementById('exp');
   exp.classList.add('show');
@@ -721,6 +770,10 @@ function showToast(msg) {
 }
 
 app.addEventListener('click', e => {
+  const vt = e.target.closest('.verb-tip');
+  if (vt) { showWordModal(parseInt(vt.dataset.modal), vt); e.stopPropagation(); return; }
+  const rs = e.target.closest('.rt-sentence');
+  if (rs) { showWordModal(parseInt(rs.dataset.modal), rs); e.stopPropagation(); return; }
   const opt = e.target.closest('.opt-btn');
   if (opt && !answered) { handleAnswer(opt); return; }
   const id = (e.target.id || e.target.closest('button')?.id);
@@ -751,23 +804,65 @@ function toggleCorrect() {
   renderResultsTable();
 }
 
-function addVerbTooltip(s, e) {
+function addVerbTooltip(s, e, n) {
   const tokens = s.split(/\s+/);
-  let vStart = 1; // verb is usually word[1] after the subject
+  let vStart = 1;
   const subj = tokens[0].toLowerCase();
-  if (subj === 'tout') vStart = 3;           // "Tout le monde rit"
-  else if (subj === 'la' || subj === 'cet') vStart = 2; // "La France manque", "Cet appareil sert"
+  if (subj === 'tout') vStart = 3;
+  else if (subj === 'la' || subj === 'cet') vStart = 2;
   if (vStart >= tokens.length) return s;
-  // If verb token is bare "se", include the next word too ("se décide", "se fâche"…)
   let vEnd = vStart;
   if (tokens[vStart] && tokens[vStart].toLowerCase() === 'se') vEnd = vStart + 1;
   const before = tokens.slice(0, vStart).join(' ');
   const verb   = tokens.slice(vStart, vEnd + 1).join(' ');
   const after  = tokens.slice(vEnd + 1).join(' ');
-  const tip    = e.replace(/"/g, '&quot;');
-  return [before, `<span class="verb-tip" title="${tip}">${verb}</span>`, after]
+  const nc = (n||'').replace(/<[^>]+>/g,'');
+  const nw = nc.split(' ');
+  const inf = (nw[0]==='se') ? 'se '+nw[1] : nw[0];
+  const ew = e.split(' ');
+  const shortEn = (ew[0]==='to') ? 'to '+ew[1] : ew.slice(0,2).join(' ');
+  const k = _mIdx++;
+  MODAL_DATA.set(k, {fr: inf, en: shortEn});
+  return [before, `<span class="verb-tip" data-modal="${k}">${verb}</span>`, after]
     .filter(x => x.length > 0).join(' ');
 }
+
+const MODAL_DATA = new Map();
+let _mIdx = 0, _activeMTarget = null;
+
+function showWordModal(key, targetEl) {
+  const d = MODAL_DATA.get(key);
+  if (!d) return;
+  const ex = document.getElementById('word-modal');
+  if (ex) { ex.remove(); }
+  if (_activeMTarget === targetEl) { _activeMTarget = null; return; }
+  _activeMTarget = targetEl;
+  const m = document.createElement('div');
+  m.id = 'word-modal'; m.className = 'word-modal';
+  m.innerHTML = d.fr
+    ? `<div class="wm-fr">${d.fr}</div><div class="wm-en">${d.en}</div>`
+    : `<div class="wm-en">${d.en}</div>`;
+  document.body.appendChild(m);
+  const r = targetEl.getBoundingClientRect();
+  const sy = window.scrollY||0, sx = window.scrollX||0;
+  m.style.top  = (r.bottom + sy + 6) + 'px';
+  m.style.left = (r.left   + sx) + 'px';
+  requestAnimationFrame(() => {
+    const mr = m.getBoundingClientRect();
+    if (mr.right  > window.innerWidth  - 8) m.style.left = Math.max(8, window.innerWidth  - mr.width  - 8) + 'px';
+    if (mr.bottom > window.innerHeight - 8) m.style.top  = (r.top + sy - mr.height - 6) + 'px';
+  });
+  function cleanup() {
+    const em = document.getElementById('word-modal'); if (em) em.remove();
+    _activeMTarget = null;
+    document.removeEventListener('click', outside);
+    document.removeEventListener('keydown', onKey);
+  }
+  function outside(e) { if (!document.getElementById('word-modal')?.contains(e.target) && e.target !== targetEl) cleanup(); }
+  function onKey(e)   { if (e.key === 'Escape') cleanup(); }
+  setTimeout(() => { document.addEventListener('click', outside); document.addEventListener('keydown', onKey); }, 0);
+}
+
 
 function extractCategory(rule) {
   const m = rule.match(/^([A-Z][^"\u2014]{4,60})\s*\u2014\s/);
@@ -792,7 +887,7 @@ function renderResultsTable() {
       `<div class="rt-picked">&#10007;&nbsp;choisi&nbsp;: <strong>${dispC}</strong></div>`;
     const cat = extractCategory(r.r);
     return `<tr class="${r.correct ? 'rt-row-correct' : 'rt-row-wrong'}">
-      <td><span class="rt-sentence" title="${r.e}">${filled}</span>${wrongNote}</td>
+      <td><span class="rt-sentence" data-modal="${(()=>{const k=_mIdx++;MODAL_DATA.set(k,{fr:r.n.replace(/<[^>]+>/g,''),en:r.e});return k;})()}">${filled}</span>${wrongNote}</td>
       <td><span class="rt-note">${r.n}</span><div class="rt-english">${r.e}</div></td>
       <td class="rt-cat">${cat}</td>
     </tr>`;
