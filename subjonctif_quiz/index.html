@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subjonctif — Quiz</title>
+<style>
+:root{
+  --paper:#FDFCF5;--bg:#EAE5DA;--ink:#1C1C2E;--blue:#002E8C;--blue-light:#EEF3FF;
+  --red:#B52A2A;--green:#1D6B45;--green-light:#EAF6EF;--muted:#8A8A9A;
+  --border:#D0CBBA;--rule-line:#D0E2F5;--margin:rgba(178,42,42,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23000' fill-opacity='.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  display:flex;flex-direction:column;align-items:center;padding:24px 16px 48px;color:var(--ink);
+}
+header{text-align:center;margin-bottom:22px}
+header h1{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.9rem;color:var(--blue);font-weight:normal;letter-spacing:-.01em}
+header p{color:var(--muted);font-size:.88rem;margin-top:5px}
+
+.card{
+  position:relative;background:var(--paper);border-radius:1px;
+  box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.10);
+  width:100%;max-width:560px;padding:30px 28px 26px 46px;
+  background-image:
+    linear-gradient(var(--rule-line) 1px, transparent 1px);
+  background-size:100% 34px;
+  background-position:0 90px;
+}
+.card::before{
+  content:'';position:absolute;top:0;bottom:0;left:34px;width:1px;background:var(--margin);
+}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.progress{font-size:.78rem;color:var(--muted);letter-spacing:.02em}
+.btn-exit{
+  background:none;border:1.5px solid var(--border);border-radius:50%;
+  width:26px;height:26px;font-size:.65rem;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;padding:0;line-height:1;
+}
+.btn-exit:hover{border-color:var(--red);color:var(--red)}
+
+.score-pill{font-size:.78rem;color:var(--muted)}
+
+.prompt-block{margin:26px 0 22px;text-align:center}
+.prompt-verb{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.9rem;color:var(--ink)}
+.prompt-sep{color:var(--muted);margin:0 10px;font-size:1.3rem;vertical-align:1px}
+.prompt-subject{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.9rem;color:var(--blue)}
+.prompt-hint{margin-top:8px;font-size:.78rem;color:var(--muted)}
+
+.answer-row{display:flex;gap:10px;justify-content:center;margin-top:6px}
+input#answer-input{
+  font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.2rem;
+  border:none;border-bottom:2px solid var(--border);background:transparent;
+  padding:6px 4px;width:220px;text-align:center;color:var(--ink);outline:none;
+  transition:border-color .15s;
+}
+input#answer-input:focus{border-bottom-color:var(--blue)}
+input#answer-input.correct{border-bottom-color:var(--green);color:var(--green)}
+input#answer-input.incorrect{border-bottom-color:var(--red);color:var(--red)}
+input#answer-input:disabled{opacity:1}
+
+.btn{
+  font-family:inherit;font-size:.85rem;border:none;border-radius:4px;padding:10px 22px;
+  cursor:pointer;transition:all .15s;font-weight:600;letter-spacing:.01em;
+}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#001f63}
+.btn-primary:disabled{background:var(--border);cursor:not-allowed}
+.btn-secondary{background:transparent;color:var(--blue);border:1.5px solid var(--blue)}
+.btn-secondary:hover{background:var(--blue-light)}
+
+.feedback{
+  margin-top:20px;padding:12px 16px;border-radius:4px;font-size:.9rem;text-align:center;
+  display:none;
+}
+.feedback.show{display:block}
+.feedback.correct{background:var(--green-light);color:var(--green)}
+.feedback.incorrect{background:#FBEAEA;color:var(--red)}
+.feedback .fb-answer{font-weight:700}
+
+.actions-row{display:flex;justify-content:center;margin-top:22px;gap:10px}
+
+.start-screen,.results-screen{text-align:center;padding:10px 4px}
+.start-screen p, .results-screen p.summary{color:var(--muted);font-size:.9rem;margin-bottom:22px;line-height:1.5}
+.results-screen .score-big{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:2.6rem;color:var(--blue);margin-bottom:4px}
+
+table.results-table{width:100%;border-collapse:collapse;margin-top:18px;font-size:.82rem}
+table.results-table th{
+  text-align:left;color:var(--muted);font-weight:600;font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.03em;padding:6px 8px;border-bottom:1.5px solid var(--border);
+}
+table.results-table td{padding:8px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+table.results-table tr.wrong td{background:rgba(181,42,42,.04)}
+.rt-verb{font-weight:600}
+.rt-your-wrong{color:var(--red);text-decoration:line-through;text-decoration-color:rgba(181,42,42,.5)}
+.rt-your-ok{color:var(--green)}
+.rt-correct-note{color:var(--green);font-weight:600}
+.status-icon{font-size:.85rem}
+
+.toggle-correct{
+  background:none;border:1px solid var(--border);border-radius:4px;font-size:.75rem;
+  color:var(--muted);padding:6px 12px;cursor:pointer;margin-top:16px;
+}
+.toggle-correct:hover{border-color:var(--blue);color:var(--blue)}
+
+footer{margin-top:28px;font-size:.72rem;color:var(--muted);text-align:center}
+
+@media (max-width: 520px) {
+  .card{padding:24px 18px 22px 34px}
+  .card::before{left:22px}
+  .prompt-verb,.prompt-subject{font-size:1.5rem}
+  input#answer-input{width:170px;font-size:1.05rem}
+  table.results-table{font-size:.74rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Subjonctif</h1>
+  <p>Conjugue le verbe au présent du subjonctif</p>
+</header>
+
+<div class="card" id="card">
+
+  <div class="start-screen" id="start-screen">
+    <p>50 verbes courants · présent du subjonctif · 20 questions aléatoires<br>Tape la forme conjuguée pour le sujet indiqué. Les accents comptent, la casse non.</p>
+    <button class="btn btn-primary" id="btn-start">Commencer</button>
+  </div>
+
+  <div id="quiz-screen" style="display:none">
+    <div class="topbar">
+      <span class="progress" id="progress-label">Question 1 / 20</span>
+      <button class="btn-exit" id="btn-exit" title="Quitter">✕</button>
+    </div>
+
+    <div class="prompt-block">
+      <span class="prompt-verb" id="prompt-verb">parler</span>
+      <span class="prompt-sep">·</span>
+      <span class="prompt-subject" id="prompt-subject">nous</span>
+      <div class="prompt-hint">que ... ?</div>
+    </div>
+
+    <div class="answer-row">
+      <input type="text" id="answer-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="…">
+    </div>
+
+    <div class="feedback" id="feedback">
+      <span id="fb-text"></span>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn btn-primary" id="btn-submit">Vérifier</button>
+      <button class="btn btn-primary" id="btn-next" style="display:none">Suivant →</button>
+    </div>
+  </div>
+
+  <div class="results-screen" id="results-screen" style="display:none">
+    <div class="score-big" id="score-big">0 / 20</div>
+    <p class="summary" id="score-summary">Bien joué !</p>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="btn-retry">Recommencer</button>
+      <button class="btn btn-secondary" id="btn-home">Retour à l'accueil</button>
+    </div>
+    <button class="toggle-correct" id="btn-toggle-correct">Masquer les bonnes réponses</button>
+    <table class="results-table" id="results-table">
+      <thead>
+        <tr><th></th><th>Verbe</th><th>Sujet</th><th>Ta réponse</th><th>Réponse</th></tr>
+      </thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>50 verbes · présent du subjonctif</footer>
+
+<script>
+// Each verb: [infinitive, [je, tu, il/elle/on, nous, vous, ils/elles]]
+const VERBS = [
+  ["être", ["sois","sois","soit","soyons","soyez","soient"]],
+  ["avoir", ["aie","aies","ait","ayons","ayez","aient"]],
+  ["faire", ["fasse","fasses","fasse","fassions","fassiez","fassent"]],
+  ["aller", ["aille","ailles","aille","allions","alliez","aillent"]],
+  ["pouvoir", ["puisse","puisses","puisse","puissions","puissiez","puissent"]],
+  ["savoir", ["sache","saches","sache","sachions","sachiez","sachent"]],
+  ["vouloir", ["veuille","veuilles","veuille","voulions","vouliez","veuillent"]],
+  ["venir", ["vienne","viennes","vienne","venions","veniez","viennent"]],
+  ["voir", ["voie","voies","voie","voyions","voyiez","voient"]],
+  ["prendre", ["prenne","prennes","prenne","prenions","preniez","prennent"]],
+  ["devoir", ["doive","doives","doive","devions","deviez","doivent"]],
+  ["dire", ["dise","dises","dise","disions","disiez","disent"]],
+  ["mettre", ["mette","mettes","mette","mettions","mettiez","mettent"]],
+  ["finir", ["finisse","finisses","finisse","finissions","finissiez","finissent"]],
+  ["choisir", ["choisisse","choisisses","choisisse","choisissions","choisissiez","choisissent"]],
+  ["réussir", ["réussisse","réussisses","réussisse","réussissions","réussissiez","réussissent"]],
+  ["parler", ["parle","parles","parle","parlions","parliez","parlent"]],
+  ["manger", ["mange","manges","mange","mangions","mangiez","mangent"]],
+  ["donner", ["donne","donnes","donne","donnions","donniez","donnent"]],
+  ["penser", ["pense","penses","pense","pensions","pensiez","pensent"]],
+  ["écouter", ["écoute","écoutes","écoute","écoutions","écoutiez","écoutent"]],
+  ["regarder", ["regarde","regardes","regarde","regardions","regardiez","regardent"]],
+  ["travailler", ["travaille","travailles","travaille","travaillions","travailliez","travaillent"]],
+  ["aimer", ["aime","aimes","aime","aimions","aimiez","aiment"]],
+  ["chercher", ["cherche","cherches","cherche","cherchions","cherchiez","cherchent"]],
+  ["trouver", ["trouve","trouves","trouve","trouvions","trouviez","trouvent"]],
+  ["attendre", ["attende","attendes","attende","attendions","attendiez","attendent"]],
+  ["répondre", ["réponde","répondes","réponde","répondions","répondiez","répondent"]],
+  ["vendre", ["vende","vendes","vende","vendions","vendiez","vendent"]],
+  ["entendre", ["entende","entendes","entende","entendions","entendiez","entendent"]],
+  ["rendre", ["rende","rendes","rende","rendions","rendiez","rendent"]],
+  ["perdre", ["perde","perdes","perde","perdions","perdiez","perdent"]],
+  ["écrire", ["écrive","écrives","écrive","écrivions","écriviez","écrivent"]],
+  ["lire", ["lise","lises","lise","lisions","lisiez","lisent"]],
+  ["connaître", ["connaisse","connaisses","connaisse","connaissions","connaissiez","connaissent"]],
+  ["croire", ["croie","croies","croie","croyions","croyiez","croient"]],
+  ["boire", ["boive","boives","boive","buvions","buviez","boivent"]],
+  ["vivre", ["vive","vives","vive","vivions","viviez","vivent"]],
+  ["suivre", ["suive","suives","suive","suivions","suiviez","suivent"]],
+  ["recevoir", ["reçoive","reçoives","reçoive","recevions","receviez","reçoivent"]],
+  ["courir", ["coure","coures","coure","courions","couriez","courent"]],
+  ["mourir", ["meure","meures","meure","mourions","mouriez","meurent"]],
+  ["tenir", ["tienne","tiennes","tienne","tenions","teniez","tiennent"]],
+  ["sortir", ["sorte","sortes","sorte","sortions","sortiez","sortent"]],
+  ["partir", ["parte","partes","parte","partions","partiez","partent"]],
+  ["dormir", ["dorme","dormes","dorme","dormions","dormiez","dorment"]],
+  ["sentir", ["sente","sentes","sente","sentions","sentiez","sentent"]],
+  ["servir", ["serve","serves","serve","servions","serviez","servent"]],
+  ["appeler", ["appelle","appelles","appelle","appelions","appeliez","appellent"]],
+  ["jeter", ["jette","jettes","jette","jetions","jetiez","jettent"]],
+];
+
+const SUBJECTS = ["je","tu","il / elle / on","nous","vous","ils / elles"];
+
+let questions = [], idx = 0, score = 0, answered = false, sessionResults = [], showCorrect = true;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildPool(){
+  // every (verb, subject) combination
+  const pool = [];
+  VERBS.forEach(([inf, forms])=>{
+    forms.forEach((form, si)=>{
+      pool.push({verb: inf, subjectIdx: si, subject: SUBJECTS[si], answer: form});
+    });
+  });
+  return shuffle(pool).slice(0, 20);
+}
+
+const el = id => document.getElementById(id);
+
+function showStart(){
+  el('start-screen').style.display = 'block';
+  el('quiz-screen').style.display = 'none';
+  el('results-screen').style.display = 'none';
+}
+
+function init(){
+  questions = buildPool();
+  idx = 0; score = 0; answered = false; sessionResults = [];
+  el('start-screen').style.display = 'none';
+  el('results-screen').style.display = 'none';
+  el('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = questions[idx];
+  el('progress-label').textContent = `Question ${idx+1} / ${questions.length}`;
+  el('prompt-verb').textContent = q.verb;
+  el('prompt-subject').textContent = q.subject;
+  const input = el('answer-input');
+  input.value = '';
+  input.disabled = false;
+  input.className = '';
+  input.focus();
+  el('feedback').className = 'feedback';
+  el('btn-submit').style.display = 'inline-block';
+  el('btn-submit').disabled = false;
+  el('btn-next').style.display = 'none';
+}
+
+function normalize(s){
+  return s.trim().toLowerCase().replace(/\s+/g,' ');
+}
+
+function submitAnswer(){
+  if(answered) return;
+  const q = questions[idx];
+  const input = el('answer-input');
+  const raw = input.value;
+  const given = normalize(raw);
+  const correct = normalize(q.answer);
+  const isCorrect = given === correct && given.length > 0;
+
+  answered = true;
+  if(isCorrect) score++;
+  sessionResults.push({verb:q.verb, subject:q.subject, given: raw.trim(), correct: q.answer, ok: isCorrect});
+
+  input.disabled = true;
+  input.className = isCorrect ? 'correct' : 'incorrect';
+
+  const fb = el('feedback');
+  fb.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+  el('fb-text').innerHTML = isCorrect
+    ? '✓ Correct !'
+    : `✗ La bonne réponse était : <span class="fb-answer">${q.answer}</span>`;
+
+  el('btn-submit').style.display = 'none';
+  el('btn-next').style.display = 'inline-block';
+  el('btn-next').focus();
+}
+
+function nextQuestion(){
+  if(idx < questions.length - 1){
+    idx++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults(){
+  el('quiz-screen').style.display = 'none';
+  el('results-screen').style.display = 'block';
+  el('score-big').textContent = `${score} / ${questions.length}`;
+  const pct = Math.round((score/questions.length)*100);
+  let msg;
+  if(pct === 100) msg = "Parfait ! Toutes les conjugaisons sont maîtrisées.";
+  else if(pct >= 80) msg = "Très bien joué !";
+  else if(pct >= 60) msg = "Pas mal, encore un peu de pratique.";
+  else msg = "Continue à réviser, ça viendra.";
+  el('score-summary').textContent = msg;
+
+  showCorrect = true;
+  el('btn-toggle-correct').textContent = 'Masquer les bonnes réponses';
+  el('btn-toggle-correct').classList.remove('hiding');
+  renderResultsTable();
+}
+
+function renderResultsTable(){
+  const tbody = el('results-tbody');
+  tbody.innerHTML = '';
+  sessionResults.forEach(r=>{
+    const tr = document.createElement('tr');
+    if(!r.ok) tr.classList.add('wrong');
+    const yourAnswerHtml = r.given.length
+      ? (r.ok ? `<span class="rt-your-ok">${r.given}</span>` : `<span class="rt-your-wrong">${r.given}</span>`)
+      : '<span class="rt-your-wrong">—</span>';
+    const correctCell = (!r.ok && showCorrect) ? `<span class="rt-correct-note">${r.correct}</span>` : (r.ok ? '' : '');
+    tr.innerHTML = `
+      <td class="status-icon">${r.ok ? '✓' : '✗'}</td>
+      <td class="rt-verb">${r.verb}</td>
+      <td>${r.subject}</td>
+      <td>${yourAnswerHtml}</td>
+      <td>${correctCell}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function exitToStart(){
+  sessionResults = []; showCorrect = true; idx = 0; score = 0; answered = false;
+  showStart();
+}
+
+el('btn-start').addEventListener('click', init);
+el('btn-submit').addEventListener('click', submitAnswer);
+el('btn-next').addEventListener('click', nextQuestion);
+el('btn-exit').addEventListener('click', exitToStart);
+el('btn-retry').addEventListener('click', init);
+el('btn-home').addEventListener('click', exitToStart);
+el('btn-toggle-correct').addEventListener('click', ()=>{
+  showCorrect = !showCorrect;
+  el('btn-toggle-correct').textContent = showCorrect ? 'Masquer les bonnes réponses' : 'Afficher les bonnes réponses';
+  el('btn-toggle-correct').classList.toggle('hiding', !showCorrect);
+  renderResultsTable();
+});
+
+el('answer-input').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    if(!answered) submitAnswer();
+    else nextQuestion();
+  }
+});
+
+showStart();
+</script>
+</body>
+</html>
