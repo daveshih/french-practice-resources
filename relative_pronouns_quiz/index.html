@@ -348,7 +348,7 @@ const R_QUE ='Use <b>que</b> when the pronoun is the DIRECT OBJECT of the relati
 const R_OU_P='Use <b>où</b> for place — replaces "dans laquelle", "en laquelle", etc. Much more natural than the lequel equivalent. ↔ Use dont if the verb takes de; use que if the noun is a direct object.';
 const R_OU_T='Use <b>où</b> for time expressions — replaces "pendant lequel", "lors duquel", etc. Common patterns: le jour où, le moment où, l\'année où, l\'époque où.';
 const R_LQ  ='After most prepositions (sur, avec, pour, dans, par, contre, sous…) use a lequel form agreeing with the noun: m.sg → lequel, f.sg → laquelle, m.pl → lesquels, f.pl → lesquelles. ↔ Use dont when the preposition is simple de; use où for concrete places.';
-const R_LQ_G='Use <b>auquel</b>: "grâce à" ends in "à", which contracts with lequel (à + lequel → auquel; à + lesquels → auxquels). Note: à + laquelle does NOT contract. ↔ Use dont when the verb takes simple de.';
+const R_LQ_G='The sentence already shows "à" — pick the <b>lequel</b> form that agrees with the noun (m.sg → lequel, f.sg → laquelle, m.pl → lesquels, f.pl → lesquelles). ↔ Use dont when the verb takes simple de.';
 
 // ── DIST ──────────────────────────────────────────────────────────────────
 const DIST={
@@ -360,7 +360,6 @@ const DIST={
   'laquelle':   ['qui','que','dont','lequel','où'],
   'lesquels':   ['qui','que','dont','lesquelles','laquelle'],
   'lesquelles': ['qui','que','dont','lesquels','laquelle'],
-  'auquel':     ['qui','que','dont','laquelle','lequel'],
 };
 
 // ── GENERATORS ────────────────────────────────────────────────────────────
@@ -394,7 +393,7 @@ function genLeq(){
   const fLabel=p.ans==='lequel'?'m.sg':p.ans==='laquelle'?'f.sg':p.ans==='lesquels'?'m.pl':'f.pl';
   return {
     s: rp(LQ_FRAMES)(p,v), a:p.ans, c:'lequel',
-    n:isG?`${p.prep} → <b>${p.ans}</b>`:`${p.prep} <b>${p.ans}</b> (${fLabel})`,
+    n:isG?`${p.prep} <b>${p.ans}</b> (${fLabel})`:`${p.prep} <b>${p.ans}</b> (${fLabel})`,
     e:`the ${p.n.e} (${p.prep}) — ${v}`,
     r:isG?R_LQ_G:R_LQ+` "${p.prep}" + "${p.n.n}" (${fLabel}) → ${p.ans}.`};
 }
