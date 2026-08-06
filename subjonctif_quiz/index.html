@@ -211,108 +211,67 @@ footer{margin-top:28px;font-size:.72rem;color:var(--muted);text-align:center}
 
 <script>
 // Each verb: [infinitive, [je, tu, il/elle/on, nous, vous, ils/elles]]
-const VERBS = [
-  ["être", ["sois","sois","soit","soyons","soyez","soient"]],
-  ["avoir", ["aie","aies","ait","ayons","ayez","aient"]],
-  ["faire", ["fasse","fasses","fasse","fassions","fassiez","fassent"]],
-  ["aller", ["aille","ailles","aille","allions","alliez","aillent"]],
-  ["pouvoir", ["puisse","puisses","puisse","puissions","puissiez","puissent"]],
-  ["savoir", ["sache","saches","sache","sachions","sachiez","sachent"]],
-  ["vouloir", ["veuille","veuilles","veuille","voulions","vouliez","veuillent"]],
-  ["venir", ["vienne","viennes","vienne","venions","veniez","viennent"]],
-  ["voir", ["voie","voies","voie","voyions","voyiez","voient"]],
-  ["prendre", ["prenne","prennes","prenne","prenions","preniez","prennent"]],
-  ["devoir", ["doive","doives","doive","devions","deviez","doivent"]],
-  ["dire", ["dise","dises","dise","disions","disiez","disent"]],
-  ["mettre", ["mette","mettes","mette","mettions","mettiez","mettent"]],
-  ["finir", ["finisse","finisses","finisse","finissions","finissiez","finissent"]],
-  ["choisir", ["choisisse","choisisses","choisisse","choisissions","choisissiez","choisissent"]],
-  ["réussir", ["réussisse","réussisses","réussisse","réussissions","réussissiez","réussissent"]],
-  ["parler", ["parle","parles","parle","parlions","parliez","parlent"]],
-  ["manger", ["mange","manges","mange","mangions","mangiez","mangent"]],
-  ["donner", ["donne","donnes","donne","donnions","donniez","donnent"]],
-  ["penser", ["pense","penses","pense","pensions","pensiez","pensent"]],
-  ["écouter", ["écoute","écoutes","écoute","écoutions","écoutiez","écoutent"]],
-  ["regarder", ["regarde","regardes","regarde","regardions","regardiez","regardent"]],
-  ["travailler", ["travaille","travailles","travaille","travaillions","travailliez","travaillent"]],
-  ["aimer", ["aime","aimes","aime","aimions","aimiez","aiment"]],
-  ["chercher", ["cherche","cherches","cherche","cherchions","cherchiez","cherchent"]],
-  ["trouver", ["trouve","trouves","trouve","trouvions","trouviez","trouvent"]],
-  ["attendre", ["attende","attendes","attende","attendions","attendiez","attendent"]],
-  ["répondre", ["réponde","répondes","réponde","répondions","répondiez","répondent"]],
-  ["vendre", ["vende","vendes","vende","vendions","vendiez","vendent"]],
-  ["entendre", ["entende","entendes","entende","entendions","entendiez","entendent"]],
-  ["rendre", ["rende","rendes","rende","rendions","rendiez","rendent"]],
-  ["perdre", ["perde","perdes","perde","perdions","perdiez","perdent"]],
-  ["écrire", ["écrive","écrives","écrive","écrivions","écriviez","écrivent"]],
-  ["lire", ["lise","lises","lise","lisions","lisiez","lisent"]],
-  ["connaître", ["connaisse","connaisses","connaisse","connaissions","connaissiez","connaissent"]],
-  ["croire", ["croie","croies","croie","croyions","croyiez","croient"]],
-  ["boire", ["boive","boives","boive","buvions","buviez","boivent"]],
-  ["vivre", ["vive","vives","vive","vivions","viviez","vivent"]],
-  ["suivre", ["suive","suives","suive","suivions","suiviez","suivent"]],
-  ["recevoir", ["reçoive","reçoives","reçoive","recevions","receviez","reçoivent"]],
-  ["courir", ["coure","coures","coure","courions","couriez","courent"]],
-  ["mourir", ["meure","meures","meure","mourions","mouriez","meurent"]],
-  ["tenir", ["tienne","tiennes","tienne","tenions","teniez","tiennent"]],
-  ["sortir", ["sorte","sortes","sorte","sortions","sortiez","sortent"]],
-  ["partir", ["parte","partes","parte","partions","partiez","partent"]],
-  ["dormir", ["dorme","dormes","dorme","dormions","dormiez","dorment"]],
-  ["sentir", ["sente","sentes","sente","sentions","sentiez","sentent"]],
-  ["servir", ["serve","serves","serve","servions","serviez","servent"]],
-  ["appeler", ["appelle","appelles","appelle","appelions","appeliez","appellent"]],
-  ["jeter", ["jette","jettes","jette","jetions","jetiez","jettent"]],
-];
-
-const SUBJECTS = ["je","tu","il / elle / on","nous","vous","ils / elles"];
-
-let questions = [], idx = 0, score = 0, answered = false, sessionResults = [], showCorrect = true;
-
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+var VERBS = [["être", ["sois", "sois", "soit", "soyons", "soyez", "soient"]], ["avoir", ["aie", "aies", "ait", "ayons", "ayez", "aient"]], ["faire", ["fasse", "fasses", "fasse", "fassions", "fassiez", "fassent"]], ["aller", ["aille", "ailles", "aille", "allions", "alliez", "aillent"]], ["pouvoir", ["puisse", "puisses", "puisse", "puissions", "puissiez", "puissent"]], ["savoir", ["sache", "saches", "sache", "sachions", "sachiez", "sachent"]], ["vouloir", ["veuille", "veuilles", "veuille", "voulions", "vouliez", "veuillent"]], ["venir", ["vienne", "viennes", "vienne", "venions", "veniez", "viennent"]], ["voir", ["voie", "voies", "voie", "voyions", "voyiez", "voient"]], ["prendre", ["prenne", "prennes", "prenne", "prenions", "preniez", "prennent"]], ["devoir", ["doive", "doives", "doive", "devions", "deviez", "doivent"]], ["dire", ["dise", "dises", "dise", "disions", "disiez", "disent"]], ["mettre", ["mette", "mettes", "mette", "mettions", "mettiez", "mettent"]], ["finir", ["finisse", "finisses", "finisse", "finissions", "finissiez", "finissent"]], ["choisir", ["choisisse", "choisisses", "choisisse", "choisissions", "choisissiez", "choisissent"]], ["réussir", ["réussisse", "réussisses", "réussisse", "réussissions", "réussissiez", "réussissent"]], ["parler", ["parle", "parles", "parle", "parlions", "parliez", "parlent"]], ["manger", ["mange", "manges", "mange", "mangions", "mangiez", "mangent"]], ["donner", ["donne", "donnes", "donne", "donnions", "donniez", "donnent"]], ["penser", ["pense", "penses", "pense", "pensions", "pensiez", "pensent"]], ["écouter", ["écoute", "écoutes", "écoute", "écoutions", "écoutiez", "écoutent"]], ["regarder", ["regarde", "regardes", "regarde", "regardions", "regardiez", "regardent"]], ["travailler", ["travaille", "travailles", "travaille", "travaillions", "travailliez", "travaillent"]], ["aimer", ["aime", "aimes", "aime", "aimions", "aimiez", "aiment"]], ["chercher", ["cherche", "cherches", "cherche", "cherchions", "cherchiez", "cherchent"]], ["trouver", ["trouve", "trouves", "trouve", "trouvions", "trouviez", "trouvent"]], ["attendre", ["attende", "attendes", "attende", "attendions", "attendiez", "attendent"]], ["répondre", ["réponde", "répondes", "réponde", "répondions", "répondiez", "répondent"]], ["vendre", ["vende", "vendes", "vende", "vendions", "vendiez", "vendent"]], ["entendre", ["entende", "entendes", "entende", "entendions", "entendiez", "entendent"]], ["rendre", ["rende", "rendes", "rende", "rendions", "rendiez", "rendent"]], ["perdre", ["perde", "perdes", "perde", "perdions", "perdiez", "perdent"]], ["écrire", ["écrive", "écrives", "écrive", "écrivions", "écriviez", "écrivent"]], ["lire", ["lise", "lises", "lise", "lisions", "lisiez", "lisent"]], ["connaître", ["connaisse", "connaisses", "connaisse", "connaissions", "connaissiez", "connaissent"]], ["croire", ["croie", "croies", "croie", "croyions", "croyiez", "croient"]], ["boire", ["boive", "boives", "boive", "buvions", "buviez", "boivent"]], ["vivre", ["vive", "vives", "vive", "vivions", "viviez", "vivent"]], ["suivre", ["suive", "suives", "suive", "suivions", "suiviez", "suivent"]], ["recevoir", ["reçoive", "reçoives", "reçoive", "recevions", "receviez", "reçoivent"]], ["courir", ["coure", "coures", "coure", "courions", "couriez", "courent"]], ["mourir", ["meure", "meures", "meure", "mourions", "mouriez", "meurent"]], ["tenir", ["tienne", "tiennes", "tienne", "tenions", "teniez", "tiennent"]], ["sortir", ["sorte", "sortes", "sorte", "sortions", "sortiez", "sortent"]], ["partir", ["parte", "partes", "parte", "partions", "partiez", "partent"]], ["dormir", ["dorme", "dormes", "dorme", "dormions", "dormiez", "dorment"]], ["sentir", ["sente", "sentes", "sente", "sentions", "sentiez", "sentent"]], ["servir", ["serve", "serves", "serve", "servions", "serviez", "servent"]], ["appeler", ["appelle", "appelles", "appelle", "appelions", "appeliez", "appellent"]], ["jeter", ["jette", "jettes", "jette", "jetions", "jetiez", "jettent"]]];
+var SUBJECTS = ["je", "tu", "il / elle / on", "nous", "vous", "ils / elles"];
+var questions = [],
+  idx = 0,
+  score = 0,
+  answered = false,
+  sessionResults = [],
+  showCorrect = true;
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
   }
   return a;
 }
-
-function buildPool(){
+function buildPool() {
   // every (verb, subject) combination
-  const pool = [];
-  VERBS.forEach(function(pair){
-    const inf = pair[0], forms = pair[1];
-    forms.forEach((form, si)=>{
-      pool.push({verb: inf, subjectIdx: si, subject: SUBJECTS[si], answer: form});
+  var pool = [];
+  VERBS.forEach(function (pair) {
+    var inf = pair[0],
+      forms = pair[1];
+    forms.forEach(function (form, si) {
+      pool.push({
+        verb: inf,
+        subjectIdx: si,
+        subject: SUBJECTS[si],
+        answer: form
+      });
     });
   });
   return shuffle(pool).slice(0, 20);
 }
-
-const el = id => document.getElementById(id);
-
-function showStart(){
+var el = function el(id) {
+  return document.getElementById(id);
+};
+function showStart() {
   el('start-screen').style.display = 'block';
   el('quiz-screen').style.display = 'none';
   el('results-screen').style.display = 'none';
 }
-
-function init(){
+function init() {
   questions = buildPool();
-  idx = 0; score = 0; answered = false; sessionResults = [];
+  idx = 0;
+  score = 0;
+  answered = false;
+  sessionResults = [];
   el('start-screen').style.display = 'none';
   el('results-screen').style.display = 'none';
   el('quiz-screen').style.display = 'block';
   renderQuestion();
 }
-
-function renderQuestion(){
+function renderQuestion() {
   answered = false;
-  const q = questions[idx];
-  el('progress-label').textContent = `Question ${idx+1} / ${questions.length}`;
+  var q = questions[idx];
+  el('progress-label').textContent = "Question ".concat(idx + 1, " / ").concat(questions.length);
   el('prompt-verb').textContent = q.verb;
   el('prompt-subject').textContent = q.subject;
-  const input = el('answer-input');
+  var input = el('answer-input');
   input.value = '';
   input.disabled = false;
   input.className = '';
@@ -322,112 +281,94 @@ function renderQuestion(){
   el('btn-submit').disabled = false;
   el('btn-next').style.display = 'none';
 }
-
-function normalize(s){
-  return s.trim().toLowerCase().replace(/\s+/g,' ');
+function normalize(s) {
+  return s.trim().toLowerCase().replace(/\s+/g, ' ');
 }
-
-function submitAnswer(){
-  if(answered) return;
-  const q = questions[idx];
-  const input = el('answer-input');
-  const raw = input.value;
-  const given = normalize(raw);
-  const correct = normalize(q.answer);
-  const isCorrect = given === correct && given.length > 0;
-
+function submitAnswer() {
+  if (answered) return;
+  var q = questions[idx];
+  var input = el('answer-input');
+  var raw = input.value;
+  var given = normalize(raw);
+  var correct = normalize(q.answer);
+  var isCorrect = given === correct && given.length > 0;
   answered = true;
-  if(isCorrect) score++;
-  sessionResults.push({verb:q.verb, subject:q.subject, given: raw.trim(), correct: q.answer, ok: isCorrect});
-
+  if (isCorrect) score++;
+  sessionResults.push({
+    verb: q.verb,
+    subject: q.subject,
+    given: raw.trim(),
+    correct: q.answer,
+    ok: isCorrect
+  });
   input.disabled = true;
   input.className = isCorrect ? 'correct' : 'incorrect';
-
-  const fb = el('feedback');
+  var fb = el('feedback');
   fb.classList.add('show', isCorrect ? 'correct' : 'incorrect');
-  el('fb-text').innerHTML = isCorrect
-    ? '✓ Correct !'
-    : `✗ La bonne réponse était : <span class="fb-answer">${q.answer}</span>`;
-
+  el('fb-text').innerHTML = isCorrect ? '✓ Correct !' : "\u2717 La bonne r\xE9ponse \xE9tait : <span class=\"fb-answer\">".concat(q.answer, "</span>");
   el('btn-submit').style.display = 'none';
   el('btn-next').style.display = 'inline-block';
   el('btn-next').focus();
 }
-
-function nextQuestion(){
-  if(idx < questions.length - 1){
+function nextQuestion() {
+  if (idx < questions.length - 1) {
     idx++;
     renderQuestion();
   } else {
     showResults();
   }
 }
-
-function showResults(){
+function showResults() {
   el('quiz-screen').style.display = 'none';
   el('results-screen').style.display = 'block';
-  el('score-big').textContent = `${score} / ${questions.length}`;
-  const pct = Math.round((score/questions.length)*100);
-  let msg;
-  if(pct === 100) msg = "Parfait ! Toutes les conjugaisons sont maîtrisées.";
-  else if(pct >= 80) msg = "Très bien joué !";
-  else if(pct >= 60) msg = "Pas mal, encore un peu de pratique.";
-  else msg = "Continue à réviser, ça viendra.";
+  el('score-big').textContent = "".concat(score, " / ").concat(questions.length);
+  var pct = Math.round(score / questions.length * 100);
+  var msg;
+  if (pct === 100) msg = "Parfait ! Toutes les conjugaisons sont maîtrisées.";else if (pct >= 80) msg = "Très bien joué !";else if (pct >= 60) msg = "Pas mal, encore un peu de pratique.";else msg = "Continue à réviser, ça viendra.";
   el('score-summary').textContent = msg;
-
   showCorrect = true;
   el('btn-toggle-correct').textContent = 'Masquer les bonnes réponses';
   el('btn-toggle-correct').classList.remove('hiding');
   renderResultsTable();
 }
-
-function renderResultsTable(){
-  const tbody = el('results-tbody');
+function renderResultsTable() {
+  var tbody = el('results-tbody');
   tbody.innerHTML = '';
-  sessionResults.forEach(r=>{
-    const tr = document.createElement('tr');
-    if(!r.ok) tr.classList.add('wrong');
-    const yourAnswerHtml = r.given.length
-      ? (r.ok ? `<span class="rt-your-ok">${r.given}</span>` : `<span class="rt-your-wrong">${r.given}</span>`)
-      : '<span class="rt-your-wrong">—</span>';
-    const correctCell = (!r.ok && showCorrect) ? `<span class="rt-correct-note">${r.correct}</span>` : (r.ok ? '' : '');
-    tr.innerHTML = `
-      <td class="status-icon">${r.ok ? '✓' : '✗'}</td>
-      <td class="rt-verb">${r.verb}</td>
-      <td>${r.subject}</td>
-      <td>${yourAnswerHtml}</td>
-      <td>${correctCell}</td>
-    `;
+  sessionResults.forEach(function (r) {
+    var tr = document.createElement('tr');
+    if (!r.ok) tr.classList.add('wrong');
+    var yourAnswerHtml = r.given.length ? r.ok ? "<span class=\"rt-your-ok\">".concat(r.given, "</span>") : "<span class=\"rt-your-wrong\">".concat(r.given, "</span>") : '<span class="rt-your-wrong">—</span>';
+    var correctCell = !r.ok && showCorrect ? "<span class=\"rt-correct-note\">".concat(r.correct, "</span>") : r.ok ? '' : '';
+    tr.innerHTML = "\n      <td class=\"status-icon\">".concat(r.ok ? '✓' : '✗', "</td>\n      <td class=\"rt-verb\">").concat(r.verb, "</td>\n      <td>").concat(r.subject, "</td>\n      <td>").concat(yourAnswerHtml, "</td>\n      <td>").concat(correctCell, "</td>\n    ");
     tbody.appendChild(tr);
   });
 }
-
-function exitToStart(){
-  sessionResults = []; showCorrect = true; idx = 0; score = 0; answered = false;
+function exitToStart() {
+  sessionResults = [];
+  showCorrect = true;
+  idx = 0;
+  score = 0;
+  answered = false;
   showStart();
 }
-
 el('btn-start').addEventListener('click', init);
 el('btn-submit').addEventListener('click', submitAnswer);
 el('btn-next').addEventListener('click', nextQuestion);
 el('btn-exit').addEventListener('click', exitToStart);
 el('btn-retry').addEventListener('click', init);
 el('btn-home').addEventListener('click', exitToStart);
-el('btn-toggle-correct').addEventListener('click', ()=>{
+el('btn-toggle-correct').addEventListener('click', function () {
   showCorrect = !showCorrect;
   el('btn-toggle-correct').textContent = showCorrect ? 'Masquer les bonnes réponses' : 'Afficher les bonnes réponses';
   el('btn-toggle-correct').classList.toggle('hiding', !showCorrect);
   renderResultsTable();
 });
-
-el('answer-input').addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter'){
+el('answer-input').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
     e.preventDefault();
-    if(!answered) submitAnswer();
-    else nextQuestion();
+    if (!answered) submitAnswer();else nextQuestion();
   }
 });
-
 showStart();
 </script>
 </body>

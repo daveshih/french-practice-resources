@@ -148,502 +148,1226 @@ header p{color:var(--muted);font-size:.88rem;margin-top:5px}
   </div>
 </div>
 <script>
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 // ── HELPERS ───────────────────────────────────────────────────────────────
-function an(o){ return o.a.endsWith("'") ? o.a+o.n : o.a+' '+o.n; }
-function anCap(o){ const s=an(o); return s[0].toUpperCase()+s.slice(1); }
-const MODAL_DATA = new Map();
-let _mIdx = 0, _activeMTarget = null;
-
+function an(o) {
+  return o.a.endsWith("'") ? o.a + o.n : o.a + ' ' + o.n;
+}
+function anCap(o) {
+  var s = an(o);
+  return s[0].toUpperCase() + s.slice(1);
+}
+var MODAL_DATA = new Map();
+var _mIdx = 0,
+  _activeMTarget = null;
 function showWordModal(key, targetEl) {
-  const d = MODAL_DATA.get(key);
+  var d = MODAL_DATA.get(key);
   if (!d) return;
-  const ex = document.getElementById('word-modal');
-  if (ex) { ex.remove(); }
-  if (_activeMTarget === targetEl) { _activeMTarget = null; return; }
+  var ex = document.getElementById('word-modal');
+  if (ex) {
+    ex.remove();
+  }
+  if (_activeMTarget === targetEl) {
+    _activeMTarget = null;
+    return;
+  }
   _activeMTarget = targetEl;
-  const m = document.createElement('div');
-  m.id = 'word-modal'; m.className = 'word-modal';
-  m.innerHTML = d.fr
-    ? `<div class="wm-fr">${d.fr}</div><div class="wm-en">${d.en}</div>`
-    : `<div class="wm-en">${d.en}</div>`;
+  var m = document.createElement('div');
+  m.id = 'word-modal';
+  m.className = 'word-modal';
+  m.innerHTML = d.fr ? "<div class=\"wm-fr\">".concat(d.fr, "</div><div class=\"wm-en\">").concat(d.en, "</div>") : "<div class=\"wm-en\">".concat(d.en, "</div>");
   document.body.appendChild(m);
-  const r = targetEl.getBoundingClientRect();
-  const sy = window.scrollY||0, sx = window.scrollX||0;
-  m.style.top  = (r.bottom + sy + 6) + 'px';
-  m.style.left = (r.left   + sx) + 'px';
-  requestAnimationFrame(() => {
-    const mr = m.getBoundingClientRect();
-    if (mr.right  > window.innerWidth  - 8) m.style.left = Math.max(8, window.innerWidth  - mr.width  - 8) + 'px';
-    if (mr.bottom > window.innerHeight - 8) m.style.top  = (r.top + sy - mr.height - 6) + 'px';
+  var r = targetEl.getBoundingClientRect();
+  var sy = window.scrollY || 0,
+    sx = window.scrollX || 0;
+  m.style.top = r.bottom + sy + 6 + 'px';
+  m.style.left = r.left + sx + 'px';
+  requestAnimationFrame(function () {
+    var mr = m.getBoundingClientRect();
+    if (mr.right > window.innerWidth - 8) m.style.left = Math.max(8, window.innerWidth - mr.width - 8) + 'px';
+    if (mr.bottom > window.innerHeight - 8) m.style.top = r.top + sy - mr.height - 6 + 'px';
   });
   function cleanup() {
-    const em = document.getElementById('word-modal'); if (em) em.remove();
+    var em = document.getElementById('word-modal');
+    if (em) em.remove();
     _activeMTarget = null;
     document.removeEventListener('click', outside);
     document.removeEventListener('keydown', onKey);
   }
-  function outside(e) { const wm = document.getElementById('word-modal'); if (!(wm && wm.contains(e.target)) && e.target !== targetEl) cleanup(); }
-  function onKey(e)   { if (e.key === 'Escape') cleanup(); }
-  setTimeout(() => { document.addEventListener('click', outside); document.addEventListener('keydown', onKey); }, 0);
+  function outside(e) {
+    var wm = document.getElementById('word-modal');
+    if (!(wm && wm.contains(e.target)) && e.target !== targetEl) cleanup();
+  }
+  function onKey(e) {
+    if (e.key === 'Escape') cleanup();
+  }
+  setTimeout(function () {
+    document.addEventListener('click', outside);
+    document.addEventListener('keydown', onKey);
+  }, 0);
+}
+function rp(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-
-function rp(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
 // ── QUI DATA ──────────────────────────────────────────────────────────────
-const QS_ANIM=[
-  {a:"le",  n:"professeur",  e:"teacher",    g:"sg"},
-  {a:"l'",  n:"étudiant",   e:"student",    g:"sg"},
-  {a:"la",  n:"directrice", e:"director",   g:"sg"},
-  {a:"l'",  n:"avocat",     e:"lawyer",     g:"sg"},
-  {a:"le",  n:"médecin",    e:"doctor",     g:"sg"},
-  {a:"l'",  n:"ingénieur",  e:"engineer",   g:"sg"},
-  {a:"le",  n:"journaliste",e:"journalist", g:"sg"},
-  {a:"la",  n:"chercheuse", e:"researcher", g:"sg"},
-  {a:"l'",  n:"employé",    e:"employee",   g:"sg"},
-  {a:"le",  n:"candidat",   e:"candidate",  g:"sg"},
-  {a:"la",  n:"voisine",    e:"neighbour",  g:"sg"},
-  {a:"l'",  n:"ami",        e:"friend",     g:"sg"},
-  {a:"le",  n:"chef",       e:"manager",    g:"sg"},
-  {a:"le",  n:"client",     e:"client",     g:"sg"},
-  {a:"la",  n:"secrétaire", e:"secretary",  g:"sg"},
-  {a:"le",  n:"stagiaire",  e:"intern",     g:"sg"},
-];
-const QS_INAN=[
-  {a:"l'",  n:"idée",       e:"idea",       g:"sg"},
-  {a:"le",  n:"projet",     e:"project",    g:"sg"},
-  {a:"la",  n:"règle",      e:"rule",       g:"sg"},
-  {a:"le",  n:"médicament", e:"medicine",   g:"sg"},
-  {a:"le",  n:"problème",   e:"problem",    g:"sg"},
-  {a:"la",  n:"solution",   e:"solution",   g:"sg"},
-  {a:"le",  n:"bus",        e:"bus",        g:"sg"},
-  {a:"le",  n:"train",      e:"train",      g:"sg"},
-];
-const QV_ANIM=[
-  {fr:"parle six langues",               en:"speaks six languages"},
-  {fr:"m'a aidé",                        en:"helped me"},
-  {fr:"organise les réunions",           en:"organises the meetings"},
-  {fr:"connaît bien la région",          en:"knows the region well"},
-  {fr:"a réussi l'examen",              en:"passed the exam"},
-  {fr:"travaille ici depuis dix ans",    en:"has worked here for ten years"},
-  {fr:"dirige l'équipe",               en:"leads the team"},
-  {fr:"enseigne le français",           en:"teaches French"},
-  {fr:"arrive toujours en retard",      en:"always arrives late"},
-  {fr:"tient toujours ses promesses",   en:"always keeps their promises"},
-  {fr:"vit en France depuis longtemps", en:"has lived in France for a long time"},
-  {fr:"a trouvé la solution",          en:"found the solution"},
-  {fr:"prend les décisions importantes",en:"makes the important decisions"},
-  {fr:"m'a tout expliqué",             en:"explained everything to me"},
-];
-const QV_INAN=[
-  {fr:"a tout changé",                  en:"changed everything"},
-  {fr:"s'applique ici",                en:"applies here"},
-  {fr:"fonctionne très bien",           en:"works very well"},
-  {fr:"arrive souvent",                en:"comes up often"},
-  {fr:"a résolu le problème",          en:"solved the problem"},
-  {fr:"grandit très vite",             en:"is growing very fast"},
-  {fr:"va au centre-ville",            en:"goes to the city centre"},
-  {fr:"circule toutes les dix minutes",en:"runs every ten minutes"},
-];
+var QS_ANIM = [{
+  a: "le",
+  n: "professeur",
+  e: "teacher",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "étudiant",
+  e: "student",
+  g: "sg"
+}, {
+  a: "la",
+  n: "directrice",
+  e: "director",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "avocat",
+  e: "lawyer",
+  g: "sg"
+}, {
+  a: "le",
+  n: "médecin",
+  e: "doctor",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "ingénieur",
+  e: "engineer",
+  g: "sg"
+}, {
+  a: "le",
+  n: "journaliste",
+  e: "journalist",
+  g: "sg"
+}, {
+  a: "la",
+  n: "chercheuse",
+  e: "researcher",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "employé",
+  e: "employee",
+  g: "sg"
+}, {
+  a: "le",
+  n: "candidat",
+  e: "candidate",
+  g: "sg"
+}, {
+  a: "la",
+  n: "voisine",
+  e: "neighbour",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "ami",
+  e: "friend",
+  g: "sg"
+}, {
+  a: "le",
+  n: "chef",
+  e: "manager",
+  g: "sg"
+}, {
+  a: "le",
+  n: "client",
+  e: "client",
+  g: "sg"
+}, {
+  a: "la",
+  n: "secrétaire",
+  e: "secretary",
+  g: "sg"
+}, {
+  a: "le",
+  n: "stagiaire",
+  e: "intern",
+  g: "sg"
+}];
+var QS_INAN = [{
+  a: "l'",
+  n: "idée",
+  e: "idea",
+  g: "sg"
+}, {
+  a: "le",
+  n: "projet",
+  e: "project",
+  g: "sg"
+}, {
+  a: "la",
+  n: "règle",
+  e: "rule",
+  g: "sg"
+}, {
+  a: "le",
+  n: "médicament",
+  e: "medicine",
+  g: "sg"
+}, {
+  a: "le",
+  n: "problème",
+  e: "problem",
+  g: "sg"
+}, {
+  a: "la",
+  n: "solution",
+  e: "solution",
+  g: "sg"
+}, {
+  a: "le",
+  n: "bus",
+  e: "bus",
+  g: "sg"
+}, {
+  a: "le",
+  n: "train",
+  e: "train",
+  g: "sg"
+}];
+var QV_ANIM = [{
+  fr: "parle six langues",
+  en: "speaks six languages"
+}, {
+  fr: "m'a aidé",
+  en: "helped me"
+}, {
+  fr: "organise les réunions",
+  en: "organises the meetings"
+}, {
+  fr: "connaît bien la région",
+  en: "knows the region well"
+}, {
+  fr: "a réussi l'examen",
+  en: "passed the exam"
+}, {
+  fr: "travaille ici depuis dix ans",
+  en: "has worked here for ten years"
+}, {
+  fr: "dirige l'équipe",
+  en: "leads the team"
+}, {
+  fr: "enseigne le français",
+  en: "teaches French"
+}, {
+  fr: "arrive toujours en retard",
+  en: "always arrives late"
+}, {
+  fr: "tient toujours ses promesses",
+  en: "always keeps their promises"
+}, {
+  fr: "vit en France depuis longtemps",
+  en: "has lived in France for a long time"
+}, {
+  fr: "a trouvé la solution",
+  en: "found the solution"
+}, {
+  fr: "prend les décisions importantes",
+  en: "makes the important decisions"
+}, {
+  fr: "m'a tout expliqué",
+  en: "explained everything to me"
+}];
+var QV_INAN = [{
+  fr: "a tout changé",
+  en: "changed everything"
+}, {
+  fr: "s'applique ici",
+  en: "applies here"
+}, {
+  fr: "fonctionne très bien",
+  en: "works very well"
+}, {
+  fr: "arrive souvent",
+  en: "comes up often"
+}, {
+  fr: "a résolu le problème",
+  en: "solved the problem"
+}, {
+  fr: "grandit très vite",
+  en: "is growing very fast"
+}, {
+  fr: "va au centre-ville",
+  en: "goes to the city centre"
+}, {
+  fr: "circule toutes les dix minutes",
+  en: "runs every ten minutes"
+}];
 // Frames for qui: fn(subj_obj) => [before_blank, after_blank]
-const QUI_FRAMES=[
-  o=>[`C'est ${an(o)} ___ `           ,'.'],
-  o=>[`Voilà ${an(o)} ___ `           ,'.'],
-  o=>[`${anCap(o)} ___ `              ,` est remarquable${o.g==='pl'?'s':''}.`],
-  o=>[`J'ai rencontré ${an(o)} ___ ` ,'.'],
-];
+var QUI_FRAMES = [function (o) {
+  return ["C'est ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["Voil\xE0 ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["".concat(anCap(o), " ___ "), " est remarquable".concat(o.g === 'pl' ? 's' : '', ".")];
+}, function (o) {
+  return ["J'ai rencontr\xE9 ".concat(an(o), " ___ "), '.'];
+}];
 
 // ── QUE DATA ──────────────────────────────────────────────────────────────
-const QN_OBJ=[
-  {a:"le", n:"livre",       e:"book",     g:"sg"},
-  {a:"le", n:"film",        e:"film",     g:"sg"},
-  {a:"la", n:"ville",       e:"city",     g:"sg"},
-  {a:"le", n:"projet",      e:"project",  g:"sg"},
-  {a:"la", n:"décision",    e:"decision", g:"sg"},
-  {a:"le", n:"document",    e:"document", g:"sg"},
-  {a:"l'",n:"idée",        e:"idea",     g:"sg"},
-  {a:"la", n:"réponse",     e:"answer",   g:"sg"},
-  {a:"le", n:"message",     e:"message",  g:"sg"},
-  {a:"la", n:"proposition", e:"proposal", g:"sg"},
-  {a:"le", n:"résultat",    e:"result",   g:"sg"},
-  {a:"l'",n:"offre",       e:"offer",    g:"sg"},
-  {a:"le", n:"tableau",     e:"painting", g:"sg"},
-  {a:"le", n:"rapport",     e:"report",   g:"sg"},
-  {a:"le", n:"contrat",     e:"contract", g:"sg"},
-  {a:"le", n:"plan",        e:"plan",     g:"sg"},
-  {a:"la", n:"stratégie",   e:"strategy", g:"sg"},
-  {a:"la", n:"photo",       e:"photo",    g:"sg"},
-];
-const QV_QUE=[
-  {fr:"tu m'as recommandé",          en:"you recommended to me"},
-  {fr:"j'attends depuis longtemps",  en:"I have been waiting for"},
-  {fr:"nous devons valider",         en:"we need to validate"},
-  {fr:"le jury a choisi",            en:"the jury chose"},
-  {fr:"vous devez signer",           en:"you need to sign"},
-  {fr:"elle a proposé",              en:"she proposed"},
-  {fr:"nous avons reçu",             en:"we received"},
-  {fr:"j'ai obtenu",                 en:"I got"},
-  {fr:"le directeur a approuvé",     en:"the director approved"},
-  {fr:"ils ont refusé",              en:"they rejected"},
-  {fr:"je préfère",                  en:"I prefer"},
-  {fr:"Marc a envoyé",               en:"Marc sent"},
-  {fr:"l'équipe a présenté",        en:"the team presented"},
-  {fr:"le comité a adopté",          en:"the committee adopted"},
-  {fr:"nous devons analyser",        en:"we need to analyse"},
-];
-const QUE_FRAMES=[
-  o=>[`C'est ${an(o)} ___ `        ,'.'],
-  o=>[`Voilà ${an(o)} ___ `        ,'.'],
-  o=>[`${anCap(o)} ___ `           ," m'a beaucoup intéressé."],
-  o=>[`J'ai enfin trouvé ${an(o)} ___ `  ,'.'],
-];
+var QN_OBJ = [{
+  a: "le",
+  n: "livre",
+  e: "book",
+  g: "sg"
+}, {
+  a: "le",
+  n: "film",
+  e: "film",
+  g: "sg"
+}, {
+  a: "la",
+  n: "ville",
+  e: "city",
+  g: "sg"
+}, {
+  a: "le",
+  n: "projet",
+  e: "project",
+  g: "sg"
+}, {
+  a: "la",
+  n: "décision",
+  e: "decision",
+  g: "sg"
+}, {
+  a: "le",
+  n: "document",
+  e: "document",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "idée",
+  e: "idea",
+  g: "sg"
+}, {
+  a: "la",
+  n: "réponse",
+  e: "answer",
+  g: "sg"
+}, {
+  a: "le",
+  n: "message",
+  e: "message",
+  g: "sg"
+}, {
+  a: "la",
+  n: "proposition",
+  e: "proposal",
+  g: "sg"
+}, {
+  a: "le",
+  n: "résultat",
+  e: "result",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "offre",
+  e: "offer",
+  g: "sg"
+}, {
+  a: "le",
+  n: "tableau",
+  e: "painting",
+  g: "sg"
+}, {
+  a: "le",
+  n: "rapport",
+  e: "report",
+  g: "sg"
+}, {
+  a: "le",
+  n: "contrat",
+  e: "contract",
+  g: "sg"
+}, {
+  a: "le",
+  n: "plan",
+  e: "plan",
+  g: "sg"
+}, {
+  a: "la",
+  n: "stratégie",
+  e: "strategy",
+  g: "sg"
+}, {
+  a: "la",
+  n: "photo",
+  e: "photo",
+  g: "sg"
+}];
+var QV_QUE = [{
+  fr: "tu m'as recommandé",
+  en: "you recommended to me"
+}, {
+  fr: "j'attends depuis longtemps",
+  en: "I have been waiting for"
+}, {
+  fr: "nous devons valider",
+  en: "we need to validate"
+}, {
+  fr: "le jury a choisi",
+  en: "the jury chose"
+}, {
+  fr: "vous devez signer",
+  en: "you need to sign"
+}, {
+  fr: "elle a proposé",
+  en: "she proposed"
+}, {
+  fr: "nous avons reçu",
+  en: "we received"
+}, {
+  fr: "j'ai obtenu",
+  en: "I got"
+}, {
+  fr: "le directeur a approuvé",
+  en: "the director approved"
+}, {
+  fr: "ils ont refusé",
+  en: "they rejected"
+}, {
+  fr: "je préfère",
+  en: "I prefer"
+}, {
+  fr: "Marc a envoyé",
+  en: "Marc sent"
+}, {
+  fr: "l'équipe a présenté",
+  en: "the team presented"
+}, {
+  fr: "le comité a adopté",
+  en: "the committee adopted"
+}, {
+  fr: "nous devons analyser",
+  en: "we need to analyse"
+}];
+var QUE_FRAMES = [function (o) {
+  return ["C'est ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["Voil\xE0 ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["".concat(anCap(o), " ___ "), " m'a beaucoup intéressé."];
+}, function (o) {
+  return ["J'ai enfin trouv\xE9 ".concat(an(o), " ___ "), '.'];
+}];
 
 // ── DONT DATA ─────────────────────────────────────────────────────────────
-const DN_NOUNS=[
-  {a:"le", n:"sujet",    e:"subject",  g:"sg"},
-  {a:"l'",n:"outil",    e:"tool",     g:"sg"},
-  {a:"le", n:"film",     e:"film",     g:"sg"},
-  {a:"la", n:"raison",   e:"reason",   g:"sg"},
-  {a:"le", n:"résultat", e:"result",   g:"sg"},
-  {a:"le", n:"projet",   e:"project",  g:"sg"},
-  {a:"le", n:"rôle",     e:"role",     g:"sg"},
-  {a:"le", n:"talent",   e:"talent",   g:"sg"},
-  {a:"le", n:"livre",    e:"book",     g:"sg"},
-  {a:"la", n:"décision", e:"decision", g:"sg"},
-  {a:"le", n:"problème", e:"problem",  g:"sg"},
-  {a:"l'",n:"auteur",   e:"author",   g:"sg"},
-  {a:"la", n:"ville",    e:"city",     g:"sg"},
-  {a:"le", n:"travail",  e:"work",     g:"sg"},
-];
-const DV_VERBS=[
-  {fr:"il parle souvent",         en:"he often talks about",        v:"parler de"},
-  {fr:"j'ai besoin",              en:"I need",                      v:"avoir besoin de"},
-  {fr:"tout le monde parle",      en:"everyone is talking about",   v:"parler de"},
-  {fr:"je suis fier",             en:"I am proud of",               v:"être fier de"},
-  {fr:"il est responsable",       en:"he is responsible for",       v:"être responsable de"},
-  {fr:"il rêve depuis longtemps", en:"he has long dreamed of",      v:"rêver de"},
-  {fr:"nous avons discuté",       en:"we discussed",                v:"discuter de"},
-  {fr:"je dépends",               en:"I depend on",                 v:"dépendre de"},
-  {fr:"nous avons besoin",        en:"we need",                     v:"avoir besoin de"},
-  {fr:"tu m'as parlé hier",       en:"you told me about yesterday", v:"parler de"},
-  {fr:"elle est très fière",      en:"she is very proud of",        v:"être fier de"},
-  {fr:"il ne peut pas se passer", en:"he cannot do without",        v:"se passer de"},
-  {fr:"ils ont discuté",          en:"they discussed",              v:"discuter de"},
-];
-const DONT_FRAMES=[
-  o=>[`C'est ${an(o)} ___ `       ,'.'],
-  o=>[`Voilà ${an(o)} ___ `       ,'.'],
-  o=>[`${anCap(o)} ___ `          ,' est très important.'],
-  o=>[`Je cherche ${an(o)} ___ `  ,'.'],
-];
+var DN_NOUNS = [{
+  a: "le",
+  n: "sujet",
+  e: "subject",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "outil",
+  e: "tool",
+  g: "sg"
+}, {
+  a: "le",
+  n: "film",
+  e: "film",
+  g: "sg"
+}, {
+  a: "la",
+  n: "raison",
+  e: "reason",
+  g: "sg"
+}, {
+  a: "le",
+  n: "résultat",
+  e: "result",
+  g: "sg"
+}, {
+  a: "le",
+  n: "projet",
+  e: "project",
+  g: "sg"
+}, {
+  a: "le",
+  n: "rôle",
+  e: "role",
+  g: "sg"
+}, {
+  a: "le",
+  n: "talent",
+  e: "talent",
+  g: "sg"
+}, {
+  a: "le",
+  n: "livre",
+  e: "book",
+  g: "sg"
+}, {
+  a: "la",
+  n: "décision",
+  e: "decision",
+  g: "sg"
+}, {
+  a: "le",
+  n: "problème",
+  e: "problem",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "auteur",
+  e: "author",
+  g: "sg"
+}, {
+  a: "la",
+  n: "ville",
+  e: "city",
+  g: "sg"
+}, {
+  a: "le",
+  n: "travail",
+  e: "work",
+  g: "sg"
+}];
+var DV_VERBS = [{
+  fr: "il parle souvent",
+  en: "he often talks about",
+  v: "parler de"
+}, {
+  fr: "j'ai besoin",
+  en: "I need",
+  v: "avoir besoin de"
+}, {
+  fr: "tout le monde parle",
+  en: "everyone is talking about",
+  v: "parler de"
+}, {
+  fr: "je suis fier",
+  en: "I am proud of",
+  v: "être fier de"
+}, {
+  fr: "il est responsable",
+  en: "he is responsible for",
+  v: "être responsable de"
+}, {
+  fr: "il rêve depuis longtemps",
+  en: "he has long dreamed of",
+  v: "rêver de"
+}, {
+  fr: "nous avons discuté",
+  en: "we discussed",
+  v: "discuter de"
+}, {
+  fr: "je dépends",
+  en: "I depend on",
+  v: "dépendre de"
+}, {
+  fr: "nous avons besoin",
+  en: "we need",
+  v: "avoir besoin de"
+}, {
+  fr: "tu m'as parlé hier",
+  en: "you told me about yesterday",
+  v: "parler de"
+}, {
+  fr: "elle est très fière",
+  en: "she is very proud of",
+  v: "être fier de"
+}, {
+  fr: "il ne peut pas se passer",
+  en: "he cannot do without",
+  v: "se passer de"
+}, {
+  fr: "ils ont discuté",
+  en: "they discussed",
+  v: "discuter de"
+}];
+var DONT_FRAMES = [function (o) {
+  return ["C'est ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["Voil\xE0 ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["".concat(anCap(o), " ___ "), ' est très important.'];
+}, function (o) {
+  return ["Je cherche ".concat(an(o), " ___ "), '.'];
+}];
 
 // ── OÙ DATA ───────────────────────────────────────────────────────────────
-const OU_PLACES=[
-  {a:"la", n:"ville",        e:"city",         g:"sg"},
-  {a:"le", n:"café",         e:"café",          g:"sg"},
-  {a:"le", n:"pays",         e:"country",      g:"sg"},
-  {a:"le", n:"quartier",     e:"neighbourhood",g:"sg"},
-  {a:"l'",n:"hôtel",        e:"hotel",        g:"sg"},
-  {a:"le", n:"bureau",       e:"office",       g:"sg"},
-  {a:"le", n:"parc",         e:"park",         g:"sg"},
-  {a:"la", n:"salle",        e:"room",         g:"sg"},
-  {a:"le", n:"restaurant",   e:"restaurant",   g:"sg"},
-  {a:"la", n:"bibliothèque", e:"library",      g:"sg"},
-  {a:"l'",n:"école",        e:"school",       g:"sg"},
-];
-const OU_TIMES=[
-  {a:"le", n:"jour",     e:"day",     g:"sg"},
-  {a:"l'",n:"année",    e:"year",    g:"sg"},
-  {a:"le", n:"moment",   e:"moment",  g:"sg"},
-  {a:"l'",n:"époque",   e:"era",     g:"sg"},
-  {a:"le", n:"soir",     e:"evening", g:"sg"},
-  {a:"le", n:"week-end", e:"weekend", g:"sg"},
-  {a:"la", n:"période",  e:"period",  g:"sg"},
-  {a:"l'",n:"instant",  e:"instant", g:"sg"},
-];
-const OV_PLACE=[
-  {fr:"je suis né",             en:"where I was born"},
-  {fr:"elle travaille",         en:"where she works"},
-  {fr:"il a grandi",            en:"where he grew up"},
-  {fr:"on se retrouve souvent", en:"where we often meet up"},
-  {fr:"les réunions ont lieu",  en:"where meetings take place"},
-  {fr:"j'ai passé mon enfance", en:"where I spent my childhood"},
-  {fr:"nous avons séjourné",    en:"where we stayed"},
-  {fr:"ils vivent",             en:"where they live"},
-  {fr:"les enfants jouent",     en:"where the children play"},
-  {fr:"je préfère travailler",  en:"where I prefer to work"},
-];
-const OV_TIME=[
-  {fr:"j'ai rencontré Marie",            en:"when I met Marie"},
-  {fr:"tout a changé",                   en:"when everything changed"},
-  {fr:"j'ai compris la vérité",          en:"when I understood the truth"},
-  {fr:"il est parti",                    en:"when he left"},
-  {fr:"j'ai pris ma décision",           en:"when I made my decision"},
-  {fr:"elle a obtenu son diplôme",        en:"when she got her degree"},
-  {fr:"nous avons fait cette découverte", en:"when we made this discovery"},
-];
-const OU_FRAMES_PLACE=[
-  o=>[`C'est ${an(o)} ___ `       ,'.'],
-  o=>[`Voilà ${an(o)} ___ `       ,'.'],
-  o=>[`${anCap(o)} ___ `          ,' me manque.'],
-  o=>[`Je pense souvent à ${an(o)} ___ `, '.'],
-];
-const OU_FRAMES_TIME=[
-  o=>[`C'est ${an(o)} ___ `       ,'.'],
-  o=>[`Voilà ${an(o)} ___ `       ,'.'],
-  o=>[`${anCap(o)} ___ `          ,' a tout changé pour moi.'],
-  o=>[`Je me souviens du ${o.n} ___ `, '.'],
-];
+var OU_PLACES = [{
+  a: "la",
+  n: "ville",
+  e: "city",
+  g: "sg"
+}, {
+  a: "le",
+  n: "café",
+  e: "café",
+  g: "sg"
+}, {
+  a: "le",
+  n: "pays",
+  e: "country",
+  g: "sg"
+}, {
+  a: "le",
+  n: "quartier",
+  e: "neighbourhood",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "hôtel",
+  e: "hotel",
+  g: "sg"
+}, {
+  a: "le",
+  n: "bureau",
+  e: "office",
+  g: "sg"
+}, {
+  a: "le",
+  n: "parc",
+  e: "park",
+  g: "sg"
+}, {
+  a: "la",
+  n: "salle",
+  e: "room",
+  g: "sg"
+}, {
+  a: "le",
+  n: "restaurant",
+  e: "restaurant",
+  g: "sg"
+}, {
+  a: "la",
+  n: "bibliothèque",
+  e: "library",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "école",
+  e: "school",
+  g: "sg"
+}];
+var OU_TIMES = [{
+  a: "le",
+  n: "jour",
+  e: "day",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "année",
+  e: "year",
+  g: "sg"
+}, {
+  a: "le",
+  n: "moment",
+  e: "moment",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "époque",
+  e: "era",
+  g: "sg"
+}, {
+  a: "le",
+  n: "soir",
+  e: "evening",
+  g: "sg"
+}, {
+  a: "le",
+  n: "week-end",
+  e: "weekend",
+  g: "sg"
+}, {
+  a: "la",
+  n: "période",
+  e: "period",
+  g: "sg"
+}, {
+  a: "l'",
+  n: "instant",
+  e: "instant",
+  g: "sg"
+}];
+var OV_PLACE = [{
+  fr: "je suis né",
+  en: "where I was born"
+}, {
+  fr: "elle travaille",
+  en: "where she works"
+}, {
+  fr: "il a grandi",
+  en: "where he grew up"
+}, {
+  fr: "on se retrouve souvent",
+  en: "where we often meet up"
+}, {
+  fr: "les réunions ont lieu",
+  en: "where meetings take place"
+}, {
+  fr: "j'ai passé mon enfance",
+  en: "where I spent my childhood"
+}, {
+  fr: "nous avons séjourné",
+  en: "where we stayed"
+}, {
+  fr: "ils vivent",
+  en: "where they live"
+}, {
+  fr: "les enfants jouent",
+  en: "where the children play"
+}, {
+  fr: "je préfère travailler",
+  en: "where I prefer to work"
+}];
+var OV_TIME = [{
+  fr: "j'ai rencontré Marie",
+  en: "when I met Marie"
+}, {
+  fr: "tout a changé",
+  en: "when everything changed"
+}, {
+  fr: "j'ai compris la vérité",
+  en: "when I understood the truth"
+}, {
+  fr: "il est parti",
+  en: "when he left"
+}, {
+  fr: "j'ai pris ma décision",
+  en: "when I made my decision"
+}, {
+  fr: "elle a obtenu son diplôme",
+  en: "when she got her degree"
+}, {
+  fr: "nous avons fait cette découverte",
+  en: "when we made this discovery"
+}];
+var OU_FRAMES_PLACE = [function (o) {
+  return ["C'est ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["Voil\xE0 ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["".concat(anCap(o), " ___ "), ' me manque.'];
+}, function (o) {
+  return ["Je pense souvent \xE0 ".concat(an(o), " ___ "), '.'];
+}];
+var OU_FRAMES_TIME = [function (o) {
+  return ["C'est ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["Voil\xE0 ".concat(an(o), " ___ "), '.'];
+}, function (o) {
+  return ["".concat(anCap(o), " ___ "), ' a tout changé pour moi.'];
+}, function (o) {
+  return ["Je me souviens du ".concat(o.n, " ___ "), '.'];
+}];
 
 // ── LEQUEL DATA ───────────────────────────────────────────────────────────
-const LQ_PAIRS=[
-  {prep:"sur",     n:{a:"la",  n:"table",      e:"table",     g:"sg"},ans:"laquelle"},
-  {prep:"sur",     n:{a:"le",  n:"bureau",     e:"desk",      g:"sg"},ans:"lequel"},
-  {prep:"sur",     n:{a:"la",  n:"chaise",     e:"chair",     g:"sg"},ans:"laquelle"},
-  {prep:"sur",     n:{a:"le",  n:"banc",       e:"bench",     g:"sg"},ans:"lequel"},
-  {prep:"avec",    n:{a:"le",  n:"stylo",      e:"pen",       g:"sg"},ans:"lequel"},
-  {prep:"avec",    n:{a:"la",  n:"carte",      e:"card",      g:"sg"},ans:"laquelle"},
-  {prep:"avec",    n:{a:"les", n:"collègues",  e:"colleagues",g:"pl"},ans:"lesquels"},
-  {prep:"pour",    n:{a:"la",  n:"société",    e:"company",   g:"sg"},ans:"laquelle"},
-  {prep:"pour",    n:{a:"les", n:"raisons",    e:"reasons",   g:"pl"},ans:"lesquelles"},
-  {prep:"dans",    n:{a:"les", n:"conditions", e:"conditions",g:"pl"},ans:"lesquelles"},
-  {prep:"dans",    n:{a:"le",  n:"contexte",   e:"context",   g:"sg"},ans:"lequel"},
-  {prep:"contre",  n:{a:"le",  n:"mur",        e:"wall",      g:"sg"},ans:"lequel"},
-  {prep:"contre",  n:{a:"la",  n:"porte",      e:"door",      g:"sg"},ans:"laquelle"},
-  {prep:"sous",    n:{a:"le",  n:"pont",       e:"bridge",    g:"sg"},ans:"lequel"},
-  {prep:"par",     n:{a:"la",  n:"fenêtre",    e:"window",    g:"sg"},ans:"laquelle"},
-  {prep:"par",     n:{a:"le",  n:"couloir",    e:"corridor",  g:"sg"},ans:"lequel"},
-  {prep:"grâce à", n:{a:"l'", n:"outil",      e:"tool",      g:"sg"},ans:"auquel"},
-  {prep:"grâce à", n:{a:"la", n:"méthode",    e:"method",    g:"sg"},ans:"laquelle"},
-  {prep:"grâce à", n:{a:"les",n:"efforts",    e:"efforts",   g:"pl"},ans:"lesquels"},
-  {prep:"vers",    n:{a:"le",  n:"sommet",     e:"summit",    g:"sg"},ans:"lequel"},
-];
-const LQ_VERBS=["j'écris","tu es assis","il s'est appuyé","nous travaillons","la lumière entre","elle a couru","on passe chaque matin","il travaille","nous nous sommes assis"];
-const LQ_FRAMES=[
-  (p,v)=>`C'est ${an(p.n)} ${p.prep} ___ ${v}.`,
-  (p,v)=>`Voilà ${an(p.n)} ${p.prep} ___ ${v}.`,
-  (p,v)=>`${anCap(p.n)} ${p.prep} ___ ${v} est là.`,
-];
+var LQ_PAIRS = [{
+  prep: "sur",
+  n: {
+    a: "la",
+    n: "table",
+    e: "table",
+    g: "sg"
+  },
+  ans: "laquelle"
+}, {
+  prep: "sur",
+  n: {
+    a: "le",
+    n: "bureau",
+    e: "desk",
+    g: "sg"
+  },
+  ans: "lequel"
+}, {
+  prep: "sur",
+  n: {
+    a: "la",
+    n: "chaise",
+    e: "chair",
+    g: "sg"
+  },
+  ans: "laquelle"
+}, {
+  prep: "sur",
+  n: {
+    a: "le",
+    n: "banc",
+    e: "bench",
+    g: "sg"
+  },
+  ans: "lequel"
+}, {
+  prep: "avec",
+  n: {
+    a: "le",
+    n: "stylo",
+    e: "pen",
+    g: "sg"
+  },
+  ans: "lequel"
+}, {
+  prep: "avec",
+  n: {
+    a: "la",
+    n: "carte",
+    e: "card",
+    g: "sg"
+  },
+  ans: "laquelle"
+}, {
+  prep: "avec",
+  n: {
+    a: "les",
+    n: "collègues",
+    e: "colleagues",
+    g: "pl"
+  },
+  ans: "lesquels"
+}, {
+  prep: "pour",
+  n: {
+    a: "la",
+    n: "société",
+    e: "company",
+    g: "sg"
+  },
+  ans: "laquelle"
+}, {
+  prep: "pour",
+  n: {
+    a: "les",
+    n: "raisons",
+    e: "reasons",
+    g: "pl"
+  },
+  ans: "lesquelles"
+}, {
+  prep: "dans",
+  n: {
+    a: "les",
+    n: "conditions",
+    e: "conditions",
+    g: "pl"
+  },
+  ans: "lesquelles"
+}, {
+  prep: "dans",
+  n: {
+    a: "le",
+    n: "contexte",
+    e: "context",
+    g: "sg"
+  },
+  ans: "lequel"
+}, {
+  prep: "contre",
+  n: {
+    a: "le",
+    n: "mur",
+    e: "wall",
+    g: "sg"
+  },
+  ans: "lequel"
+}, {
+  prep: "contre",
+  n: {
+    a: "la",
+    n: "porte",
+    e: "door",
+    g: "sg"
+  },
+  ans: "laquelle"
+}, {
+  prep: "sous",
+  n: {
+    a: "le",
+    n: "pont",
+    e: "bridge",
+    g: "sg"
+  },
+  ans: "lequel"
+}, {
+  prep: "par",
+  n: {
+    a: "la",
+    n: "fenêtre",
+    e: "window",
+    g: "sg"
+  },
+  ans: "laquelle"
+}, {
+  prep: "par",
+  n: {
+    a: "le",
+    n: "couloir",
+    e: "corridor",
+    g: "sg"
+  },
+  ans: "lequel"
+}, {
+  prep: "grâce à",
+  n: {
+    a: "l'",
+    n: "outil",
+    e: "tool",
+    g: "sg"
+  },
+  ans: "auquel"
+}, {
+  prep: "grâce à",
+  n: {
+    a: "la",
+    n: "méthode",
+    e: "method",
+    g: "sg"
+  },
+  ans: "laquelle"
+}, {
+  prep: "grâce à",
+  n: {
+    a: "les",
+    n: "efforts",
+    e: "efforts",
+    g: "pl"
+  },
+  ans: "lesquels"
+}, {
+  prep: "vers",
+  n: {
+    a: "le",
+    n: "sommet",
+    e: "summit",
+    g: "sg"
+  },
+  ans: "lequel"
+}];
+var LQ_VERBS = ["j'écris", "tu es assis", "il s'est appuyé", "nous travaillons", "la lumière entre", "elle a couru", "on passe chaque matin", "il travaille", "nous nous sommes assis"];
+var LQ_FRAMES = [function (p, v) {
+  return "C'est ".concat(an(p.n), " ").concat(p.prep, " ___ ").concat(v, ".");
+}, function (p, v) {
+  return "Voil\xE0 ".concat(an(p.n), " ").concat(p.prep, " ___ ").concat(v, ".");
+}, function (p, v) {
+  return "".concat(anCap(p.n), " ").concat(p.prep, " ___ ").concat(v, " est l\xE0.");
+}];
 
 // ── RULES ─────────────────────────────────────────────────────────────────
-const R_QUI ='Use <b>qui</b> when the pronoun is the SUBJECT of the relative clause — it performs the action. Test: replace with il/elle → if the clause still makes sense, use qui. ↔ Use que when the pronoun is the direct object.';
-const R_QUE ='Use <b>que</b> when the pronoun is the DIRECT OBJECT of the relative clause. Test: replace with le/la — if it fits, use que. Becomes qu\' before a vowel. ↔ Use qui when the pronoun is the subject.';
-const R_OU_P='Use <b>où</b> for place — replaces "dans laquelle", "en laquelle", etc. Much more natural than the lequel equivalent. ↔ Use dont if the verb takes de; use que if the noun is a direct object.';
-const R_OU_T='Use <b>où</b> for time expressions — replaces "pendant lequel", "lors duquel", etc. Common patterns: le jour où, le moment où, l\'année où, l\'époque où.';
-const R_LQ  ='After most prepositions (sur, avec, pour, dans, par, contre, sous…) use a lequel form agreeing with the noun: m.sg → lequel, f.sg → laquelle, m.pl → lesquels, f.pl → lesquelles. ↔ Use dont when the preposition is simple de; use où for concrete places.';
-const R_LQ_G='The sentence already shows "à" — pick the <b>lequel</b> form that agrees with the noun (m.sg → lequel, f.sg → laquelle, m.pl → lesquels, f.pl → lesquelles). ↔ Use dont when the verb takes simple de.';
+var R_QUI = 'Use <b>qui</b> when the pronoun is the SUBJECT of the relative clause — it performs the action. Test: replace with il/elle → if the clause still makes sense, use qui. ↔ Use que when the pronoun is the direct object.';
+var R_QUE = 'Use <b>que</b> when the pronoun is the DIRECT OBJECT of the relative clause. Test: replace with le/la — if it fits, use que. Becomes qu\' before a vowel. ↔ Use qui when the pronoun is the subject.';
+var R_OU_P = 'Use <b>où</b> for place — replaces "dans laquelle", "en laquelle", etc. Much more natural than the lequel equivalent. ↔ Use dont if the verb takes de; use que if the noun is a direct object.';
+var R_OU_T = 'Use <b>où</b> for time expressions — replaces "pendant lequel", "lors duquel", etc. Common patterns: le jour où, le moment où, l\'année où, l\'époque où.';
+var R_LQ = 'After most prepositions (sur, avec, pour, dans, par, contre, sous…) use a lequel form agreeing with the noun: m.sg → lequel, f.sg → laquelle, m.pl → lesquels, f.pl → lesquelles. ↔ Use dont when the preposition is simple de; use où for concrete places.';
+var R_LQ_G = 'The sentence already shows "à" — pick the <b>lequel</b> form that agrees with the noun (m.sg → lequel, f.sg → laquelle, m.pl → lesquels, f.pl → lesquelles). ↔ Use dont when the verb takes simple de.';
 
 // ── DIST ──────────────────────────────────────────────────────────────────
-const DIST={
-  'qui':        ['que','dont','où','lequel','laquelle'],
-  'que':        ['qui','dont','où','lequel','laquelle'],
-  'dont':       ['que','qui','où','lequel','laquelle'],
-  'où':         ['que','qui','dont','lequel','laquelle'],
-  'lequel':     ['qui','que','dont','laquelle','où'],
-  'laquelle':   ['qui','que','dont','lequel','où'],
-  'lesquels':   ['qui','que','dont','lesquelles','laquelle'],
-  'lesquelles': ['qui','que','dont','lesquels','laquelle'],
+var DIST = {
+  'qui': ['que', 'dont', 'où', 'lequel', 'laquelle'],
+  'que': ['qui', 'dont', 'où', 'lequel', 'laquelle'],
+  'dont': ['que', 'qui', 'où', 'lequel', 'laquelle'],
+  'où': ['que', 'qui', 'dont', 'lequel', 'laquelle'],
+  'lequel': ['qui', 'que', 'dont', 'laquelle', 'où'],
+  'laquelle': ['qui', 'que', 'dont', 'lequel', 'où'],
+  'lesquels': ['qui', 'que', 'dont', 'lesquelles', 'laquelle'],
+  'lesquelles': ['qui', 'que', 'dont', 'lesquels', 'laquelle']
 };
 
 // ── GENERATORS ────────────────────────────────────────────────────────────
-function genQui(){
-  const anim=Math.random()<0.7, s=rp(anim?QS_ANIM:QS_INAN), v=rp(anim?QV_ANIM:QV_INAN);
-  const f=rp(QUI_FRAMES)(s);
-  return {s:f[0]+v.fr+f[1], a:'qui', c:'qui',
-    n:'[nom] <b>qui</b> + verbe', e:`the ${s.e} who ${v.en}`, r:R_QUI};
-}
-function genQue(){
-  const o=rp(QN_OBJ), v=rp(QV_QUE), f=rp(QUE_FRAMES)(o);
-  return {s:f[0]+v.fr+f[1], a:'que', c:'que',
-    n:'[nom] <b>que</b> + sujet + verbe', e:`the ${o.e} that ${v.en}`, r:R_QUE};
-}
-function genDont(){
-  const n=rp(DN_NOUNS), v=rp(DV_VERBS), f=rp(DONT_FRAMES)(n);
-  return {s:f[0]+v.fr+f[1], a:'dont', c:'dont',
-    n:'[nom] <b>dont</b> + sujet + verbe', e:`the ${n.e} that ${v.en}`,
-    r:`Use <b>dont</b> because the verb takes "de" (${v.v} → dont). Common de-verbs: parler de, avoir besoin de, être fier de, rêver de, discuter de, dépendre de.`};
-}
-function genOu(){
-  const isP=Math.random()<0.6;
-  const n=rp(isP?OU_PLACES:OU_TIMES), v=rp(isP?OV_PLACE:OV_TIME);
-  const f=rp(isP?OU_FRAMES_PLACE:OU_FRAMES_TIME)(n);
-  return {s:f[0]+v.fr+f[1], a:'où', c:'où',
-    n:`[${isP?'lieu':'temps'}] <b>où</b> + sujet + verbe`,
-    e:`the ${n.e} ${v.en}`, r:isP?R_OU_P:R_OU_T};
-}
-function genLeq(){
-  const p=rp(LQ_PAIRS), v=rp(LQ_VERBS), isG=p.prep==='grâce à';
-  const fLabel=p.ans==='lequel'?'m.sg':p.ans==='laquelle'?'f.sg':p.ans==='lesquels'?'m.pl':'f.pl';
+function genQui() {
+  var anim = Math.random() < 0.7,
+    s = rp(anim ? QS_ANIM : QS_INAN),
+    v = rp(anim ? QV_ANIM : QV_INAN);
+  var f = rp(QUI_FRAMES)(s);
   return {
-    s: rp(LQ_FRAMES)(p,v), a:p.ans, c:'lequel',
-    n:isG?`${p.prep} <b>${p.ans}</b> (${fLabel})`:`${p.prep} <b>${p.ans}</b> (${fLabel})`,
-    e:`the ${p.n.e} (${p.prep}) — ${v}`,
-    r:isG?R_LQ_G:R_LQ+` "${p.prep}" + "${p.n.n}" (${fLabel}) → ${p.ans}.`};
+    s: f[0] + v.fr + f[1],
+    a: 'qui',
+    c: 'qui',
+    n: '[nom] <b>qui</b> + verbe',
+    e: "the ".concat(s.e, " who ").concat(v.en),
+    r: R_QUI
+  };
 }
-
-const GEN={'qui':genQui,'que':genQue,'dont':genDont,'où':genOu,'lequel':genLeq};
-const POOL_TARGETS=[['qui',18],['que',18],['dont',18],['où',14],['lequel',12]];
-
-function buildPool(){
-  const pool=[], seen=new Set();
-  for(const [type,count] of POOL_TARGETS){
-    let added=0, tries=0;
-    while(added<count && tries<count*12){
-      const q=GEN[type](); if(!seen.has(q.s)){seen.add(q.s);pool.push(q);added++;} tries++;
+function genQue() {
+  var o = rp(QN_OBJ),
+    v = rp(QV_QUE),
+    f = rp(QUE_FRAMES)(o);
+  return {
+    s: f[0] + v.fr + f[1],
+    a: 'que',
+    c: 'que',
+    n: '[nom] <b>que</b> + sujet + verbe',
+    e: "the ".concat(o.e, " that ").concat(v.en),
+    r: R_QUE
+  };
+}
+function genDont() {
+  var n = rp(DN_NOUNS),
+    v = rp(DV_VERBS),
+    f = rp(DONT_FRAMES)(n);
+  return {
+    s: f[0] + v.fr + f[1],
+    a: 'dont',
+    c: 'dont',
+    n: '[nom] <b>dont</b> + sujet + verbe',
+    e: "the ".concat(n.e, " that ").concat(v.en),
+    r: "Use <b>dont</b> because the verb takes \"de\" (".concat(v.v, " \u2192 dont). Common de-verbs: parler de, avoir besoin de, \xEAtre fier de, r\xEAver de, discuter de, d\xE9pendre de.")
+  };
+}
+function genOu() {
+  var isP = Math.random() < 0.6;
+  var n = rp(isP ? OU_PLACES : OU_TIMES),
+    v = rp(isP ? OV_PLACE : OV_TIME);
+  var f = rp(isP ? OU_FRAMES_PLACE : OU_FRAMES_TIME)(n);
+  return {
+    s: f[0] + v.fr + f[1],
+    a: 'où',
+    c: 'où',
+    n: "[".concat(isP ? 'lieu' : 'temps', "] <b>o\xF9</b> + sujet + verbe"),
+    e: "the ".concat(n.e, " ").concat(v.en),
+    r: isP ? R_OU_P : R_OU_T
+  };
+}
+function genLeq() {
+  var p = rp(LQ_PAIRS),
+    v = rp(LQ_VERBS),
+    isG = p.prep === 'grâce à';
+  var fLabel = p.ans === 'lequel' ? 'm.sg' : p.ans === 'laquelle' ? 'f.sg' : p.ans === 'lesquels' ? 'm.pl' : 'f.pl';
+  return {
+    s: rp(LQ_FRAMES)(p, v),
+    a: p.ans,
+    c: 'lequel',
+    n: isG ? "".concat(p.prep, " <b>").concat(p.ans, "</b> (").concat(fLabel, ")") : "".concat(p.prep, " <b>").concat(p.ans, "</b> (").concat(fLabel, ")"),
+    e: "the ".concat(p.n.e, " (").concat(p.prep, ") \u2014 ").concat(v),
+    r: isG ? R_LQ_G : R_LQ + " \"".concat(p.prep, "\" + \"").concat(p.n.n, "\" (").concat(fLabel, ") \u2192 ").concat(p.ans, ".")
+  };
+}
+var GEN = {
+  'qui': genQui,
+  'que': genQue,
+  'dont': genDont,
+  'où': genOu,
+  'lequel': genLeq
+};
+var POOL_TARGETS = [['qui', 18], ['que', 18], ['dont', 18], ['où', 14], ['lequel', 12]];
+function buildPool() {
+  var pool = [],
+    seen = new Set();
+  for (var _i = 0, _POOL_TARGETS = POOL_TARGETS; _i < _POOL_TARGETS.length; _i++) {
+    var _POOL_TARGETS$_i = _slicedToArray(_POOL_TARGETS[_i], 2),
+      type = _POOL_TARGETS$_i[0],
+      count = _POOL_TARGETS$_i[1];
+    var added = 0,
+      tries = 0;
+    while (added < count && tries < count * 12) {
+      var q = GEN[type]();
+      if (!seen.has(q.s)) {
+        seen.add(q.s);
+        pool.push(q);
+        added++;
+      }
+      tries++;
     }
   }
   return pool;
 }
-function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const tmp=a[i];a[i]=a[j];a[j]=tmp;}return a;}
+function shuffle(arr) {
+  var a = _toConsumableArray(arr);
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
+  }
+  return a;
+}
 
 // ── STATE & APP ───────────────────────────────────────────────────────────
-let questions, idx, score, answered, sessionResults, showCorrect=true;
-const app=document.getElementById('app');
-
-function init(){
-  questions=shuffle(buildPool()).slice(0,20);
-  idx=0;score=0;answered=false;sessionResults=[];showCorrect=true;showStart();
-}
-
-function showStart(){
-  app.innerHTML=`
-    <div class="start-screen">
-      <h2>Pronoms relatifs</h2>
-      <div class="pronoun-grid">
-        <span class="pronoun-chip">qui</span><span class="pronoun-chip">que</span>
-        <span class="pronoun-chip">dont</span><span class="pronoun-chip">où</span>
-        <span class="pronoun-chip">lequel</span><span class="pronoun-chip">laquelle</span>
-        <span class="pronoun-chip">lesquels</span><span class="pronoun-chip">lesquelles</span>
-      </div>
-      <p>Choisissez le bon pronom relatif pour compl&eacute;ter chaque phrase.</p>
-      <p style="margin-top:8px;font-size:.82rem">20 questions &middot; nouvelles combinaisons &agrave; chaque session</p>
-      <button class="btn-start" id="btn-start">Commencer &rarr;</button>
-    </div>`;
-}
-
-function renderQ(){
-  if(idx>=questions.length){showEnd();return;}
-  const q=questions[idx];
-  const opts=shuffle([q.a,...(DIST[q.a]||['qui','que','dont','où','lequel'])]);
-  const pct=(idx/questions.length)*100;
-  app.innerHTML=`
-    <div class="meta">
-      <span>${idx+1} <span style="color:var(--border)">/ ${questions.length}</span></span>
-      <span style="display:flex;align-items:center;gap:10px">Score <strong>${score}</strong>
-        <button class="btn-exit" id="btn-exit" title="Quitter">&#10005;</button>
-      </span>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="sentence-wrap"><div class="sentence">${fmtBlank(q.s)}</div></div>
-    <div class="options">${opts.map(o=>`<button class="opt-btn" data-val="${o}">${o}</button>`).join('')}</div>
-    <div class="explanation" id="exp"></div>
-    <div class="actions" id="acts"><button class="btn-next" id="btn-next">Suivant &rarr;</button></div>`;
-}
-
-function fmtBlank(s){return s.replace('___','<span class="blank">___</span>');}
-function fmtFilled(s,a){return s.replace('___',`<span class="ans-filled">${a}</span>`);}
-
-function handleAnswer(btn){
-  if(answered)return; answered=true;
-  const q=questions[idx], chosen=btn.dataset.val, correct=chosen===q.a;
-  if(correct)score++;
-  sessionResults.push({s:q.s,a:q.a,c:q.c,n:q.n,e:q.e,correct,chosen});
-  renderResultsTable();
-  app.querySelectorAll('.opt-btn').forEach(b=>{
-    b.disabled=true;
-    if(b.dataset.val===q.a)b.classList.add('correct');
-    else if(b===btn)b.classList.add('picked-wrong');
-    else b.classList.add('wrong');
-  });
-  app.querySelector('.sentence').innerHTML=fmtFilled(q.s,q.a);
-  const exp=document.getElementById('exp'); exp.classList.add('show');
-  exp.innerHTML=`
-    <div class="exp-verdict ${correct?'ok':'ko'}">
-      ${correct?'&#10003; Correct&#160;!':
-        `&#10007; La r&eacute;ponse correcte est <strong>${q.a}</strong>`}
-    </div>
-    <div class="exp-note">${q.n}</div>
-    <div class="exp-english">${q.e}</div>
-    <div class="exp-rule">${q.r}</div>`;
-  document.getElementById('acts').classList.add('show');
-}
-
-function nextQ(){idx++;answered=false;renderQ();}
-
-function showEnd(){
-  const pct=Math.round((score/questions.length)*100);
-  const grade=pct>=90?'&#127775; Excellent&#160;!':pct>=75?'&#128077; Tr&egrave;s bien&#160;!':
-    pct>=60?'&#128522; Bien — continuez&#160;!':pct>=45?'&#128218; Pas mal — r&eacute;visez&#160;!':
-    '&#128170; Ne vous d&eacute;couragez pas&#160;!';
-  app.innerHTML=`
-    <div class="end-screen">
-      <h2>Quiz termin&eacute;&#160;!</h2>
-      <div class="final-score">${score}<span style="font-size:1.5rem;color:var(--muted)"> / ${questions.length}</span></div>
-      <div class="final-pct">${pct}&#160;%</div>
-      <div class="final-grade">${grade}</div>
-      <button class="btn-restart" id="btn-restart">Recommencer &#8635;</button>
-    </div>`;
-}
-
-function exitToStart(){
-  sessionResults=[];showCorrect=true;idx=0;score=0;answered=false;
-  const rs=document.getElementById('results-section');if(rs)rs.style.display='none';
-  const rb=document.getElementById('results-tbody');if(rb)rb.innerHTML='';
-  const btc=document.getElementById('btn-toggle-correct');
-  if(btc){btc.textContent='Masquer les bonnes réponses';btc.classList.remove('hiding');}
+var questions,
+  idx,
+  score,
+  answered,
+  sessionResults,
+  showCorrect = true;
+var app = document.getElementById('app');
+function init() {
+  questions = shuffle(buildPool()).slice(0, 20);
+  idx = 0;
+  score = 0;
+  answered = false;
+  sessionResults = [];
+  showCorrect = true;
   showStart();
 }
-
-function toggleCorrect(){
-  showCorrect=!showCorrect;
-  const btn=document.getElementById('btn-toggle-correct');
-  if(btn){btn.textContent=showCorrect?'Masquer les bonnes réponses':'Afficher les bonnes réponses';btn.classList.toggle('hiding',!showCorrect);}
+function showStart() {
+  app.innerHTML = "\n    <div class=\"start-screen\">\n      <h2>Pronoms relatifs</h2>\n      <div class=\"pronoun-grid\">\n        <span class=\"pronoun-chip\">qui</span><span class=\"pronoun-chip\">que</span>\n        <span class=\"pronoun-chip\">dont</span><span class=\"pronoun-chip\">o\xF9</span>\n        <span class=\"pronoun-chip\">lequel</span><span class=\"pronoun-chip\">laquelle</span>\n        <span class=\"pronoun-chip\">lesquels</span><span class=\"pronoun-chip\">lesquelles</span>\n      </div>\n      <p>Choisissez le bon pronom relatif pour compl&eacute;ter chaque phrase.</p>\n      <p style=\"margin-top:8px;font-size:.82rem\">20 questions &middot; nouvelles combinaisons &agrave; chaque session</p>\n      <button class=\"btn-start\" id=\"btn-start\">Commencer &rarr;</button>\n    </div>";
+}
+function renderQ() {
+  if (idx >= questions.length) {
+    showEnd();
+    return;
+  }
+  var q = questions[idx];
+  var opts = shuffle([q.a].concat(_toConsumableArray(DIST[q.a] || ['qui', 'que', 'dont', 'où', 'lequel'])));
+  var pct = idx / questions.length * 100;
+  app.innerHTML = "\n    <div class=\"meta\">\n      <span>".concat(idx + 1, " <span style=\"color:var(--border)\">/ ").concat(questions.length, "</span></span>\n      <span style=\"display:flex;align-items:center;gap:10px\">Score <strong>").concat(score, "</strong>\n        <button class=\"btn-exit\" id=\"btn-exit\" title=\"Quitter\">&#10005;</button>\n      </span>\n    </div>\n    <div class=\"progress-bar\"><div class=\"progress-fill\" style=\"width:").concat(pct, "%\"></div></div>\n    <div class=\"sentence-wrap\"><div class=\"sentence\">").concat(fmtBlank(q.s), "</div></div>\n    <div class=\"options\">").concat(opts.map(function (o) {
+    return "<button class=\"opt-btn\" data-val=\"".concat(o, "\">").concat(o, "</button>");
+  }).join(''), "</div>\n    <div class=\"explanation\" id=\"exp\"></div>\n    <div class=\"actions\" id=\"acts\"><button class=\"btn-next\" id=\"btn-next\">Suivant &rarr;</button></div>");
+}
+function fmtBlank(s) {
+  return s.replace('___', '<span class="blank">___</span>');
+}
+function fmtFilled(s, a) {
+  return s.replace('___', "<span class=\"ans-filled\">".concat(a, "</span>"));
+}
+function handleAnswer(btn) {
+  if (answered) return;
+  answered = true;
+  var q = questions[idx],
+    chosen = btn.dataset.val,
+    correct = chosen === q.a;
+  if (correct) score++;
+  sessionResults.push({
+    s: q.s,
+    a: q.a,
+    c: q.c,
+    n: q.n,
+    e: q.e,
+    correct: correct,
+    chosen: chosen
+  });
+  renderResultsTable();
+  app.querySelectorAll('.opt-btn').forEach(function (b) {
+    b.disabled = true;
+    if (b.dataset.val === q.a) b.classList.add('correct');else if (b === btn) b.classList.add('picked-wrong');else b.classList.add('wrong');
+  });
+  app.querySelector('.sentence').innerHTML = fmtFilled(q.s, q.a);
+  var exp = document.getElementById('exp');
+  exp.classList.add('show');
+  exp.innerHTML = "\n    <div class=\"exp-verdict ".concat(correct ? 'ok' : 'ko', "\">\n      ").concat(correct ? '&#10003; Correct&#160;!' : "&#10007; La r&eacute;ponse correcte est <strong>".concat(q.a, "</strong>"), "\n    </div>\n    <div class=\"exp-note\">").concat(q.n, "</div>\n    <div class=\"exp-english\">").concat(q.e, "</div>\n    <div class=\"exp-rule\">").concat(q.r, "</div>");
+  document.getElementById('acts').classList.add('show');
+}
+function nextQ() {
+  idx++;
+  answered = false;
+  renderQ();
+}
+function showEnd() {
+  var pct = Math.round(score / questions.length * 100);
+  var grade = pct >= 90 ? '&#127775; Excellent&#160;!' : pct >= 75 ? '&#128077; Tr&egrave;s bien&#160;!' : pct >= 60 ? '&#128522; Bien — continuez&#160;!' : pct >= 45 ? '&#128218; Pas mal — r&eacute;visez&#160;!' : '&#128170; Ne vous d&eacute;couragez pas&#160;!';
+  app.innerHTML = "\n    <div class=\"end-screen\">\n      <h2>Quiz termin&eacute;&#160;!</h2>\n      <div class=\"final-score\">".concat(score, "<span style=\"font-size:1.5rem;color:var(--muted)\"> / ").concat(questions.length, "</span></div>\n      <div class=\"final-pct\">").concat(pct, "&#160;%</div>\n      <div class=\"final-grade\">").concat(grade, "</div>\n      <button class=\"btn-restart\" id=\"btn-restart\">Recommencer &#8635;</button>\n    </div>");
+}
+function exitToStart() {
+  sessionResults = [];
+  showCorrect = true;
+  idx = 0;
+  score = 0;
+  answered = false;
+  var rs = document.getElementById('results-section');
+  if (rs) rs.style.display = 'none';
+  var rb = document.getElementById('results-tbody');
+  if (rb) rb.innerHTML = '';
+  var btc = document.getElementById('btn-toggle-correct');
+  if (btc) {
+    btc.textContent = 'Masquer les bonnes réponses';
+    btc.classList.remove('hiding');
+  }
+  showStart();
+}
+function toggleCorrect() {
+  showCorrect = !showCorrect;
+  var btn = document.getElementById('btn-toggle-correct');
+  if (btn) {
+    btn.textContent = showCorrect ? 'Masquer les bonnes réponses' : 'Afficher les bonnes réponses';
+    btn.classList.toggle('hiding', !showCorrect);
+  }
   renderResultsTable();
 }
-
-function renderResultsTable(){
-  const sec=document.getElementById('results-section'); if(sec)sec.style.display='block';
-  const tbody=document.getElementById('results-tbody'); if(!tbody)return;
-  const rows=showCorrect?sessionResults:sessionResults.filter(r=>!r.correct);
-  tbody.innerHTML=rows.map(r=>{
-    const filled=r.s.replace('___',`<span class="${r.correct?'rt-ans-correct':'rt-ans-wrong'}">${r.a}</span>`);
-    const wrongNote=r.correct?'':
-      `<div class="rt-picked">&#10007;&nbsp;choisi&nbsp;: <strong>${r.chosen}</strong></div>`;
-    return `<tr class="${r.correct?'rt-row-correct':'rt-row-wrong'}">
-      <td><span class="rt-sentence" data-modal="${(()=>{const k=_mIdx++;MODAL_DATA.set(k,{fr:r.n.replace(/<[^>]+>/g,''),en:r.e});return k;})()}">${filled}</span>${wrongNote}</td>
-      <td><span class="rt-note">${r.n}</span><div class="rt-english">${r.e}</div></td>
-      <td class="rt-cat">${r.a}</td></tr>`;
+function renderResultsTable() {
+  var sec = document.getElementById('results-section');
+  if (sec) sec.style.display = 'block';
+  var tbody = document.getElementById('results-tbody');
+  if (!tbody) return;
+  var rows = showCorrect ? sessionResults : sessionResults.filter(function (r) {
+    return !r.correct;
+  });
+  tbody.innerHTML = rows.map(function (r) {
+    var filled = r.s.replace('___', "<span class=\"".concat(r.correct ? 'rt-ans-correct' : 'rt-ans-wrong', "\">").concat(r.a, "</span>"));
+    var wrongNote = r.correct ? '' : "<div class=\"rt-picked\">&#10007;&nbsp;choisi&nbsp;: <strong>".concat(r.chosen, "</strong></div>");
+    return "<tr class=\"".concat(r.correct ? 'rt-row-correct' : 'rt-row-wrong', "\">\n      <td><span class=\"rt-sentence\" data-modal=\"").concat(function () {
+      var k = _mIdx++;
+      MODAL_DATA.set(k, {
+        fr: r.n.replace(/<[^>]+>/g, ''),
+        en: r.e
+      });
+      return k;
+    }(), "\">").concat(filled, "</span>").concat(wrongNote, "</td>\n      <td><span class=\"rt-note\">").concat(r.n, "</span><div class=\"rt-english\">").concat(r.e, "</div></td>\n      <td class=\"rt-cat\">").concat(r.a, "</td></tr>");
   }).join('');
 }
-
-app.addEventListener('click',e=>{
-  const rs=e.target.closest('.rt-sentence');
-  if(rs){showWordModal(parseInt(rs.dataset.modal),rs);e.stopPropagation();return;}
-  const opt=e.target.closest('.opt-btn');
-  if(opt&&!answered){handleAnswer(opt);return;}
-  const btnEl=e.target.closest('button');
-  const id=(e.target.id||(btnEl&&btnEl.id));
-  if(id==='btn-next'){nextQ();return;}
-  if(id==='btn-exit'){exitToStart();return;}
-  if(id==='btn-start'||id==='btn-restart'){
-    questions=shuffle(buildPool()).slice(0,20);
-    idx=0;score=0;answered=false;sessionResults=[];showCorrect=true;
-    const rs=document.getElementById('results-section');if(rs)rs.style.display='none';
-    const rb=document.getElementById('results-tbody');if(rb)rb.innerHTML='';
-    const btc=document.getElementById('btn-toggle-correct');
-    if(btc){btc.textContent='Masquer les bonnes réponses';btc.classList.remove('hiding');}
+app.addEventListener('click', function (e) {
+  var rs = e.target.closest('.rt-sentence');
+  if (rs) {
+    showWordModal(parseInt(rs.dataset.modal), rs);
+    e.stopPropagation();
+    return;
+  }
+  var opt = e.target.closest('.opt-btn');
+  if (opt && !answered) {
+    handleAnswer(opt);
+    return;
+  }
+  var btnEl = e.target.closest('button');
+  var id = e.target.id || btnEl && btnEl.id;
+  if (id === 'btn-next') {
+    nextQ();
+    return;
+  }
+  if (id === 'btn-exit') {
+    exitToStart();
+    return;
+  }
+  if (id === 'btn-start' || id === 'btn-restart') {
+    questions = shuffle(buildPool()).slice(0, 20);
+    idx = 0;
+    score = 0;
+    answered = false;
+    sessionResults = [];
+    showCorrect = true;
+    var _rs = document.getElementById('results-section');
+    if (_rs) _rs.style.display = 'none';
+    var rb = document.getElementById('results-tbody');
+    if (rb) rb.innerHTML = '';
+    var btc = document.getElementById('btn-toggle-correct');
+    if (btc) {
+      btc.textContent = 'Masquer les bonnes réponses';
+      btc.classList.remove('hiding');
+    }
     renderQ();
   }
 });
-
-document.addEventListener('keydown',e=>{
-  if((e.key==='Enter'||e.key==='ArrowRight')&&answered){nextQ();return;}
-  if(!answered&&['1','2','3','4','5','6'].includes(e.key)){
-    const btns=[...app.querySelectorAll('.opt-btn')];
-    const btn=btns[parseInt(e.key)-1];if(btn)handleAnswer(btn);
+document.addEventListener('keydown', function (e) {
+  if ((e.key === 'Enter' || e.key === 'ArrowRight') && answered) {
+    nextQ();
+    return;
+  }
+  if (!answered && ['1', '2', '3', '4', '5', '6'].includes(e.key)) {
+    var btns = _toConsumableArray(app.querySelectorAll('.opt-btn'));
+    var btn = btns[parseInt(e.key) - 1];
+    if (btn) handleAnswer(btn);
   }
 });
-
 init();
 </script>
 </body>
