@@ -4,6 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verbes &amp; Prépositions — Quiz</title>
+<script>
+var __dbgErrors = [];
+var __dbgUA = (navigator && navigator.userAgent) ? navigator.userAgent : 'unknown';
+window.onerror = function(msg, url, line, col) {
+  __dbgErrors.push(msg + ' — line ' + line + ', col ' + (col || '?'));
+  __dbgRender();
+  return false;
+};
+function __dbgRender() {
+  var el = document.getElementById('__dbgPanel');
+  if (!el) { return; }
+  var out = ['UA: ' + __dbgUA, '---'];
+  if (__dbgErrors.length === 0) {
+    out.push('No errors captured yet.');
+  } else {
+    for (var i = 0; i < __dbgErrors.length; i++) { out.push(__dbgErrors[i]); }
+  }
+  el.innerHTML = '';
+  el.appendChild(document.createTextNode(out.join('\n')));
+}
+function __dbgToggle() {
+  var el = document.getElementById('__dbgPanel');
+  if (!el) { return; }
+  el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+  __dbgRender();
+}
+</script>
 <style>
 :root {
   --paper: #FDFCF5;
@@ -400,6 +427,8 @@ header p { color: var(--muted); font-size: 0.88rem; margin-top: 5px; }
 </style>
 </head>
 <body>
+<div id="__dbgDot" onclick="__dbgToggle()" style="position:fixed;bottom:8px;right:8px;width:9px;height:9px;border-radius:50%;background:rgba(0,0,0,0.12);cursor:pointer;z-index:99999;"></div>
+<pre id="__dbgPanel" style="display:none;position:fixed;bottom:24px;right:8px;left:8px;max-height:55vh;overflow:auto;background:#fff;border:1px solid #999;padding:10px;font-size:11px;line-height:1.4;white-space:pre-wrap;z-index:99999;color:#333;font-family:monospace;border-radius:3px;box-shadow:0 2px 10px rgba(0,0,0,0.2);"></pre>
 <header>
   <h1>&#x1F1EB;&#x1F1F7; Verbes &amp; Pr&#233;positions</h1>
   <p>Constructions verbales &middot; Espace FLE page&#160;2</p>
