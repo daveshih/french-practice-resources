@@ -153,7 +153,7 @@ function showWordModal(key, targetEl) {
     document.removeEventListener('click', outside);
     document.removeEventListener('keydown', onKey);
   }
-  function outside(e) { if (!document.getElementById('word-modal')?.contains(e.target) && e.target !== targetEl) cleanup(); }
+  function outside(e) { const wm = document.getElementById('word-modal'); if (!(wm && wm.contains(e.target)) && e.target !== targetEl) cleanup(); }
   function onKey(e)   { if (e.key === 'Escape') cleanup(); }
   setTimeout(() => { document.addEventListener('click', outside); document.addEventListener('keydown', onKey); }, 0);
 }
@@ -592,7 +592,8 @@ app.addEventListener('click',e=>{
   if(rs){showWordModal(parseInt(rs.dataset.modal),rs);e.stopPropagation();return;}
   const opt=e.target.closest('.opt-btn');
   if(opt&&!answered){handleAnswer(opt);return;}
-  const id=(e.target.id||e.target.closest('button')?.id);
+  const btnEl=e.target.closest('button');
+  const id=(e.target.id||(btnEl&&btnEl.id));
   if(id==='btn-next'){nextQ();return;}
   if(id==='btn-exit'){exitToStart();return;}
   if(id==='btn-start'||id==='btn-restart'){
