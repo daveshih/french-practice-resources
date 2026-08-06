@@ -546,10 +546,12 @@ function handleAnswer(btn) {
     chosen: chosen
   });
   renderResultsTable();
-  app.querySelectorAll('.opt-btn').forEach(function (b) {
+  var _optBtns = app.querySelectorAll('.opt-btn');
+  for (var _obi = 0; _obi < _optBtns.length; _obi++) {
+    var b = _optBtns[_obi];
     b.disabled = true;
     if (b.dataset.val === q.a) b.classList.add('correct');else if (b === btn) b.classList.add('picked-wrong');else b.classList.add('wrong');
-  });
+  }
   app.querySelector('.sentence').innerHTML = fmtFilled(addVerbTooltip(q.s, q.e, q.n), q.a);
   var exp = document.getElementById('exp');
   exp.classList.add('show');
@@ -654,8 +656,8 @@ document.addEventListener('keydown', function (e) {
     nextQ();
     return;
   }
-  if (!answered && ['1', '2', '3', '4', '5', '6'].includes(e.key)) {
-    var btns = _toConsumableArray(app.querySelectorAll('.opt-btn'));
+  if (!answered && ['1', '2', '3', '4', '5', '6'].indexOf(e.key) !== -1) {
+    var btns = app.querySelectorAll('.opt-btn');
     var btn = btns[parseInt(e.key) - 1];
     if (btn) handleAnswer(btn);
   }
