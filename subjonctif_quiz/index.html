@@ -251,7 +251,8 @@ function shuffle(arr){
 function buildPool(){
   // every (verb, subject) combination
   const pool = [];
-  VERBS.forEach(([inf, forms])=>{
+  VERBS.forEach(function(pair){
+    const inf = pair[0], forms = pair[1];
     forms.forEach((form, si)=>{
       pool.push({verb: inf, subjectIdx: si, subject: SUBJECTS[si], answer: form});
     });
