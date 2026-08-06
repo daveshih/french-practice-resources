@@ -129,6 +129,10 @@ table.results-table tr.wrong td{background:rgba(181,42,42,.04)}
 .rt-correct-note{color:var(--green);font-weight:600}
 .status-icon{font-size:.85rem}
 
+.live-results-block{margin-top:26px;border-top:1px solid var(--border);padding-top:14px}
+.live-results-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}
+.live-results-block table.results-table{margin-top:6px}
+
 .toggle-correct{
   background:none;border:1px solid var(--border);border-radius:4px;font-size:.75rem;
   color:var(--muted);padding:6px 12px;cursor:pointer;margin-top:16px;
@@ -186,6 +190,17 @@ footer{margin-top:28px;font-size:.72rem;color:var(--muted);text-align:center}
     <div class="actions-row">
       <button class="btn btn-primary" id="btn-submit">Vérifier</button>
       <button class="btn btn-primary" id="btn-next" style="display:none">Suivant →</button>
+    </div>
+
+    <div class="live-results-block" id="live-results-block" style="display:none">
+      <div class="live-results-label">Réponses jusqu'ici</div>
+      <button class="toggle-correct" id="btn-toggle-correct-live">Masquer les bonnes réponses</button>
+      <table class="results-table" id="live-results-table">
+        <thead>
+          <tr><th></th><th>Verbe</th><th>Sujet</th><th>Ta réponse</th><th>Réponse</th></tr>
+        </thead>
+        <tbody id="live-results-tbody"></tbody>
+      </table>
     </div>
   </div>
 
@@ -260,9 +275,16 @@ function init() {
   score = 0;
   answered = false;
   sessionResults = [];
+  showCorrect = true;
+  el('btn-toggle-correct').textContent = 'Masquer les bonnes réponses';
+  el('btn-toggle-correct').classList.remove('hiding');
+  el('btn-toggle-correct-live').textContent = 'Masquer les bonnes réponses';
+  el('btn-toggle-correct-live').classList.remove('hiding');
   el('start-screen').style.display = 'none';
   el('results-screen').style.display = 'none';
   el('quiz-screen').style.display = 'block';
+  el('live-results-block').style.display = 'none';
+  el('live-results-tbody').innerHTML = '';
   renderQuestion();
 }
 function renderQuestion() {
@@ -309,6 +331,7 @@ function submitAnswer() {
   el('btn-submit').style.display = 'none';
   el('btn-next').style.display = 'inline-block';
   el('btn-next').focus();
+  renderLiveTable();
 }
 function nextQuestion() {
   if (idx < questions.length - 1) {
@@ -326,22 +349,37 @@ function showResults() {
   var msg;
   if (pct === 100) msg = "Parfait ! Toutes les conjugaisons sont maîtrisées.";else if (pct >= 80) msg = "Très bien joué !";else if (pct >= 60) msg = "Pas mal, encore un peu de pratique.";else msg = "Continue à réviser, ça viendra.";
   el('score-summary').textContent = msg;
-  showCorrect = true;
-  el('btn-toggle-correct').textContent = 'Masquer les bonnes réponses';
-  el('btn-toggle-correct').classList.remove('hiding');
   renderResultsTable();
 }
-function renderResultsTable() {
-  var tbody = el('results-tbody');
+function buildResultRow(r) {
+  var tr = document.createElement('tr');
+  if (!r.ok) tr.classList.add('wrong');
+  var yourAnswerHtml = r.given.length ? r.ok ? "<span class=\"rt-your-ok\">".concat(r.given, "</span>") : "<span class=\"rt-your-wrong\">".concat(r.given, "</span>") : '<span class="rt-your-wrong">—</span>';
+  var correctCell = r.ok ? '' : "<span class=\"rt-correct-note\">".concat(r.correct, "</span>");
+  tr.innerHTML = "\n      <td class=\"status-icon\">".concat(r.ok ? '✓' : '✗', "</td>\n      <td class=\"rt-verb\">").concat(r.verb, "</td>\n      <td>").concat(r.subject, "</td>\n      <td>").concat(yourAnswerHtml, "</td>\n      <td>").concat(correctCell, "</td>\n    ");
+  return tr;
+}
+function renderRowsInto(tbodyId, rows) {
+  var tbody = el(tbodyId);
+  if (!tbody) return;
   tbody.innerHTML = '';
-  sessionResults.forEach(function (r) {
-    var tr = document.createElement('tr');
-    if (!r.ok) tr.classList.add('wrong');
-    var yourAnswerHtml = r.given.length ? r.ok ? "<span class=\"rt-your-ok\">".concat(r.given, "</span>") : "<span class=\"rt-your-wrong\">".concat(r.given, "</span>") : '<span class="rt-your-wrong">—</span>';
-    var correctCell = !r.ok && showCorrect ? "<span class=\"rt-correct-note\">".concat(r.correct, "</span>") : r.ok ? '' : '';
-    tr.innerHTML = "\n      <td class=\"status-icon\">".concat(r.ok ? '✓' : '✗', "</td>\n      <td class=\"rt-verb\">").concat(r.verb, "</td>\n      <td>").concat(r.subject, "</td>\n      <td>").concat(yourAnswerHtml, "</td>\n      <td>").concat(correctCell, "</td>\n    ");
-    tbody.appendChild(tr);
+  rows.forEach(function (r) {
+    tbody.appendChild(buildResultRow(r));
   });
+}
+function renderResultsTable() {
+  var rows = showCorrect ? sessionResults : sessionResults.filter(function (r) { return !r.ok; });
+  renderRowsInto('results-tbody', rows);
+}
+function renderLiveTable() {
+  var block = el('live-results-block');
+  if (sessionResults.length === 0) {
+    block.style.display = 'none';
+    return;
+  }
+  block.style.display = 'block';
+  var rows = showCorrect ? sessionResults : sessionResults.filter(function (r) { return !r.ok; });
+  renderRowsInto('live-results-tbody', rows);
 }
 function exitToStart() {
   sessionResults = [];
@@ -351,18 +389,24 @@ function exitToStart() {
   answered = false;
   showStart();
 }
+function toggleShowCorrect() {
+  showCorrect = !showCorrect;
+  var label = showCorrect ? 'Masquer les bonnes réponses' : 'Afficher les bonnes réponses';
+  el('btn-toggle-correct').textContent = label;
+  el('btn-toggle-correct').classList.toggle('hiding', !showCorrect);
+  el('btn-toggle-correct-live').textContent = label;
+  el('btn-toggle-correct-live').classList.toggle('hiding', !showCorrect);
+  renderResultsTable();
+  renderLiveTable();
+}
 el('btn-start').addEventListener('click', init);
 el('btn-submit').addEventListener('click', submitAnswer);
 el('btn-next').addEventListener('click', nextQuestion);
 el('btn-exit').addEventListener('click', exitToStart);
 el('btn-retry').addEventListener('click', init);
 el('btn-home').addEventListener('click', exitToStart);
-el('btn-toggle-correct').addEventListener('click', function () {
-  showCorrect = !showCorrect;
-  el('btn-toggle-correct').textContent = showCorrect ? 'Masquer les bonnes réponses' : 'Afficher les bonnes réponses';
-  el('btn-toggle-correct').classList.toggle('hiding', !showCorrect);
-  renderResultsTable();
-});
+el('btn-toggle-correct').addEventListener('click', toggleShowCorrect);
+el('btn-toggle-correct-live').addEventListener('click', toggleShowCorrect);
 el('answer-input').addEventListener('keydown', function (e) {
   if (e.key === 'Enter') {
     e.preventDefault();
