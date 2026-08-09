@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expressions courantes — Quiz</title>
+<script>
+var __dbgErrors = [];
+var __dbgUA = (navigator && navigator.userAgent) ? navigator.userAgent : 'unknown';
+window.onerror = function(msg, url, line, col) {
+  __dbgErrors.push(msg + ' — line ' + line + ', col ' + (col || '?'));
+  __dbgRender();
+  return false;
+};
+function __dbgRender() {
+  var el = document.getElementById('__dbgPanel');
+  if (!el) { return; }
+  var out = ['UA: ' + __dbgUA, '---'];
+  if (__dbgErrors.length === 0) {
+    out.push('No errors captured yet.');
+  } else {
+    for (var i = 0; i < __dbgErrors.length; i++) { out.push(__dbgErrors[i]); }
+  }
+  el.innerHTML = '';
+  el.appendChild(document.createTextNode(out.join('\n')));
+}
+function __dbgToggle() {
+  var el = document.getElementById('__dbgPanel');
+  if (!el) { return; }
+  el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+  __dbgRender();
+}
+</script>
+<style>
+:root{
+  --paper:#FDFCF5;--bg:#EAE5DA;--ink:#1C1C2E;--blue:#002E8C;--blue-light:#EEF3FF;
+  --red:#B52A2A;--green:#1D6B45;--green-light:#EAF6EF;--muted:#8A8A9A;
+  --border:#D0CBBA;--rule-line:#D0E2F5;--margin:rgba(178,42,42,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23000' fill-opacity='.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  display:flex;flex-direction:column;align-items:center;padding:24px 16px 48px;color:var(--ink);
+}
+header{text-align:center;margin-bottom:22px}
+header h1{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.9rem;color:var(--blue);font-weight:normal;letter-spacing:-.01em}
+header p{color:var(--muted);font-size:.88rem;margin-top:5px}
+
+.card{
+  position:relative;background:var(--paper);border-radius:1px;
+  box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.10);
+  width:100%;max-width:560px;padding:30px 28px 26px 46px;
+  background-image:
+    linear-gradient(var(--rule-line) 1px, transparent 1px);
+  background-size:100% 34px;
+  background-position:0 90px;
+}
+.card::before{
+  content:'';position:absolute;top:0;bottom:0;left:34px;width:1px;background:var(--margin);
+}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.progress{font-size:.78rem;color:var(--muted);letter-spacing:.02em}
+.btn-exit{
+  background:none;border:1.5px solid var(--border);border-radius:50%;
+  width:26px;height:26px;font-size:.65rem;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;padding:0;line-height:1;
+}
+.btn-exit:hover{border-color:var(--red);color:var(--red)}
+
+.cat-pill{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;text-align:center;margin-top:2px}
+
+.prompt-block{margin:18px 0 20px;text-align:left}
+.prompt-text{
+  font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.15rem;color:var(--ink);
+  line-height:1.6;white-space:pre-line;text-align:center;
+}
+.prompt-text .blank{color:var(--blue);font-weight:700;letter-spacing:.02em}
+
+.answer-row{display:flex;gap:10px;justify-content:center;margin-top:18px}
+input#answer-input{
+  font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:1.1rem;
+  border:none;border-bottom:2px solid var(--border);background:transparent;
+  padding:6px 4px;width:260px;text-align:center;color:var(--ink);outline:none;
+  transition:border-color .15s;
+}
+input#answer-input:focus{border-bottom-color:var(--blue)}
+input#answer-input.correct{border-bottom-color:var(--green);color:var(--green)}
+input#answer-input.incorrect{border-bottom-color:var(--red);color:var(--red)}
+input#answer-input:disabled{opacity:1}
+
+.btn{
+  font-family:inherit;font-size:.85rem;border:none;border-radius:4px;padding:10px 22px;
+  cursor:pointer;transition:all .15s;font-weight:600;letter-spacing:.01em;
+}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#001f63}
+.btn-primary:disabled{background:var(--border);cursor:not-allowed}
+.btn-secondary{background:transparent;color:var(--blue);border:1.5px solid var(--blue)}
+.btn-secondary:hover{background:var(--blue-light)}
+
+.feedback{
+  margin-top:18px;padding:12px 16px;border-radius:4px;font-size:.88rem;text-align:center;
+  display:none;
+}
+.feedback.show{display:block}
+.feedback.correct{background:var(--green-light);color:var(--green)}
+.feedback.incorrect{background:#FBEAEA;color:var(--red)}
+.feedback .fb-answer{font-weight:700}
+.feedback .fb-alts{margin-top:8px;font-size:.8rem;color:var(--ink);opacity:.85}
+.feedback .fb-note{margin-top:8px;font-size:.78rem;color:var(--muted);font-style:italic;line-height:1.4}
+
+.actions-row{display:flex;justify-content:center;margin-top:20px;gap:10px}
+
+.start-screen,.results-screen{text-align:center;padding:10px 4px}
+.start-screen p, .results-screen p.summary{color:var(--muted);font-size:.9rem;margin-bottom:22px;line-height:1.5}
+.results-screen .score-big{font-family:'Palatino Linotype',Palatino,Georgia,serif;font-size:2.6rem;color:var(--blue);margin-bottom:4px}
+
+table.results-table{width:100%;border-collapse:collapse;margin-top:18px;font-size:.8rem}
+table.results-table th{
+  text-align:left;color:var(--muted);font-weight:600;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.03em;padding:6px 8px;border-bottom:1.5px solid var(--border);
+}
+table.results-table td{padding:8px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+table.results-table tr.wrong td{background:rgba(181,42,42,.04)}
+.rt-scenario{font-size:.76rem;color:var(--muted);max-width:170px}
+.rt-your-wrong{color:var(--red);text-decoration:line-through;text-decoration-color:rgba(181,42,42,.5)}
+.rt-your-ok{color:var(--green)}
+.rt-correct-note{color:var(--green);font-weight:600}
+.status-icon{font-size:.85rem}
+
+.live-results-block{margin-top:26px;border-top:1px solid var(--border);padding-top:14px}
+.live-results-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}
+.live-results-block table.results-table{margin-top:6px}
+
+.toggle-correct{
+  background:none;border:1px solid var(--border);border-radius:4px;font-size:.75rem;
+  color:var(--muted);padding:6px 12px;cursor:pointer;margin-top:16px;
+}
+.toggle-correct:hover{border-color:var(--blue);color:var(--blue)}
+
+footer{margin-top:28px;font-size:.72rem;color:var(--muted);text-align:center}
+
+@media (max-width: 520px) {
+  .card{padding:24px 18px 22px 34px}
+  .card::before{left:22px}
+  .prompt-text{font-size:1rem}
+  input#answer-input{width:200px;font-size:1rem}
+  table.results-table{font-size:.72rem}
+  .rt-scenario{max-width:110px}
+}
+</style>
+</head>
+<body>
+<div id="__dbgDot" onclick="__dbgToggle()" style="position:fixed;bottom:8px;right:8px;width:9px;height:9px;border-radius:50%;background:rgba(0,0,0,0.12);cursor:pointer;z-index:99999;"></div>
+<pre id="__dbgPanel" style="display:none;position:fixed;bottom:24px;right:8px;left:8px;max-height:55vh;overflow:auto;background:#fff;border:1px solid #999;padding:10px;font-size:11px;line-height:1.4;white-space:pre-wrap;z-index:99999;color:#333;font-family:monospace;border-radius:3px;box-shadow:0 2px 10px rgba(0,0,0,0.2);"></pre>
+
+<header>
+  <h1>Expressions courantes</h1>
+  <p>Complète le dialogue avec l'expression qui convient</p>
+</header>
+
+<div class="card" id="card">
+
+  <div class="start-screen" id="start-screen">
+    <p>90 expressions et tournures de tous les jours &middot; 20 questions aléatoires<br>Lis la mise en situation et tape l'expression qui manque. Plusieurs réponses sont parfois acceptées &mdash; les autres possibilités s'affichent après coup. Les accents comptent, la casse non.</p>
+    <button class="btn btn-primary" id="btn-start">Commencer</button>
+  </div>
+
+  <div id="quiz-screen" style="display:none">
+    <div class="topbar">
+      <span class="progress" id="progress-label">Question 1 / 20</span>
+      <button class="btn-exit" id="btn-exit" title="Quitter">✕</button>
+    </div>
+
+    <div class="prompt-block">
+      <div class="prompt-text" id="prompt-text"></div>
+    </div>
+
+    <div class="answer-row">
+      <input type="text" id="answer-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="…">
+    </div>
+
+    <div class="feedback" id="feedback">
+      <span id="fb-text"></span>
+      <div class="fb-alts" id="fb-alts" style="display:none"></div>
+      <div class="fb-note" id="fb-note" style="display:none"></div>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn btn-primary" id="btn-submit">Vérifier</button>
+      <button class="btn btn-primary" id="btn-next" style="display:none">Suivant →</button>
+    </div>
+
+    <div class="live-results-block" id="live-results-block" style="display:none">
+      <div class="live-results-label">Réponses jusqu'ici</div>
+      <button class="toggle-correct" id="btn-toggle-correct-live">Masquer les bonnes réponses</button>
+      <table class="results-table" id="live-results-table">
+        <thead>
+          <tr><th></th><th>Situation</th><th>Ta réponse</th><th>Réponse(s) acceptée(s)</th></tr>
+        </thead>
+        <tbody id="live-results-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="results-screen" id="results-screen" style="display:none">
+    <div class="score-big" id="score-big">0 / 20</div>
+    <p class="summary" id="score-summary">Bien joué !</p>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="btn-retry">Recommencer</button>
+      <button class="btn btn-secondary" id="btn-home">Retour à l'accueil</button>
+    </div>
+    <button class="toggle-correct" id="btn-toggle-correct">Masquer les bonnes réponses</button>
+    <table class="results-table" id="results-table">
+      <thead>
+        <tr><th></th><th>Situation</th><th>Ta réponse</th><th>Réponse(s) acceptée(s)</th></tr>
+      </thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>90 expressions &middot; usage courant</footer>
+
+<script>
+var EXPR_QUESTIONS = [{"cat":"opinion","prompt":"— Tu viens à la fête samedi ?\n— ___, je ne suis pas encore sûr.","answers":["ça dépend","je verrai","peut-être"],"note":"Used when you can't commit yet — the answer depends on something else."},{"cat":"opinion","prompt":"— Ce restaurant est vraiment cher, non ?\n— ___, mais la nourriture est excellente.","answers":["c'est vrai","tout à fait","effectivement"],"note":"Agreeing straightforwardly with what someone just said."},{"cat":"opinion","prompt":"— Il paraît que ce film est nul.\n— ___, moi je l'ai trouvé génial.","answers":["pas du tout","au contraire"],"note":"Directly disagreeing with a claim."},{"cat":"opinion","prompt":"— On devrait partir plus tôt demain.\n— ___.","answers":["tout à fait","d'accord","je suis d'accord"],"note":"Full agreement with a suggestion."},{"cat":"opinion","prompt":"— ___, ce n'est pas si simple que ça.","answers":["à mon avis","à mon sens"],"note":"Introducing your own opinion, softening a disagreement."},{"cat":"opinion","prompt":"— Ce projet, ___, va nous prendre plusieurs mois.","answers":["il s'agit d'un projet qui","à mon avis"],"note":"Giving a personal assessment mid-sentence."},{"cat":"opinion","prompt":"— Tu penses qu'on va réussir ?\n— ___, oui, on a de bonnes chances.","answers":["honnêtement","franchement"],"note":"Prefacing an honest opinion."},{"cat":"opinion","prompt":"— Le nouveau patron, comment il est ?\n— ___, plutôt sympa jusqu'à présent.","answers":["disons","je dirais"],"note":"Hedging slightly before giving a characterization."},{"cat":"opinion","prompt":"— Est-ce que tu es d'accord avec cette décision ?\n— ___.","answers":["absolument","tout à fait","complètement"],"note":"Emphatic agreement."},{"cat":"opinion","prompt":"— Ce livre parle de quoi exactement ?\n— ___ un homme qui perd la mémoire.","answers":["il s'agit d'"],"note":"Explaining what something is about."},{"cat":"opinion","prompt":"— On annule la réunion ?\n— ___, ce serait plus sage.","answers":["à mon avis","je pense que oui"],"note":"Weighing in with a recommendation."},{"cat":"opinion","prompt":"— Tu crois qu'elle a raison ?\n— ___, je ne sais pas trop.","answers":["franchement","pour être honnête"],"note":"Admitting uncertainty honestly."},{"cat":"opinion","prompt":"— Cette méthode fonctionne vraiment ?\n— ___, oui, dans la plupart des cas.","answers":["en général","généralement"],"note":"Speaking about what's typically true."},{"cat":"opinion","prompt":"— ___, cette idée ne tient pas debout.","answers":["à mon avis","personnellement"],"note":"Giving your take before criticizing an idea."},{"cat":"opinion","prompt":"— Tout le monde est d'accord ?\n— ___.","answers":["apparemment","il semblerait"],"note":"Reporting an impression rather than a certainty."},{"cat":"opinion","prompt":"— Ce plan, tu le trouves risqué ?\n— ___, un peu, oui.","answers":["disons que","plutôt"],"note":"Softening a mild agreement."},{"cat":"opinion","prompt":"— On peut vraiment lui faire confiance ?\n— ___, je crois que oui.","answers":["personnellement","en ce qui me concerne"],"note":"Speaking specifically from your own standpoint."},{"cat":"opinion","prompt":"— Il a bien géré la situation, non ?\n— ___, il aurait pu faire mieux.","answers":["pas vraiment","pas tout à fait"],"note":"Politely disagreeing with a positive assessment."},{"cat":"opinion","prompt":"— Le nouveau design, qu'en penses-tu ?\n— ___, il est plutôt réussi.","answers":["dans l'ensemble","globalement"],"note":"Giving an overall assessment."},{"cat":"opinion","prompt":"— Ça vaut le coup d'essayer ?\n— ___.","answers":["ça vaut le coup","pourquoi pas"],"note":"Encouraging someone to try something."},{"cat":"opinion","prompt":"— Tu es sûr de ta réponse ?\n— ___, je suis sûr.","answers":["absolument","certainement"],"note":"Confirming certainty firmly."},{"cat":"opinion","prompt":"— Elle a bien fait de démissionner ?\n— ___, oui.","answers":["à mon avis","je pense que"],"note":"Giving a considered opinion on someone's choice."},{"cat":"opinion","prompt":"— C'est vraiment nécessaire ?\n— ___, ça peut attendre.","answers":["pas forcément","pas vraiment"],"note":"Suggesting something isn't strictly required."},{"cat":"opinion","prompt":"— On fait comment alors ?\n— ___, on pourrait reporter la date.","answers":["à mon avis","je propose que"],"note":"Offering a suggestion as your opinion."},{"cat":"opinion","prompt":"— Le résultat t'a surpris ?\n— ___, pas tellement en fait.","answers":["franchement","à vrai dire"],"note":"Being candid about a reaction."},{"cat":"opinion","prompt":"— Vous êtes tous d'accord avec cette approche ?\n— ___.","answers":["oui, tout à fait","sans problème"],"note":"Confirming group consensus."},{"cat":"opinion","prompt":"— Ce n'est pas un peu exagéré ?\n— ___, un peu quand même.","answers":["disons","je dois avouer que"],"note":"Conceding a point mildly."},{"cat":"opinion","prompt":"— Qu'est-ce que tu en penses vraiment ?\n— ___, je trouve ça inutile.","answers":["pour tout te dire","à vrai dire"],"note":"Being frank about a critical opinion."},{"cat":"opinion","prompt":"— Tu changerais quelque chose ?\n— ___, pas grand-chose.","answers":["à mon avis","honnêtement"],"note":"Giving a considered final answer."},{"cat":"opinion","prompt":"— Ce roman, ___, une histoire d'amour impossible.","answers":["il s'agit d'"],"note":"Describing what a story is about."},{"cat":"filler","prompt":"— Il a raté son train, ___ il est arrivé en retard.","answers":["du coup"],"note":"Introducing a natural consequence, casual."},{"cat":"filler","prompt":"— ___, je n'ai pas eu le temps de finir le rapport.","answers":["en fait"],"note":"Correcting or clarifying what was just implied."},{"cat":"filler","prompt":"— Il voulait tout changer : le budget, l'équipe, le planning... ___, un vrai chantier.","answers":["bref"],"note":"Wrapping up a list or long explanation."},{"cat":"filler","prompt":"— Tu viens ce soir ?\n— ___, si je finis à temps.","answers":["peut-être","éventuellement"],"note":"Leaving the answer open."},{"cat":"filler","prompt":"— Elle est ___ fatiguée après le voyage.","answers":["quand même"],"note":"Adding a nuance of 'nonetheless' or mild emphasis."},{"cat":"filler","prompt":"— ___, on ferait mieux de vérifier les chiffres avant d'envoyer.","answers":["du coup","donc"],"note":"Drawing a practical conclusion."},{"cat":"filler","prompt":"— Le rendez-vous est annulé. ___, on peut se voir demain à la place ?","answers":["du coup"],"note":"Pivoting after unexpected news."},{"cat":"filler","prompt":"— ___, j'avais complètement oublié qu'on devait se voir.","answers":["en fait","au fait"],"note":"Admitting something you'd forgotten."},{"cat":"filler","prompt":"— On a discuté du budget, du calendrier, des ressources... ___, une réunion productive.","answers":["bref","en somme"],"note":"Summarizing a longer discussion."},{"cat":"filler","prompt":"— Ça t'embête si j'arrive un peu en retard ?\n— ___, pas de souci.","answers":["non","aucun problème"],"note":"Reassuring someone casually."},{"cat":"filler","prompt":"— Il a dit qu'il viendrait, mais ___, il n'est jamais très fiable.","answers":["bon","enfin"],"note":"Adding a resigned qualifier."},{"cat":"filler","prompt":"— ___, tu as des nouvelles de Sophie ?","answers":["au fait","dis donc"],"note":"Bringing up a new topic mid-conversation."},{"cat":"filler","prompt":"— On avait dit 15h, ___ ?","answers":["c'est ça","n'est-ce pas"],"note":"Confirming a shared understanding."},{"cat":"filler","prompt":"— Elle a raté l'examen. ___, elle va devoir le repasser en septembre.","answers":["du coup","donc"],"note":"Stating the resulting consequence."},{"cat":"filler","prompt":"— ___, ce n'était pas si compliqué finalement.","answers":["en fin de compte","finalement"],"note":"Reassessing after the fact."},{"cat":"filler","prompt":"— Je pensais que la réunion était à 10h, ___ elle est à 14h.","answers":["en fait"],"note":"Correcting a mistaken assumption."},{"cat":"filler","prompt":"— ___, on n'a plus vraiment le choix.","answers":["de toute façon","de toute manière"],"note":"Signaling that alternatives don't matter anymore."},{"cat":"filler","prompt":"— Tu es d'accord avec le plan ?\n— ___, oui, ça me va.","answers":["bon","enfin"],"note":"A casual, slightly resigned yes."},{"cat":"filler","prompt":"— ___, il pleut, donc on annule le pique-nique.","answers":["bon"],"note":"Marking a decision after weighing the situation."},{"cat":"filler","prompt":"— On a raté le bus, ___ il faut appeler un taxi.","answers":["du coup","donc"],"note":"Practical next step after a setback."},{"cat":"time","prompt":"— On se voit ce soir ?\n— Non, ___, j'ai un empêchement.","answers":["pas ce soir","malheureusement pas"],"note":"Politely declining a time-based invitation."},{"cat":"time","prompt":"— Je t'appelle ___, je suis en réunion là.","answers":["tout à l'heure","plus tard"],"note":"Postponing a call to later the same day."},{"cat":"time","prompt":"— ___, j'ai oublié de te dire : la réunion est déplacée.","answers":["au fait"],"note":"Adding forgotten information."},{"cat":"time","prompt":"— Il est parti ___, il y a cinq minutes à peine.","answers":["tout à l'heure","à l'instant"],"note":"Referring to a recent past moment."},{"cat":"time","prompt":"— ___ je réfléchis, je pense que tu as raison.","answers":["à bien y réfléchir","en y réfléchissant"],"note":"Reconsidering after thought."},{"cat":"time","prompt":"— On commence par le budget et, ___, on passera au planning.","answers":["ensuite","par la suite"],"note":"Sequencing steps in a plan."},{"cat":"time","prompt":"— ___ nous ferons le point sur les résultats.","answers":["par la suite","plus tard"],"note":"Referring to a future stage."},{"cat":"time","prompt":"— Il faut y aller, on est ___ en retard.","answers":["déjà"],"note":"Marking that lateness has already occurred."},{"cat":"time","prompt":"— ___, elle travaillait dans la finance, mais elle a changé de voie.","answers":["à l'époque","autrefois"],"note":"Referring to a past period."},{"cat":"time","prompt":"— Je te tiens au courant ___ possible.","answers":["dès que","aussitôt que"],"note":"Promising to act as soon as conditions allow."},{"cat":"time","prompt":"— ___, on n'avait pas ce genre de problème.","answers":["avant","autrefois"],"note":"Contrasting with an earlier time."},{"cat":"time","prompt":"— On se retrouve ___ à la même heure.","answers":["la prochaine fois"],"note":"Referring to a future recurrence."},{"cat":"time","prompt":"— Il est arrivé ___ , juste après le début de la réunion.","answers":["entre-temps","peu après"],"note":"Placing an event relative to another."},{"cat":"time","prompt":"— ___, tout s'est bien passé malgré les imprévus.","answers":["au final","finalement"],"note":"Summarizing how things ended up."},{"cat":"time","prompt":"— Je dois y aller ___, sinon je vais rater mon train.","answers":["tout de suite","immédiatement"],"note":"Urging immediate action."},{"cat":"time","prompt":"— ___, on n'avait pas prévu que ça durerait si longtemps.","answers":["au départ","au début"],"note":"Referring to the initial plan or expectation."},{"cat":"polite","prompt":"— Désolé pour le retard !\n— ___, ne t'en fais pas.","answers":["ça ne fait rien","pas de problème","ce n'est pas grave"],"note":"Reassuring someone their mistake doesn't matter."},{"cat":"polite","prompt":"— Merci beaucoup pour votre aide.\n— ___.","answers":["je vous en prie","de rien","avec plaisir"],"note":"A polite response to thanks."},{"cat":"polite","prompt":"— Pourriez-vous m'aider avec ça ?\n— ___, bien sûr.","answers":["avec plaisir","volontiers"],"note":"Agreeing warmly to help."},{"cat":"polite","prompt":"— Je suis vraiment désolé, je n'ai pas pu venir.\n— ___, ce n'est pas grave.","answers":["ce n'est pas grave","ça arrive"],"note":"Minimizing an apology graciously."},{"cat":"polite","prompt":"— Excusez-moi de vous déranger.\n— ___, je vous en prie.","answers":["vous ne me dérangez pas","aucun problème"],"note":"Reassuring someone they aren't being a bother."},{"cat":"polite","prompt":"— Ça vous dérange si j'ouvre la fenêtre ?\n— ___, allez-y.","answers":["pas du tout","je vous en prie"],"note":"Politely granting permission."},{"cat":"polite","prompt":"— Je suis navré pour ce contretemps.\n— ___, ce n'est rien.","answers":["ce n'est rien","pas grave"],"note":"Downplaying a minor inconvenience politely."},{"cat":"polite","prompt":"— Puis-je vous poser une question ?\n— ___.","answers":["je vous en prie","bien sûr"],"note":"Inviting someone to proceed."},{"cat":"polite","prompt":"— Merci d'avoir attendu.\n— ___, aucun souci.","answers":["de rien","je vous en prie"],"note":"Polite acknowledgment after waiting."},{"cat":"polite","prompt":"— J'espère ne pas vous avoir importuné.\n— ___, pas du tout.","answers":["pas du tout","absolument pas"],"note":"Reassuring someone firmly and politely."},{"cat":"polite","prompt":"— Vous pourriez répéter, s'il vous plaît ?\n— ___, bien sûr.","answers":["avec plaisir","pas de problème"],"note":"Agreeing readily to a small request."},{"cat":"polite","prompt":"— Je suis confus, j'ai oublié votre nom.\n— ___, ça arrive à tout le monde.","answers":["ce n'est pas grave","pas de souci"],"note":"Reassuring after an awkward moment."},{"cat":"polite","prompt":"— Merci pour votre patience.\n— ___.","answers":["je vous en prie","c'est tout naturel"],"note":"Gracious acknowledgment of thanks."},{"cat":"polite","prompt":"— Je suis désolé, j'ai renversé du café sur la table.\n— ___, ce n'est qu'un peu de café.","answers":["ce n'est rien","t'en fais pas"],"note":"Minimizing a small accident."},{"cat":"react","prompt":"— Il a dit qu'il n'avait jamais reçu l'email, alors qu'il l'a lu devant moi !\n— ___ !","answers":["n'importe quoi","c'est n'importe quoi"],"note":"Expressing disbelief at an absurd claim."},{"cat":"react","prompt":"— Le train est encore en retard.\n— ___, ça devient ridicule.","answers":["ça m'énerve","c'est agaçant"],"note":"Expressing frustration."},{"cat":"react","prompt":"— On a perdu le contrat malgré tous nos efforts.\n— ___.","answers":["tant pis","c'est la vie"],"note":"Accepting a disappointing outcome with resignation."},{"cat":"react","prompt":"— Il a encore annulé au dernier moment !\n— ___, ça devient une habitude.","answers":["franchement","sérieusement"],"note":"Reacting with mild exasperation."},{"cat":"react","prompt":"— Regarde ce coucher de soleil !\n— ___, c'est magnifique.","answers":["waouh","incroyable"],"note":"Expressing genuine admiration."},{"cat":"react","prompt":"— On a raté le vol à cause d'un embouteillage.\n— ___ !","answers":["c'est pas vrai","non mais je rêve"],"note":"Reacting with disbelief to bad luck."},{"cat":"react","prompt":"— Il critique tout le monde mais n'accepte jamais la critique.\n— ___, c'est vraiment agaçant.","answers":["ça m'énerve","ça m'agace"],"note":"Expressing irritation at hypocrisy."},{"cat":"react","prompt":"— On n'a plus de budget pour ce trimestre.\n— ___, on fera avec ce qu'on a.","answers":["tant pis","bon, tant pis"],"note":"Accepting a limitation without much fuss."},{"cat":"react","prompt":"— Il a menti sur toute la ligne.\n— ___ !","answers":["n'importe quoi","c'est incroyable"],"note":"Reacting strongly to dishonesty."},{"cat":"react","prompt":"— Elle a réussi son examen avec les félicitations du jury !\n— ___ !","answers":["incroyable","c'est génial","bravo"],"note":"Reacting with enthusiasm to good news."}];
+var CAT_LABELS = {opinion:'Opinion',filler:'Transition',time:'Temps',polite:'Politesse',react:'Réaction'};
+var questions = [],
+  idx = 0,
+  score = 0,
+  answered = false,
+  sessionResults = [],
+  showCorrect = true;
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
+  }
+  return a;
+}
+function buildPool() {
+  return shuffle(EXPR_QUESTIONS).slice(0, 20);
+}
+var el = function el(id) {
+  return document.getElementById(id);
+};
+function showStart() {
+  el('start-screen').style.display = 'block';
+  el('quiz-screen').style.display = 'none';
+  el('results-screen').style.display = 'none';
+}
+function init() {
+  questions = buildPool();
+  idx = 0;
+  score = 0;
+  answered = false;
+  sessionResults = [];
+  showCorrect = true;
+  el('btn-toggle-correct').textContent = 'Masquer les bonnes réponses';
+  el('btn-toggle-correct-live').textContent = 'Masquer les bonnes réponses';
+  el('start-screen').style.display = 'none';
+  el('results-screen').style.display = 'none';
+  el('quiz-screen').style.display = 'block';
+  el('live-results-block').style.display = 'none';
+  el('live-results-tbody').innerHTML = '';
+  renderQuestion();
+}
+function renderPromptHtml(promptRaw) {
+  var escaped = promptRaw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  escaped = escaped.replace(/___/g, '<span class="blank">___</span>');
+  return escaped;
+}
+function renderQuestion() {
+  answered = false;
+  var q = questions[idx];
+  el('progress-label').textContent = 'Question ' + (idx + 1) + ' / ' + questions.length;
+  el('prompt-text').innerHTML = renderPromptHtml(q.prompt);
+  var input = el('answer-input');
+  input.value = '';
+  input.disabled = false;
+  input.className = '';
+  input.focus();
+  el('feedback').className = 'feedback';
+  el('fb-alts').style.display = 'none';
+  el('fb-note').style.display = 'none';
+  el('btn-submit').style.display = 'inline-block';
+  el('btn-submit').disabled = false;
+  el('btn-next').style.display = 'none';
+}
+function normalize(s) {
+  return s.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+function findMatch(given, q) {
+  var norm = normalize(given);
+  if (norm.length === 0) return -1;
+  for (var i = 0; i < q.answers.length; i++) {
+    if (normalize(q.answers[i]) === norm) return i;
+  }
+  return -1;
+}
+function submitAnswer() {
+  if (answered) return;
+  var q = questions[idx];
+  var input = el('answer-input');
+  var raw = input.value;
+  var matchIdx = findMatch(raw, q);
+  var isCorrect = matchIdx !== -1;
+  answered = true;
+  if (isCorrect) score++;
+  sessionResults.push({
+    prompt: q.prompt,
+    given: raw.trim(),
+    answers: q.answers,
+    ok: isCorrect
+  });
+  input.disabled = true;
+  input.className = isCorrect ? 'correct' : 'incorrect';
+  var fb = el('feedback');
+  fb.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    el('fb-text').innerHTML = '✓ Correct !';
+  } else {
+    el('fb-text').innerHTML = '✗ Réponse(s) attendue(s) : <span class="fb-answer">' + q.answers.join(' / ') + '</span>';
+  }
+  var alts = [];
+  for (var i = 0; i < q.answers.length; i++) {
+    if (i !== matchIdx) alts.push(q.answers[i]);
+  }
+  var altsEl = el('fb-alts');
+  if (isCorrect && alts.length > 0) {
+    altsEl.textContent = 'Autres réponses acceptées : ' + alts.join(' / ');
+    altsEl.style.display = 'block';
+  } else {
+    altsEl.style.display = 'none';
+  }
+  var noteEl = el('fb-note');
+  if (q.note) {
+    noteEl.textContent = q.note;
+    noteEl.style.display = 'block';
+  } else {
+    noteEl.style.display = 'none';
+  }
+  el('btn-submit').style.display = 'none';
+  el('btn-next').style.display = 'inline-block';
+  el('btn-next').focus();
+  renderLiveTable();
+}
+function nextQuestion() {
+  if (idx < questions.length - 1) {
+    idx++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+function showResults() {
+  el('quiz-screen').style.display = 'none';
+  el('results-screen').style.display = 'block';
+  el('score-big').textContent = score + ' / ' + questions.length;
+  var pct = Math.round(score / questions.length * 100);
+  var msg;
+  if (pct === 100) msg = 'Parfait ! Toutes les expressions sont maîtrisées.';else if (pct >= 80) msg = 'Très bien joué !';else if (pct >= 60) msg = 'Pas mal, encore un peu de pratique.';else msg = 'Continue à réviser, ça viendra.';
+  el('score-summary').textContent = msg;
+  renderResultsTable();
+}
+function shortPrompt(p) {
+  var s = p.replace(/\n/g, ' ').replace(/—/g, '').replace(/\s+/g, ' ').trim();
+  if (s.length > 60) s = s.substring(0, 57) + '…';
+  return s;
+}
+function buildResultRow(r) {
+  var tr = document.createElement('tr');
+  if (!r.ok) tr.classList.add('wrong');
+  var yourAnswerHtml = r.given.length ? (r.ok ? '<span class="rt-your-ok">' + r.given + '</span>' : '<span class="rt-your-wrong">' + r.given + '</span>') : '<span class="rt-your-wrong">—</span>';
+  var correctCell = r.ok ? '' : '<span class="rt-correct-note">' + r.answers.join(' / ') + '</span>';
+  tr.innerHTML = '' +
+    '<td class="status-icon">' + (r.ok ? '✓' : '✗') + '</td>' +
+    '<td class="rt-scenario">' + shortPrompt(r.prompt) + '</td>' +
+    '<td>' + yourAnswerHtml + '</td>' +
+    '<td>' + correctCell + '</td>';
+  return tr;
+}
+function renderRowsInto(tbodyId, rows) {
+  var tbody = el(tbodyId);
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  rows.forEach(function (r) {
+    tbody.appendChild(buildResultRow(r));
+  });
+}
+function renderResultsTable() {
+  var rows = showCorrect ? sessionResults : sessionResults.filter(function (r) { return !r.ok; });
+  renderRowsInto('results-tbody', rows);
+}
+function renderLiveTable() {
+  var block = el('live-results-block');
+  if (sessionResults.length === 0) {
+    block.style.display = 'none';
+    return;
+  }
+  block.style.display = 'block';
+  var rows = showCorrect ? sessionResults : sessionResults.filter(function (r) { return !r.ok; });
+  renderRowsInto('live-results-tbody', rows);
+}
+function exitToStart() {
+  sessionResults = [];
+  showCorrect = true;
+  idx = 0;
+  score = 0;
+  answered = false;
+  showStart();
+}
+function toggleShowCorrect() {
+  showCorrect = !showCorrect;
+  var label = showCorrect ? 'Masquer les bonnes réponses' : 'Afficher les bonnes réponses';
+  el('btn-toggle-correct').textContent = label;
+  el('btn-toggle-correct-live').textContent = label;
+  renderResultsTable();
+  renderLiveTable();
+}
+el('btn-start').addEventListener('click', init);
+el('btn-submit').addEventListener('click', submitAnswer);
+el('btn-next').addEventListener('click', nextQuestion);
+el('btn-exit').addEventListener('click', exitToStart);
+el('btn-retry').addEventListener('click', init);
+el('btn-home').addEventListener('click', exitToStart);
+el('btn-toggle-correct').addEventListener('click', toggleShowCorrect);
+el('btn-toggle-correct-live').addEventListener('click', toggleShowCorrect);
+el('answer-input').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (!answered) submitAnswer();else nextQuestion();
+  }
+});
+showStart();
+
+</script>
+</body>
+</html>
